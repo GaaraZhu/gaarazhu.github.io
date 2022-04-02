@@ -8,8 +8,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>Chat the Ops up - Gary&#39;s Blog</title>
-  <meta name="description" content="TL;DR This is a story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
-Background We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system more scalable, maintainable and etc. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy manually where there used to be only one.">
+  <meta name="description" content="TL;DR 
+This is a story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
+Background 
+We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system maintainable and scalable. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy whereas there used to be only one.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -58,9 +60,9 @@ Background We are shifting from monolith architecture to microservices for one o
     "name" : "GaryZhu"
   },
   "headline": "Chat the Ops up",
-  "description" : "TL;DR This is a story of how we improved our CI\/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.\nBackground We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system more scalable, maintainable and etc. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy manually where there used to be only one.",
+  "description" : "TL;DR \nThis is a story of how we improved our CI\/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.\nBackground \nWe are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system maintainable and scalable. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy whereas there used to be only one.",
   "inLanguage" : "en",
-  "wordCount":  541 ,
+  "wordCount":  562 ,
   "datePublished" : "2022-04-02T11:09:48",
   "dateModified" : "2022-04-02T11:09:48",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -80,16 +82,20 @@ Background We are shifting from monolith architecture to microservices for one o
 </script>
 
 <meta property="og:title" content="Chat the Ops up" />
-<meta property="og:description" content="TL;DR This is a story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
-Background We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system more scalable, maintainable and etc. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy manually where there used to be only one.">
+<meta property="og:description" content="TL;DR 
+This is a story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
+Background 
+We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system maintainable and scalable. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy whereas there used to be only one.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
 <meta property="og:url" content="https://GaaraZhu.github.io/chat-the-ops-up/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
   <meta name="twitter:title" content="Chat the Ops up" />
-  <meta name="twitter:description" content="TL;DR This is a story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
-Background We are …">
+  <meta name="twitter:description" content="TL;DR 
+This is a story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
+Background 
+We are …">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -242,52 +248,87 @@ Background We are …">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
         <h1 id="tldr">TL;DR</h1>
-<p>This is a story of how we improved our CI/CD methodology by using <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a>, a serverless <a href="https://www.atlassian.com/blog/software-teams/what-is-chatops-adoption-guide">ChatOps</a> tool for interacting with Atlassian Bamboo from Microsoft Teams.</p>
+<p><br>
+This is a story of how we improved our CI/CD methodology by using <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a>, a serverless <a href="https://www.atlassian.com/blog/software-teams/what-is-chatops-adoption-guide">ChatOps</a> tool for interacting with Atlassian Bamboo from Microsoft Teams.<br>
+ </p>
 <h1 id="background">Background</h1>
-<p>We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system more scalable, maintainable and etc. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy manually where there used to be only one.</p>
+<p><br>
+We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system maintainable and scalable. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy whereas there used to be only one.<br>
+ </p>
 <h1 id="sdlc">SDLC</h1>
-<p>A quick review of how we are developing and delivering multiple features in parrel.</p>
+<p><br>
+A quick review of how we are developing, testing and delivering multiple features in parrel.</p>
 <ol>
 <li>Developers use feature branches to work on individual feature changes.</li>
-<li>When the chagnes are finished, building and deploying from the feature branch for dev testing. In the meanwhile create the pull request to merge the feature branch to the target release branch.</li>
-<li>Dev testing and pull request reviewing are finished. Merging the feature branch, building and deploying from the release branch for QA testing.</li>
-<li>Deploying changes to UAT for regression testing.</li>
+<li>Building and deploying from the feature branch for dev testing, and create the pull request to merge the feature branch to the target release branch.</li>
+<li>Merging the feature branch, building and deploying from the release branch for QA testing.</li>
+<li>Deploying changes to UAT for final regression testing.</li>
 <li>Production release.</li>
 </ol>
 <p><img src="/images/chat-the-ops-up/cicd-workflow.png" alt="workflow"></p>
+<p> </p>
 <h1 id="pain-points">Pain points</h1>
-<h2 id="manul-intervention">Manul intervention</h2>
-<p>The steps with red background in above diagram triggered manually in the past. Imagine if you are working on a new feature which requires changes to 10 microservices. You will have to do those steps manually in Bamboo for all of them, multiple times during different stages.</p>
-<h2 id="status-notification">Status notification</h2>
-<p>What&rsquo;s worse, the deployment job can only be executed after the build job is finished. Bamboo has a wide support of configuring notifications so that we don&rsquo;t have to check the job status manually by refreshing the page. But still it requires manual configuration for each Bamboo job(Build and Deploy).</p>
+<p> </p>
+<h3 id="manul-intervention">Manul intervention</h3>
+<p><br>
+Imagine that you are working on a feature which requires changes in <strong>10</strong> microservices. In Bamboo you will have to:</p>
+<ul>
+<li>create <code>20</code> branch plans
+<ul>
+<li>10 branch plans for the feature branch</li>
+<li>10 branch plans for the release branch</li>
+</ul>
+</li>
+<li>build <code>20</code> times
+<ul>
+<li>10 builds for the feature branch plan</li>
+<li>10 builds for the release branch plan</li>
+</ul>
+</li>
+<li>deploy <code>30</code> times
+<ul>
+<li>10 deployments to Dev environment</li>
+<li>10 deployments to QA environment</li>
+<li>10 deployments to UAT environment</li>
+</ul>
+</li>
+</ul>
+<p>If bugs are found during the testing, more build and deployment job executions will be required.<br>
+ </p>
+<h3 id="status-notification">Status notification</h3>
+<p><br>
+The deployment job can only be executed after the build job is finished. Although Bamboo has a wide support of notifications so that we don&rsquo;t have to check the job status manually by refreshing the page, still it requires manual configuration for each Bamboo job(Build and Deploy).<br>
+ </p>
 <h1 id="solution">Solution</h1>
-<p>To make our life easier, I created <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a> whose main features include:</p>
+<p><br>
+To make our life easier, I created <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a> whose main features include:</p>
 <ul>
 <li>Interact with Bamboo in Microsoft Teams with wide range of commands.</li>
 <li>Receive notification in Microsoft Teams for Bamboo jobs.</li>
 <li>Receive hanging Bamboo job alerts in Microsoft Teams.</li>
 </ul>
-<h1 id="before-vs-after">Before vs After</h1>
+<p> </p>
+<h2 id="before-vs-after">Before vs After</h2>
+<p> </p>
 <ol>
-<li>Create a branch plan for a feature branch in Bamboo - one chat
-<img src="/images/chat-the-ops-up/create-branch-plan.png" alt="create branch plan"></li>
-<li>Trigger the build job from a branch plan in Bamboo - one chat
-<img src="/images/chat-the-ops-up/build.png" alt="build"></li>
-<li>Trigger the deploy job from a build result in Bamboo - one chat
-<img src="/images/chat-the-ops-up/deploy.png" alt="deploy"></li>
+<li>Create a branch plan for a feature branch in Bamboo with one chat
+<img src="/images/chat-the-ops-up/create-branch-plan.png" alt="create branch plan"><br>
+ </li>
+<li>Trigger the build job from a branch plan in Bamboo with one chat
+<img src="/images/chat-the-ops-up/build.png" alt="build"><br>
+ </li>
+<li>Trigger the deploy job from a build result in Bamboo with one chat
+<img src="/images/chat-the-ops-up/deploy.png" alt="deploy"><br>
+ </li>
 <li>Receive job notification - all you need to do is to get yourself a coffee:)
-<img src="/images/chat-the-ops-up/notifications.png" alt="notifications"></li>
+<img src="/images/chat-the-ops-up/notifications.png" alt="notifications"><br>
+ </li>
 <li>Teams notifications
 <img src="/images/chat-the-ops-up/notification-examples.png" alt="notification examples"></li>
 </ol>
-<h1 id="benefits">Benefits</h1>
-<ul>
-<li>Automation</li>
-<li>Collaboration</li>
-<li>Visibility</li>
-<li>Secure</li>
-</ul>
-<h1 id="security-controls">Security controls</h1>
+<p> </p>
+<h2 id="security-controls">Security controls</h2>
+<p> </p>
 <ul>
 <li>Webhook security
 <ul>
@@ -295,14 +336,17 @@ Background We are …">
 <li>Incoming webhook can only receive JSON data with required schema for display, and has no access to other APIs, same with the outgoing webhook.</li>
 </ul>
 </li>
-<li>HMAC(Hash-based Message Authentication Code) between Teams and Bamboo-on-Teams</li>
-<li>Dedicated Bamboo API token for Bamboo-on-Teams</li>
-<li>Bamboo resource permission verification(view, deploy)</li>
-<li>Production environment elimination(configurable)</li>
+<li>HMAC(Hash-based Message Authentication Code) authentication between Teams and Bamboo-on-Teams</li>
+<li>Dedicated Bamboo API token used for Bamboo-on-Teams</li>
+<li>Bamboo resource permission verification(view, execute etc)</li>
+<li>Production environment elimination(configurable)<br>
+ </li>
 </ul>
 <h1 id="conclusion">Conclusion</h1>
-<p>In the journey of CI/CD, we are all learning and trying to improve the overall process, to make it more efficient and more collaborative. This is a tool that solved our problems and made our life easier. If you have similar problems with what we had, please consider this tool.</p>
-<p><a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a> is built on top of Typescript, Serverless and AWS tech stacks which you can find the details in the project page. Issues and PRs are welcome and encouraged: <code>Bamboo-on-Teams</code> is MIT licensed.</p>
+<p><br>
+In the journey of CI/CD, we are all learning and trying to improve the overall process, to make it more efficient and more collaborative. This is a tool that solved our problems and made our life easier. If you have similar problems with what we had, please consider this tool.</p>
+<p><a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a> is built on top of Typescript, Serverless and AWS tech stacks which you can find the details in the project page. Issues and PRs are welcome and encouraged: <code>Bamboo-on-Teams</code> is MIT licensed.<br>
+ </p>
 
 
         
@@ -439,12 +483,17 @@ Background We are …">
 
           &nbsp;&bull;&nbsp;&copy;
           
-            2022
+            2011 - 0001
           
 
           
             &nbsp;&bull;&nbsp;
             <a href="https://GaaraZhu.github.io">Gary&#39;s Blog</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="https://gohugo.io">Hugo v0.96.0</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
