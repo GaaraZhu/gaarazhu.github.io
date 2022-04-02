@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Gary&#39;s Blog</title>
+    <link>https://GaaraZhu.github.io/</link>
+    <description>Recent content on Gary&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
+    <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster><atom:link href="https://GaaraZhu.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Chat the Ops up</title>
+      <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
+      <pubDate>Sat, 02 Apr 2022 11:09:48 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/chat-the-ops-up/</guid>
+      <description>TL;DR This is a story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
+Background We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system more scalable, maintainable and etc. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy manually where there used to be only one.</description>
+    </item>
+    
+  </channel>
+</rss>
