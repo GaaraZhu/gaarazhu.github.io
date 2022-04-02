@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Atlassian Bamboo - Gary&#39;s Blog</title>
+  <title>Apache Commons - Gary&#39;s Blog</title>
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -29,13 +29,13 @@
 }
 </script>
 
-<meta property="og:title" content="Atlassian Bamboo" />
+<meta property="og:title" content="Apache Commons" />
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://GaaraZhu.github.io/tags/atlassian-bamboo/" />
+<meta property="og:url" content="https://GaaraZhu.github.io/tags/apache-commons/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
-  <meta name="twitter:title" content="Atlassian Bamboo" />
+  <meta name="twitter:title" content="Apache Commons" />
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -171,7 +171,7 @@
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="tags-heading">
               
-                <h1>Atlassian Bamboo</h1>
+                <h1>Apache Commons</h1>
               
               
                 <hr class="small">
@@ -194,8 +194,8 @@
         <div class="posts-list">
           
             <article class="post-preview">
-    <a href="https://GaaraZhu.github.io/chat-the-ops-up/">
-        <h2 class="post-title">Chat the Ops up</h2>
+    <a href="https://GaaraZhu.github.io/deep-clone/">
+        <h2 class="post-title">Java深度克隆</h2>
         
         
         
@@ -205,13 +205,13 @@
         <span class="post-meta">
   
   
-  <i class="fas fa-calendar"></i>&nbsp;Posted on April 2, 2021
+  <i class="fas fa-calendar"></i>&nbsp;Posted on September 28, 2012
   
   
-    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;6&nbsp;minutes
   
   
-    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;521&nbsp;words
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;751&nbsp;words
   
   
     
@@ -225,22 +225,20 @@
     </p>
     <div class="post-entry">
         
-        TL;DR 
-This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
-        <a href="https://GaaraZhu.github.io/chat-the-ops-up/" class="post-read-more">[Read More]</a>
+        背景  在实际开发中经常遇到属性克隆的问题，比如在表现层提交的Request DTO，可能需要在控制层被映射成多个Java Bean，再传递到逻辑层来进行相应的业务处理，那么如何才能简单而又快速的完成属性克隆呢？
+对于仅仅包含简单属性的Java Bean来说，Apache Commons里的BeanUtils 是个不错的选择，不过前提是对应属性必须具备相同的属性名。但是对于复杂属性来说， 如果两个属性的类型不同，或者类型参数不同，使用BeanUtils的时候都要格外小心。
+举个例子： InvoiceDTO和InvoiceBean里面都有两个属性amount和charges，类型定义如下：
+InvoiceDTO [ amount -&gt; AmountDTO, charges -&gt; List] InvoiceBean [ amount -&gt;AmountBean, charges -&gt; List]
+        <a href="https://GaaraZhu.github.io/deep-clone/" class="post-read-more">[Read More]</a>
         
     </div>
 
     
     <div class="blog-tags">
         
-        <a href="https://GaaraZhu.github.io/tags/ci/cd/">CI/CD</a>&nbsp;
+        <a href="https://GaaraZhu.github.io/tags/deep-clone/">Deep clone</a>&nbsp;
         
-        <a href="https://GaaraZhu.github.io/tags/chatops/">ChatOps</a>&nbsp;
-        
-        <a href="https://GaaraZhu.github.io/tags/atlassian-bamboo/">Atlassian Bamboo</a>&nbsp;
-        
-        <a href="https://GaaraZhu.github.io/tags/microsoft-teams/">Microsoft Teams</a>&nbsp;
+        <a href="https://GaaraZhu.github.io/tags/apache-commons/">Apache Commons</a>&nbsp;
         
     </div>
     
@@ -286,7 +284,7 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
               </li>
           
           <li>
-            <a href="/tags/atlassian-bamboo/index.xml" title="RSS">
+            <a href="/tags/apache-commons/index.xml" title="RSS">
               <span class="fa-stack fa-lg">
                 <i class="fas fa-circle fa-stack-2x"></i>
                 <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
