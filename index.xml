@@ -19,6 +19,15 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
     </item>
     
     <item>
+      <title>MapReduce tuning</title>
+      <link>https://GaaraZhu.github.io/map-reduce-tunning/</link>
+      <pubDate>Sun, 23 Dec 2012 01:33:45 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/map-reduce-tunning/</guid>
+      <description>Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&amp;rsquo;s no way for us to do the tuning.</description>
+    </item>
+    
+    <item>
       <title>Java深度克隆</title>
       <link>https://GaaraZhu.github.io/deep-clone/</link>
       <pubDate>Fri, 28 Sep 2012 08:33:51 +1300</pubDate>
