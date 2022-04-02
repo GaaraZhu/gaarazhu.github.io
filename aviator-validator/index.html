@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>基于Aviator的注解驱动验证框架 - Gary&#39;s Blog</title>
+  <meta name="description" content="背景 
+程序开发过程中，在同一系统中层层之间数据传递或者是异构系统之间同步异步通信的时候，我们经常需要对Java Bean进行属性验证，来决定是否继续后续process，或者直接抛出error message。
+ 传统解决方案 
+传统的做法，给每个验证场景加一个验证类，专门负责所有属性的验证，以及验证结果的校验和处理，这种做法最直白，但是不够灵活。第二种就是Java 6自带的验证框架 Bean validation, 用注解的形式来表达属性对应的约束，Bean validation在很大程度上提高了数据验证的灵活性和复用性，但是第一，个人感觉扩展比较麻烦，首先你需要自定义个注解来代表对应的约束，其次你必须新建一个验证器，最后你必须在注解类上做好两者的mapping，对于每种约束，都逃不开这三步；第二点，Bean validation只能完成bean中单一属性的验证，不支持跨属性验证。
+ EasyValidation! 
+第三种做法就是基于Aviator DIY的验证框架EasyValidation，Aviator是淘宝开发的一款java表达式求值工具，感兴趣的朋友可以google一下。为了灵活性，和Bean validation一样，EasyValidation也是注解驱动的。我们认为所谓的约束其实就是一个结果为 true 或者 false 的表达式，所以首先把这些约束表达式加在属性上面作为元数据，然后通过反射去获取表达式，最后利用aviator去求值，再对结果做处理。">
+  <meta name="author" content="GaryZhu"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Gary\u0027s Blog",
+    
+    "url": "https:\/\/GaaraZhu.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/GaaraZhu.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/GaaraZhu.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/GaaraZhu.github.io\/aviator-validator\/",
+          "name": "基于 aviator的注解驱动验证框架"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "GaryZhu"
+  },
+  "headline": "基于Aviator的注解驱动验证框架",
+  "description" : "背景 \n程序开发过程中，在同一系统中层层之间数据传递或者是异构系统之间同步异步通信的时候，我们经常需要对Java Bean进行属性验证，来决定是否继续后续process，或者直接抛出error message。\n 传统解决方案 \n传统的做法，给每个验证场景加一个验证类，专门负责所有属性的验证，以及验证结果的校验和处理，这种做法最直白，但是不够灵活。第二种就是Java 6自带的验证框架 Bean validation, 用注解的形式来表达属性对应的约束，Bean validation在很大程度上提高了数据验证的灵活性和复用性，但是第一，个人感觉扩展比较麻烦，首先你需要自定义个注解来代表对应的约束，其次你必须新建一个验证器，最后你必须在注解类上做好两者的mapping，对于每种约束，都逃不开这三步；第二点，Bean validation只能完成bean中单一属性的验证，不支持跨属性验证。\n EasyValidation! \n第三种做法就是基于Aviator DIY的验证框架EasyValidation，Aviator是淘宝开发的一款java表达式求值工具，感兴趣的朋友可以google一下。为了灵活性，和Bean validation一样，EasyValidation也是注解驱动的。我们认为所谓的约束其实就是一个结果为 true 或者 false 的表达式，所以首先把这些约束表达式加在属性上面作为元数据，然后通过反射去获取表达式，最后利用aviator去求值，再对结果做处理。",
+  "inLanguage" : "en",
+  "wordCount":  377 ,
+  "datePublished" : "2012-08-25T09:20:14",
+  "dateModified" : "2012-08-25T09:20:14",
+  "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Data quality, Declarative validation, Aviator" ],
+  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/aviator-validator\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/GaaraZhu.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="基于Aviator的注解驱动验证框架" />
+<meta property="og:description" content="背景 
+程序开发过程中，在同一系统中层层之间数据传递或者是异构系统之间同步异步通信的时候，我们经常需要对Java Bean进行属性验证，来决定是否继续后续process，或者直接抛出error message。
+ 传统解决方案 
+传统的做法，给每个验证场景加一个验证类，专门负责所有属性的验证，以及验证结果的校验和处理，这种做法最直白，但是不够灵活。第二种就是Java 6自带的验证框架 Bean validation, 用注解的形式来表达属性对应的约束，Bean validation在很大程度上提高了数据验证的灵活性和复用性，但是第一，个人感觉扩展比较麻烦，首先你需要自定义个注解来代表对应的约束，其次你必须新建一个验证器，最后你必须在注解类上做好两者的mapping，对于每种约束，都逃不开这三步；第二点，Bean validation只能完成bean中单一属性的验证，不支持跨属性验证。
+ EasyValidation! 
+第三种做法就是基于Aviator DIY的验证框架EasyValidation，Aviator是淘宝开发的一款java表达式求值工具，感兴趣的朋友可以google一下。为了灵活性，和Bean validation一样，EasyValidation也是注解驱动的。我们认为所谓的约束其实就是一个结果为 true 或者 false 的表达式，所以首先把这些约束表达式加在属性上面作为元数据，然后通过反射去获取表达式，最后利用aviator去求值，再对结果做处理。">
+<meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://GaaraZhu.github.io/aviator-validator/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Gary&#39;s Blog" />
+
+  <meta name="twitter:title" content="基于Aviator的注解驱动验证框架" />
+  <meta name="twitter:description" content="背景 
+程序开发过程中，在同一系统中层层之间数据传递或者是异构系统之间同步异步通信的时候，我们经常需要对Java Bean进行属性验证，来决定是否继续后续process，或者直接抛出error message。
+ 传统解决方案 
+传统的做法，给每个验证场景加一个验证类，专门负责所有属性的验证，以及验证结果的校验和处理，这种做法最直白，但是不够灵活。第二种就是Java 6自带的验证框架 Bean …">
+  <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.96.0" />
+  <link rel="alternate" href="https://GaaraZhu.github.io/index.xml" type="application/rss+xml" title="Gary&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://GaaraZhu.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://GaaraZhu.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://GaaraZhu.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://GaaraZhu.github.io">Gary&#39;s Blog</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">Blog</a>
+              <div class="navlinks-children">
+                
+                  <a href="/chat-the-ops-up">Chat the Ops up</a>
+                
+                  <a href="/aviator-validator">基于Aviator的注解驱动验证框架</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Gary&#39;s Blog" href="https://GaaraZhu.github.io">
+            <img class="avatar-img" src="https://GaaraZhu.github.io/img/avatar-icon.png" alt="Gary&#39;s Blog" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="page-heading">
+              
+                <h1>基于Aviator的注解驱动验证框架</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="背景">背景</h2>
+<p><br>
+程序开发过程中，在同一系统中层层之间数据传递或者是异构系统之间同步异步通信的时候，我们经常需要对Java Bean进行属性验证，来决定是否继续后续process，或者直接抛出error message。</p>
+<p> </p>
+<h2 id="传统解决方案">传统解决方案</h2>
+<p><br>
+传统的做法，给每个验证场景加一个验证类，专门负责所有属性的验证，以及验证结果的校验和处理，这种做法最直白，但是不够灵活。第二种就是Java 6自带的验证框架 Bean validation, 用注解的形式来表达属性对应的约束，Bean validation在很大程度上提高了数据验证的灵活性和复用性，但是第一，个人感觉扩展比较麻烦，首先你需要自定义个注解来代表对应的约束，其次你必须新建一个验证器，最后你必须在注解类上做好两者的mapping，对于每种约束，都逃不开这三步；第二点，Bean validation只能完成bean中单一属性的验证，不支持跨属性验证。</p>
+<p> </p>
+<h3 id="easyvalidation">EasyValidation!</h3>
+<p><br>
+第三种做法就是基于Aviator DIY的验证框架EasyValidation，Aviator是淘宝开发的一款java表达式求值工具，感兴趣的朋友可以google一下。为了灵活性，和Bean validation一样，EasyValidation也是注解驱动的。我们认为所谓的约束其实就是一个结果为 true 或者 false 的表达式，所以首先把这些约束表达式加在属性上面作为元数据，然后通过反射去获取表达式，最后利用aviator去求值，再对结果做处理。</p>
+<p>首先构建约束表达式的注解：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="nd">@Target</span><span class="o">(</span><span class="n">FIELD</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Retention</span><span class="o">(</span><span class="n">RUNTIME</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Validation</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">String</span> <span class="nf">condition</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">String</span> <span class="nf">errorMsg</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>单个属性支持多约束验证：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="nd">@Target</span><span class="o">(</span><span class="n">FIELD</span><span class="o">)</span><span class="nd">@Retention</span><span class="o">(</span><span class="n">RUNTIME</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Validations</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">Validation</span><span class="o">[]</span> <span class="nf">values</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>由于Aviator计算表达式之前会利用asm将表达式生成java字节码，并且支持cache，所以定义一个annotaion，加在javabean上可以表示是否需要对其属性约束做cache:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="nd">@interface</span> <span class="n">ExpressionCacheable</span> <span class="o">{}</span>
+</span></span></code></pre></div><p>核心验证方法：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span> <span class="o">&lt;</span> <span class="n">String</span> <span class="o">&gt;</span> <span class="n">plainValidate</span><span class="o">(</span><span class="n">Object</span> <span class="n">pojo</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">validateAll</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">BeanUtilBeanAccess</span> <span class="n">access</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BeanUtilBeanAccess</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">List</span> <span class="o">&lt;</span> <span class="n">Field</span> <span class="o">&gt;</span> <span class="n">targetFields</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span> <span class="o">&lt;</span> <span class="n">Field</span> <span class="o">&gt;</span> <span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">List</span> <span class="o">&lt;</span> <span class="n">String</span> <span class="o">&gt;</span> <span class="n">msgList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span> <span class="o">&lt;</span> <span class="n">String</span> <span class="o">&gt;</span> <span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Map</span> <span class="o">&lt;</span> <span class="n">String</span><span class="o">,</span> <span class="n">Object</span> <span class="o">&gt;</span> <span class="n">env</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span> <span class="o">&lt;</span> <span class="n">String</span><span class="o">,</span> <span class="n">Object</span> <span class="o">&gt;</span> <span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">boolean</span> <span class="n">needCacheExpression</span> <span class="o">=</span> <span class="n">pojo</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">isAnnotationPresent</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ExpressionCacheable</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="n">Field</span> <span class="n">field</span><span class="o">:</span> <span class="n">pojo</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredFields</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">fieldName</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Object</span> <span class="n">value</span> <span class="o">=</span> <span class="n">access</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fieldName</span><span class="o">,</span> <span class="n">pojo</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">env</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">fieldName</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">field</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">Validations</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">                <span class="n">field</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">Validation</span><span class="o">.</span><span class="na">class</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">targetFields</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">field</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="n">Field</span> <span class="n">field</span><span class="o">:</span> <span class="n">targetFields</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="n">Validation</span> <span class="n">validation</span><span class="o">:</span> <span class="n">getValidateAnnotations</span><span class="o">(</span><span class="n">field</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">boolean</span> <span class="n">validationPassed</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">expression</span> <span class="o">=</span> <span class="n">validation</span><span class="o">.</span><span class="na">condition</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Expression</span> <span class="n">compiledExp</span> <span class="o">=</span> <span class="n">AviatorEvaluator</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="n">expression</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                <span class="n">needCacheExpression</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">validationPassed</span> <span class="o">=</span> <span class="o">(</span><span class="n">Boolean</span><span class="o">)</span> <span class="n">compiledExp</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">env</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">validationPassed</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(!</span><span class="n">validationPassed</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">String</span> <span class="n">errorMsg</span> <span class="o">=</span> <span class="n">validation</span><span class="o">.</span><span class="na">errorMsg</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">errorMsg</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;#&#34;</span><span class="o">.</span><span class="na">concat</span><span class="o">(</span><span class="n">field</span><span class="o">.</span><span class="na">getName</span><span class="o">())))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">Object</span> <span class="n">value</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">field</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">String</span> <span class="n">parm</span> <span class="o">=</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">value</span><span class="o">)</span> <span class="o">?</span> <span class="kc">null</span> <span class="o">:</span> <span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">errorMsg</span> <span class="o">=</span> <span class="n">errorMsg</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">                        <span class="s">&#34;#&#34;</span><span class="o">.</span><span class="na">concat</span><span class="o">(</span><span class="n">field</span><span class="o">.</span><span class="na">getName</span><span class="o">()),</span> <span class="n">parm</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">msgList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">errorMsg</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(!</span><span class="n">validateAll</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="n">msgList</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">msgList</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>大家可以看到，第一步会获得java bean属性名和属性值，并且放到一个map中，这就是aviator的运行环境，EasyValidation之所以能支持跨属性验证，主要就是因为有这个env map，在约束表达式里面可以直接使用属性名，代表该属性的值，aviator计算表达式的时候会把属性名换成env map中对应的键值来进行计算。</p>
+<p> </p>
+<h3 id="流程图">流程图</h3>
+<p>​<img src="/images/aviator-validator/workflow.png" alt="workflow"></p>
+<p>Aviator除了支持基本的运算表达式之外，还内嵌了一些常用的函数，比如string.contains, string.endswiths 等等，你可以直接在约束表达式里使用他们.</p>
+<p> </p>
+<h2 id="自定义函数">自定义函数</h2>
+<p><br>
+看到这里，可能你会问，如何自定义函数，很简单！两步！
+比如我们想加一个函数，来判断属性值是否是一个合法的数值：<br>
+ </p>
+<h3 id="第一步定义函数">第一步，定义函数</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="nd">@Function</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NumberValidFunction</span> <span class="kd">extends</span> <span class="n">AbstractFunction</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s">&#34;number.valid&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">AviatorObject</span> <span class="nf">call</span><span class="o">(</span><span class="n">Map</span> <span class="o">&lt;</span> <span class="n">String</span><span class="o">,</span> <span class="n">Object</span> <span class="o">&gt;</span> <span class="n">env</span><span class="o">,</span> <span class="n">AviatorObject</span> <span class="n">arg1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">targetStr</span> <span class="o">=</span> <span class="n">FunctionUtils</span><span class="o">.</span><span class="na">getStringValue</span><span class="o">(</span><span class="n">arg1</span><span class="o">,</span> <span class="n">env</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">AviatorBoolean</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">CalculationUtils</span><span class="o">.</span><span class="na">isNumberic</span><span class="o">(</span><span class="n">targetStr</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>直接扩展Aviator中的AbstractFunction，覆盖getName()方法和call(&hellip;)方法，其中，name就是表达式中使用的函数名。<br>
+ </p>
+<h3 id="第二步注册函数">第二步，注册函数：</h3>
+<p> </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="n">AviatorEvaluator</span><span class="o">.</span><span class="na">addFunction</span><span class="o">(</span><span class="k">new</span> <span class="n">NumberValidFunction</span><span class="o">());</span>
+</span></span></code></pre></div><p> </p>
+<h2 id="demo">Demo</h2>
+<p><br>
+这样，该函数就可以使用了！好了，准备活动做好了，让我们来看一个完整的例子吧，对Student对象我们有一些验证，于是我们先把约束表达式加在属性上面：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="nd">@ExpressionCacheable</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Student</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Validation</span><span class="o">(</span><span class="n">condition</span> <span class="o">=</span> <span class="s">&#34;string.notEmpty(name) &amp;&amp; string.startsWith(&#39;gaara&#39;)&#34;</span><span class="o">,</span> 
+</span></span><span class="line"><span class="cl">                                <span class="n">errorMsg</span> <span class="o">=</span> <span class="s">&#34;Invalid name: #name&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="nd">@Validation</span><span class="o">(</span><span class="n">condition</span> <span class="o">=</span> <span class="s">&#34;age &lt; fatherAge&#34;</span><span class="o">,</span> <span class="n">errorMsg</span> <span class="o">=</span> <span class="s">&#34;Invalid age&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">fatherAge</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">     <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">(){</span>
+</span></span><span class="line"><span class="cl">         <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">     <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">     <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getFatherAge</span><span class="o">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">fatherAge</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">     <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setFatherAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">fatherAge</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">this</span><span class="o">.</span><span class="na">fatherAge</span> <span class="o">=</span> <span class="n">fatherAge</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">     <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">(){</span>
+</span></span><span class="line"><span class="cl">       <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">       <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>然后我们对一个Student实例进行验证：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">errorMsgs</span> <span class="o">=</span> <span class="n">ValidationUtils</span><span class="o">.</span><span class="na">plainValidate</span><span class="o">(</span><span class="n">student</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+</span></span></code></pre></div><p><br>
+一句话，就得到所有的errorMsg(第二个参数如果为false，返回第一个error message，不再继续验证)。</p>
+<p> </p>
+<h2 id="总结">总结</h2>
+<p> </p>
+<ul>
+<li>不要滥用cache。</li>
+<li>自定义函数的注册可以通过注解+扫描器在系统初始化的时候完成。</li>
+<li>EasyValidation中所有的验证约束都是放在java类上，不支持XSD level的验证约束，所以不支持EMS，因为EMS所需的 jar 一般都是用第三方控件通过XSD去生成，虽然你可以选择生成源码再把约束append上去，但是每次更新schema都会让你丢失原有的约束。</li>
+<li>性能方面测试下来没什么问题，如果实在对反射不放心的话，可以试试别的方法，比如Unsafe类，但是前提是关掉编译器对Restricted API的Errors/Warnings。</li>
+</ul>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://GaaraZhu.github.io/tags/data-quality/">Data quality</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/declarative-validation/">Declarative validation</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/aviator/">Aviator</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2faviator-validator%2f&amp;text=%e5%9f%ba%e4%ba%8eAviator%e7%9a%84%e6%b3%a8%e8%a7%a3%e9%a9%b1%e5%8a%a8%e9%aa%8c%e8%af%81%e6%a1%86%e6%9e%b6&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2faviator-validator%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2faviator-validator%2f&amp;title=%e5%9f%ba%e4%ba%8eAviator%e7%9a%84%e6%b3%a8%e8%a7%a3%e9%a9%b1%e5%8a%a8%e9%aa%8c%e8%af%81%e6%a1%86%e6%9e%b6" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2faviator-validator%2f&amp;title=%e5%9f%ba%e4%ba%8eAviator%e7%9a%84%e6%b3%a8%e8%a7%a3%e9%a9%b1%e5%8a%a8%e9%aa%8c%e8%af%81%e6%a1%86%e6%9e%b6" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2faviator-validator%2f&amp;title=%e5%9f%ba%e4%ba%8eAviator%e7%9a%84%e6%b3%a8%e8%a7%a3%e9%a9%b1%e5%8a%a8%e9%aa%8c%e8%af%81%e6%a1%86%e6%9e%b6" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2faviator-validator%2f&amp;description=%e5%9f%ba%e4%ba%8eAviator%e7%9a%84%e6%b3%a8%e8%a7%a3%e9%a9%b1%e5%8a%a8%e9%aa%8c%e8%af%81%e6%a1%86%e6%9e%b6" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+
+          
+        
+      </article>
+
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+      
+    <div class="page-meta">
+  
+  
+  
+</div>
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:sec.gary@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/GaaraZhu" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/gary-zhu-53114169" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://github.com/GaaraZhu">GaryZhu</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://GaaraZhu.github.io">Gary&#39;s Blog</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://GaaraZhu.github.io/js/main.js"></script>
+<script src="https://GaaraZhu.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://GaaraZhu.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

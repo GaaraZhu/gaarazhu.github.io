@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Gary&#39;s Blog</title>
-    <link>https://GaaraZhu.github.io/</link>
-    <description>Recent content on Gary&#39;s Blog</description>
+    <title>Aviator on Gary&#39;s Blog</title>
+    <link>https://GaaraZhu.github.io/tags/aviator/</link>
+    <description>Recent content in Aviator on Gary&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Fri, 02 Apr 2021 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Chat the Ops up</title>
-      <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
-      <pubDate>Fri, 02 Apr 2021 11:09:48 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/chat-the-ops-up/</guid>
-      <description>TL;DR 
-This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.</description>
-    </item>
-    
+    <lastBuildDate>Sat, 25 Aug 2012 09:20:14 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/aviator/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>基于Aviator的注解驱动验证框架</title>
       <link>https://GaaraZhu.github.io/aviator-validator/</link>
