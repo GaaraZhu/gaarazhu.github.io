@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Gary&#39;s Blog</title>
-    <link>https://GaaraZhu.github.io/</link>
-    <description>Recent content on Gary&#39;s Blog</description>
+    <title>ChatOps on Gary&#39;s Blog</title>
+    <link>https://GaaraZhu.github.io/tags/chatops/</link>
+    <description>Recent content in ChatOps on Gary&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Fri, 02 Apr 2021 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 02 Apr 2021 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/chatops/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Chat the Ops up</title>
       <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
