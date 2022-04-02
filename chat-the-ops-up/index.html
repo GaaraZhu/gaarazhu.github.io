@@ -62,7 +62,7 @@ We are shifting from monolith architecture to microservices for one of our syste
   "headline": "Chat the Ops up",
   "description" : "TL;DR \nThis is a story of how we improved our CI\/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.\nBackground \nWe are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system maintainable and scalable. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy whereas there used to be only one.",
   "inLanguage" : "en",
-  "wordCount":  562 ,
+  "wordCount":  504 ,
   "datePublished" : "2022-04-02T11:09:48",
   "dateModified" : "2022-04-02T11:09:48",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -269,7 +269,7 @@ A quick review of how we are developing, testing and delivering multiple feature
 <p> </p>
 <h1 id="pain-points">Pain points</h1>
 <p> </p>
-<h3 id="manul-intervention">Manul intervention</h3>
+<h2 id="manul-intervention">Manul intervention</h2>
 <p><br>
 Imagine that you are working on a feature which requires changes in <strong>10</strong> microservices. In Bamboo you will have to:</p>
 <ul>
@@ -295,9 +295,9 @@ Imagine that you are working on a feature which requires changes in <strong>10</
 </ul>
 <p>If bugs are found during the testing, more build and deployment job executions will be required.<br>
  </p>
-<h3 id="status-notification">Status notification</h3>
+<h2 id="status-notification">Status notification</h2>
 <p><br>
-The deployment job can only be executed after the build job is finished. Although Bamboo has a wide support of notifications so that we don&rsquo;t have to check the job status manually by refreshing the page, still it requires manual configuration for each Bamboo job(Build and Deploy).<br>
+The deployment job can only be executed after the build job is finished. Although Bamboo has a good support of notifications to allow us don&rsquo;t have to check the job status manually by refreshing the pages, still it requires manual configuration for each Bamboo job(Build and Deploy).<br>
  </p>
 <h1 id="solution">Solution</h1>
 <p><br>
@@ -308,26 +308,11 @@ To make our life easier, I created <a href="https://github.com/GaaraZhu/bamboo-o
 <li>Receive hanging Bamboo job alerts in Microsoft Teams.</li>
 </ul>
 <p> </p>
-<h2 id="before-vs-after">Before vs After</h2>
+<h1 id="demo">Demo</h1>
+<p> 
+<a href="https://youtu.be/94IqLup3o5g"><img src="https://img.youtube.com/vi/94IqLup3o5g/0.jpg" alt="Demo"></a></p>
 <p> </p>
-<ol>
-<li>Create a branch plan for a feature branch in Bamboo with one chat
-<img src="/images/chat-the-ops-up/create-branch-plan.png" alt="create branch plan"><br>
- </li>
-<li>Trigger the build job from a branch plan in Bamboo with one chat
-<img src="/images/chat-the-ops-up/build.png" alt="build"><br>
- </li>
-<li>Trigger the deploy job from a build result in Bamboo with one chat
-<img src="/images/chat-the-ops-up/deploy.png" alt="deploy"><br>
- </li>
-<li>Receive job notification - all you need to do is to get yourself a coffee:)
-<img src="/images/chat-the-ops-up/notifications.png" alt="notifications"><br>
- </li>
-<li>Teams notifications
-<img src="/images/chat-the-ops-up/notification-examples.png" alt="notification examples"></li>
-</ol>
-<p> </p>
-<h2 id="security-controls">Security controls</h2>
+<h1 id="security-controls">Security controls</h1>
 <p> </p>
 <ul>
 <li>Webhook security
