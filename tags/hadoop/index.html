@@ -229,7 +229,7 @@
     </p>
     <div class="post-entry">
         
-        Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning.
+        MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&#39;s no way for us to do the tuning. Combine with the inside of Hadoop, we can come up with the solutions from below aspects.
         <a href="https://GaaraZhu.github.io/map-reduce-tunning/" class="post-read-more">[Read More]</a>
         
     </div>
@@ -278,12 +278,7 @@
     </p>
     <div class="post-entry">
         
-        背景  一个系统的数据质量不高通常是软件本身做的不够好，数据从源头就出现了问题。为了能够持续归总interface数据质量报告，来完善系统流程，我们就需要定量定性的分析源头数据。
- 现状及问题  首先，我们为了能够更好的support产品issue，上游系统的消息以及处理之后的回馈信息，都会被保存在关系数据库里，对于我们来说，可以简单分析处理后的回馈信息，按照消息类型，消息源系统来分类，解析message，抽取error code，最后归总报告。
-流程很清晰，但是落实到代码，如果简单利用cursor一行行读出来处理的话，效率肯定极其低下，怎么办？ 并行计算！可以利用MapReduce来处理。但是我们应该如何将保存在Oracle中Message导入Hadoop的HDFS中呢？
- 解决方案  Sqoop ! Sqoop 是一个开源框架，用来实现Hadoop和关系数据库之间的数据迁移，使用截图如下
-从执行数据迁移时的截图可以看出Sqoop本身也是基于MapReduce设计的，所以他支持并行导入/导出数据，更为给力的是，在导入条件里，你可以用SQL来进行数据过滤，只导入/导出你关心的行或者列。但是Sqoop在大数据量迁移的时候性能不是很好，尤其在Oracle和Hadoop之间，不过不用担心，我们可以使用开源插件来提升Sqoop数据迁移性能，比如Quest Connector。其实Oracle本身也有类似的插件，但是：
- 它只支持从Hadoop到Oracle的数据迁移 它不是免费的   在数据被正确导入到HDFS之后，我们就可以开始编写MapReduce函数了，首先在map函数里根据消息类型，case by case的进行text -&gt;xml object的转换，然后截取反馈信息（error code），接着在reduce函数里面按照源系统进行分区，汇总，最后再利用Sqoop导入Oracle。
+        一个系统的数据质量不高通常是软件本身做的不够好，数据从源头就出现了问题。为了能够持续归总interface数据质量报告，来完善系统流程，我们就需要定量定性的分析源头数据。但是在大数据量的情况下，如何实现高效有效的数据分析呢？
         <a href="https://GaaraZhu.github.io/sqoop/" class="post-read-more">[Read More]</a>
         
     </div>
@@ -332,14 +327,7 @@
     </p>
     <div class="post-entry">
         
-        背景 
-在系统设计的时候，为了提高可用性，经常需要对用户行为进行分析，来持续完善系统。 一个典型的场景就是分析用户的查询条件，根据操作习惯和规律来精简用户输入，让查询变得更简单更高效。那么对于这种场景，我们应该如何实现？
- 解决方案 
-最简单的做法就是在每次查询的时候都把所用到的条件直接save到关系数据库，这种做法确实很简单，但是每次都需要做write操作，尤其对于操作密集型应用，我们不认为这是种很好的practise。或许你会说，可以做个内存队列，把信息缓存起来，然后batch write，这种做法性能确实比前一种更高效，而且对于统计用户使用信息这种场景，就算由于系统宕机导致的部分数据丢失，似乎也不会产生蝴蝶效应，但是我们总是想做得更好，于是，对于系统重启之类的可预知情况，我们可以利用RMI动态提交掉缓存中的数据，但是对于不可预知的情况，又该怎么办呢？或许我们可以找到其他更好的方法。
-比如，直接把信息写到log里，然后安排一个schedual job来定期分析log，提取出信息再save到数据库，但是如果log很大很多，分析起来会不会很慢？查看了IPS PRD上的log，一天的log大概有几百M左右，而liner的数据量是logistic的10倍，log信息也会大出好几倍。而且通常为了trouble shooting，我们会保存一定期限的log，之后便会做house keeping，所以如果想在log被清掉之前做分析的话，仅仅是ARP项目，我们面对的就可能是几十个 N G的log文件，直接用JAVA分析？答案是可以的，用NIO，那还有其他办法吗？MapReduce!
- MapReduce 
-MapReduce的分布式并行计算，说白了就是利用笨办法来暴力解决问题，对于统计用户查询条件这种场景，我们可以看到log片段如下：
-877994 [[ACTIVE] ExecuteThread: &#39;1&#39; for queue: &#39;weblogic.
+        在系统设计的时候，为了提高可用性，经常需要对用户行为进行分析，来持续完善系统。一个典型的场景就是分析用户的查询条件，根据操作习惯和规律来精简用户输入，让查询变得更简单更高效。那么对于这种场景，我们应该如何实现？
         <a href="https://GaaraZhu.github.io/analysis-user-behaviour/" class="post-read-more">[Read More]</a>
         
     </div>
