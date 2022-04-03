@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>Tail call optimization in Scala - Gary&#39;s Blog</title>
-  <meta name="description" content="Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.">
+  <meta name="description" content="Recursion provides us a clean way to solve some problems. But one drawback of it is the memory cost caused by the recursion call stack, which could be critical for memory sensitive applications like mobile ones.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -57,9 +57,9 @@
     "name" : "GaryZhu"
   },
   "headline": "Tail call optimization in Scala",
-  "description" : "Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.",
+  "description" : "Recursion provides us a clean way to solve some problems. But one drawback of it is the memory cost caused by the recursion call stack, which could be critical for memory sensitive applications like mobile ones.",
   "inLanguage" : "en",
-  "wordCount":  377 ,
+  "wordCount":  387 ,
   "datePublished" : "2015-10-02T15:29:15",
   "dateModified" : "2015-10-02T15:29:15",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -79,14 +79,14 @@
 </script>
 
 <meta property="og:title" content="Tail call optimization in Scala" />
-<meta property="og:description" content="Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.">
+<meta property="og:description" content="Recursion provides us a clean way to solve some problems. But one drawback of it is the memory cost caused by the recursion call stack, which could be critical for memory sensitive applications like mobile ones.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
 <meta property="og:url" content="https://GaaraZhu.github.io/tail-call-optimization/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
   <meta name="twitter:title" content="Tail call optimization in Scala" />
-  <meta name="twitter:description" content="Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile …">
+  <meta name="twitter:description" content="Recursion provides us a clean way to solve some problems. But one drawback of it is the memory cost caused by the recursion call stack, which could be critical for memory sensitive applications like …">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -254,9 +254,9 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.</p>
-<p>One alternative is using a while loop instead of recursion, but while loop usually is not as easy as recursion. So most of the time, we will come up with solutions using recursion, after that will try to convert it into a while loop style algorithm. But actually in some languages like Scala, it does provide the build-in support to compile the &ldquo;special recursion&rdquo; code to a while loop style. The&quot;special recursion&quot; here means that your recursion call should always be in a tail position, that is the caller does nothing other than return the value of the recursive call.</p>
-<p>Let&rsquo;s take the fibonacci number problem for an example. Usually our solution would be like below:</p>
+        <p>Recursion provides us a clean way to solve some problems. But one drawback of it is the memory cost caused by the recursion call stack, which could be critical for memory sensitive applications like mobile ones.</p>
+<p>An alternative is to use a while loop instead of the recursion, but while loop usually is not as easy as recursion to implement and to understand at the beginning. Most times, we first come up with solutions using recursion, after that try to convert it into a while loop style algorithm. But actually in some languages like Scala, it does provide the build-in support to compile the &ldquo;special recursion&rdquo; code to a while loop style. The &ldquo;special recursion&rdquo; here means that your recursion call should always be in a tail position, that is the caller does nothing other than returning the value of the recursive call.</p>
+<p>Let&rsquo;s take the fibonacci number problem for example. Usually our solution would be something like:</p>
 <p> </p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Javascript" data-lang="Javascript"><span class="line"><span class="cl"> <span class="nx">def</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span><span class="o">:</span> <span class="nx">Int</span> <span class="o">=</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="nx">x</span> <span class="o">-</span> <span class="mi">1</span>
@@ -264,7 +264,7 @@
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span></code></pre></div><p> <br>
  
-Here since the recursion caller in position 1 does more than just returning the recursive call result, instead there is an add operation inside, which means we need special memory to store these temporary values as well as the call stacks. But if we try to write it in a tail-recursive way, things will be different.</p>
+Here since the recursion caller at position 1 does more than just returning the recursive call result, instead there is an add operation inside, which means we need special memory to store these temporary values as well as the call stacks. But if we try to write it in a tail-recursive way, things will be different.</p>
 <p> </p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Javascript" data-lang="Javascript"><span class="line"><span class="cl">  <span class="nx">def</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc1</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc2</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span><span class="o">:</span> <span class="nx">Int</span> <span class="o">=</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="nx">acc2</span>
@@ -272,7 +272,7 @@ Here since the recursion caller in position 1 does more than just returning the 
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span></code></pre></div><p> <br>
  
-Writing your recursion in a tail-call style, sometimes is a basic optimization for your program, helping to avoid the memory cost cased by the call stacks. By the way, in Scala it only works when you do the recursive call directly using the function itself, below two cases will not work:</p>
+Writing your recursion in a tail-call style, sometimes is a simple optimization for your program, helping to avoid the memory cost cased by the call stack explosion. By the way, in Scala it only works when you do the recursive call directly using the function itself, below two cases will not work:</p>
 <p> </p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Javascript" data-lang="Javascript"><span class="line"><span class="cl">  <span class="c1">// case 1
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">val</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">fibonacci</span> <span class="nx">_</span>

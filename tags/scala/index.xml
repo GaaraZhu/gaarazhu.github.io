@@ -14,7 +14,7 @@
       <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tail-call-optimization/</guid>
-      <description>Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.</description>
+      <description>Recursion provides us a clean way to solve some problems. But one drawback of it is the memory cost caused by the recursion call stack, which could be critical for memory sensitive applications like mobile ones.</description>
     </item>
     
   </channel>
