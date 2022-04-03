@@ -7,15 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Fri, 02 Apr 2021 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 02 Apr 2022 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Chat the Ops up</title>
       <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
-      <pubDate>Fri, 02 Apr 2021 11:09:48 +1300</pubDate>
+      <pubDate>Sat, 02 Apr 2022 11:09:48 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/chat-the-ops-up/</guid>
       <description>TL;DR 
 This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.</description>
+    </item>
+    
+    <item>
+      <title>Aws one punch</title>
+      <link>https://GaaraZhu.github.io/aws-one-punch/</link>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/aws-one-punch/</guid>
+      <description>Background 
+There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.</description>
     </item>
     
     <item>
@@ -49,7 +59,7 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
       <pubDate>Sun, 23 Dec 2012 01:33:45 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/map-reduce-tunning/</guid>
-      <description>Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&amp;rsquo;s no way for us to do the tuning.</description>
+      <description>Backgroup MapReduce is not a low latency computing model, minutes at least will go before we got the result. But this does not mean there&amp;rsquo;s no way for us to make it faster.</description>
     </item>
     
     <item>

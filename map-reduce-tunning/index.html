@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>MapReduce tuning - Gary&#39;s Blog</title>
-  <meta name="description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning.">
+  <meta name="description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before we got the result. But this does not mean there&rsquo;s no way for us to make it faster.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -57,9 +57,9 @@
     "name" : "GaryZhu"
   },
   "headline": "MapReduce tuning",
-  "description" : "Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there\u0026rsquo;s no way for us to do the tuning.",
+  "description" : "Backgroup MapReduce is not a low latency computing model, minutes at least will go before we got the result. But this does not mean there\u0026rsquo;s no way for us to make it faster.",
   "inLanguage" : "en",
-  "wordCount":  422 ,
+  "wordCount":  420 ,
   "datePublished" : "2012-12-23T01:33:45",
   "dateModified" : "2012-12-23T01:33:45",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -79,14 +79,14 @@
 </script>
 
 <meta property="og:title" content="MapReduce tuning" />
-<meta property="og:description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning.">
+<meta property="og:description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before we got the result. But this does not mean there&rsquo;s no way for us to make it faster.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
 <meta property="og:url" content="https://GaaraZhu.github.io/map-reduce-tunning/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
   <meta name="twitter:title" content="MapReduce tuning" />
-  <meta name="twitter:description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning.">
+  <meta name="twitter:description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before we got the result. But this does not mean there&rsquo;s no way for us to make it faster.">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -253,7 +253,7 @@
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
         <h2 id="backgroup">Backgroup</h2>
-<p>MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning. Combine with the inside of Hadoop, we can come up with the solutions from below aspects.</p>
+<p>MapReduce is not a low latency computing model, minutes at least will go before we got the result. But this does not mean there&rsquo;s no way for us to make it faster. Combined with the nature of Hadoop, here are some solutions from different pespective.</p>
 <h2 id="input-file-size">Input file size</h2>
 <p>MapReduce excels at processing a few big files instead of lots small files. This is because too many small files will lead to a memory overflow of Namenode as it holds all metadata of input files, unnecessary threads will also be started for resource initializing, and communications between Namenode and Datanode will become more and more inefficient. Then what can we do when confronted with many small files? CombineFileInputFormat will work in this case, what we need to do is simply override the getReader() method to specify a reader to manage with multiple input splits, then use this format instead of the default input format in your job configuration.</p>
 <h2 id="local-computing">Local computing</h2>

@@ -7,7 +7,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Atlassian Bamboo - Gary&#39;s Blog</title>
+  <title>Aws one punch - Gary&#39;s Blog</title>
+  <meta name="description" content="Background 
+There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -28,14 +30,66 @@
   
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/GaaraZhu.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/GaaraZhu.github.io\/aws-one-punch\/",
+          "name": "Aws one punch"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "GaryZhu"
+  },
+  "headline": "Aws one punch",
+  "description" : "Background \nThere was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.",
+  "inLanguage" : "en",
+  "wordCount":  385 ,
+  "datePublished" : "2021-12-19T10:21:44",
+  "dateModified" : "2021-12-19T10:21:44",
+  "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "AWS, IAM Role Credentials, Golang" ],
+  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/aws-one-punch\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/GaaraZhu.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
 
-<meta property="og:title" content="Atlassian Bamboo" />
+<meta property="og:title" content="Aws one punch" />
+<meta property="og:description" content="Background 
+There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://GaaraZhu.github.io/tags/atlassian-bamboo/" />
+<meta property="og:url" content="https://GaaraZhu.github.io/aws-one-punch/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
-  <meta name="twitter:title" content="Atlassian Bamboo" />
+  <meta name="twitter:title" content="Aws one punch" />
+  <meta name="twitter:description" content="Background 
+There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying …">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -179,9 +233,9 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <div class="tags-heading">
+            <div class="page-heading">
               
-                <h1>Atlassian Bamboo</h1>
+                <h1>Aws one punch</h1>
               
               
                 <hr class="small">
@@ -197,70 +251,174 @@
 
 
     
-  <div class="container" role="main">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        
-        <div class="posts-list">
-          
-            <article class="post-preview">
-    <a href="https://GaaraZhu.github.io/chat-the-ops-up/">
-        <h2 class="post-title">Chat the Ops up</h2>
-        
-        
-        
-    </a>
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="background">Background</h2>
+<p><br>
+There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying <a href="https://aws.amazon.com/cloudformation/">Cloudformation</a> changes from local. To simplify the work, I had one command prompt opened for each service so that I can build, package and deploy it whenever I changed something.</p>
+<p> </p>
+<h2 id="pain-points">Pain points</h2>
+<p><br>
+As recommended by AWS, we should use <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/howtogetcredentials.html">IAM roles credentials</a> instead of long-term access keys in this case. But the pain point is that we will have to grant the access in each command prompt, or to update the local credentials file every time when the temporary credentials are expired.</p>
+<p> </p>
+<h2 id="solution">Solution</h2>
+<p><br>
+So I started this project <a href="https://github.com/GaaraZhu/aws-one-punch">AWS-one-punch</a> which pulls all AWS accounts and IAM roles using the SSO bearer token stored in cookie to generate new credentials to be updated in the local credentials file, thus with just one command, we can grant all command prompts the access.</p>
+<p> </p>
+<h2 id="installation">Installation</h2>
+<p> </p>
+<ol>
+<li>Install via Homebrew<br>
+ </li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">brew install gaarazhu/aws-one-punch/aws-one-punch
+</span></span></code></pre></div><p> <br>
+ 
+2. set the AWS user portal in <code>~/.bash_profile</code> or equivalent and reload it with <code>source ~/.bash_profile</code><br>
+ </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">export AWS_CONSOLE_DOMAIN=&#34;garyz.awsapps.com&#34;
+</span></span></code></pre></div><p> <br>
+ 
+3. check the installation<br>
+ 
+<img src="/images/aws-one-punch/install-check.png" alt="install-check"></p>
+<p> </p>
+<h2 id="usage">Usage</h2>
+<p> </p>
+<ol>
+<li>list accounts<br>
+ </li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-accounts
+</span></span><span class="line"><span class="cl">2021/11/10 22:04:14 No AWS SSO token found, please finish the SSO in the user portal first: https://gzhu.awsapps.com/start/#/ first
+</span></span></code></pre></div><p> <br>
+ 
+2. open the url, finish SSO and repeat step one(PS. keep listing the accounts unitl it works as the token will only be written to cookie when all resources have been loaded after the SSO)<br>
+ </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-accounts
+</span></span><span class="line"><span class="cl">AccountId: ins-sd4312, accountName: 20890663 (MRP IaaS Prod)
+</span></span><span class="line"><span class="cl">AccountId: ins-2ssfds, accountName: 79300001 (Sandbox 1)
+</span></span><span class="line"><span class="cl">AccountId: ins-3sadfa, accountName: 69127290 (MRP IaaS Non-Prod)
+</span></span><span class="line"><span class="cl">AccountId: ins-siki23, accountName: 58868209 (Data Analytics)
+</span></span><span class="line"><span class="cl">AccountId: ins-14oasn, accountName: 66060440 (Shared Services)
+</span></span></code></pre></div><p> <br>
+ 
+3. list IAM roles<br>
+ </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-roles --account-id ins-3sadfa
+</span></span><span class="line"><span class="cl">RoleName: DigitalDeveloperNonprodAccess
+</span></span></code></pre></div><p> <br>
+ 
+4. one punch for access<br>
+ </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch access --account-name 69127290 --role-name DigitalDeveloperNonprodAccess
+</span></span><span class="line"><span class="cl">AWS access granted with account 69127290 and IAM role DigitalDeveloperNonprodAccess
+</span></span></code></pre></div><p> </p>
+<h3 id="conclusion">Conclusion</h3>
+<p><br>
+<a href="https://github.com/GaaraZhu/aws-one-punch">aws-one-punch</a> automates the manual process to generate IAM role credentials and to grant command prompt AWS access with the credentials regardless of how many prompts there are. Hope this can help if you have the same problem.</p>
+<p>For furthur simplification, we can create an alias for above one punch command, or we can have it managed somehow, for example with
+<a href="https://github.com/knqyf263/pet">pet</a>.<br>
+ <br>
+ </p>
 
-    <p class="post-meta">
-        <span class="post-meta">
-  
-  
-  <i class="fas fa-calendar"></i>&nbsp;Posted on April 2, 2022
-  
-  
-    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
-  
-  
-  
-    
-      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;GaryZhu
-    
-  
-  
-</span>
 
+        
+          <div class="blog-tags">
+            
+              <a href="https://GaaraZhu.github.io/tags/aws/">AWS</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/iam-role-credentials/">IAM Role Credentials</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/golang/">Golang</a>&nbsp;
+            
+          </div>
+        
 
-    </p>
-    <div class="post-entry">
         
-        This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
-        <a href="https://GaaraZhu.github.io/chat-the-ops-up/" class="post-read-more">[Read More]</a>
-        
-    </div>
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
 
-    
-    <div class="blog-tags">
-        
-        <a href="https://GaaraZhu.github.io/tags/ci/cd/">CI/CD</a>&nbsp;
-        
-        <a href="https://GaaraZhu.github.io/tags/chatops/">ChatOps</a>&nbsp;
-        
-        <a href="https://GaaraZhu.github.io/tags/atlassian-bamboo/">Atlassian Bamboo</a>&nbsp;
-        
-        <a href="https://GaaraZhu.github.io/tags/microsoft-teams/">Microsoft Teams</a>&nbsp;
-        
-    </div>
-    
-
-</article>
-          
-        </div>
-        
-      </div>
-    </div>
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;text=Aws%20one%20punch&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;title=Aws%20one%20punch" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;title=Aws%20one%20punch" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;title=Aws%20one%20punch" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;description=Aws%20one%20punch" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
   </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+
+          
+        
+      </article>
 
       
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+      
+    <div class="page-meta">
+  
+  
+  
+</div>
+
+
+  
 <footer>
   <div class="container">
     <div class="row">
@@ -293,7 +451,7 @@
               </li>
           
           <li>
-            <a href="/tags/atlassian-bamboo/index.xml" title="RSS">
+            <a href="" title="RSS">
               <span class="fa-stack fa-lg">
                 <i class="fas fa-circle fa-stack-2x"></i>
                 <i class="fas fa-rss fa-stack-1x fa-inverse"></i>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>IAM Role Credentials on Gary&#39;s Blog</title>
+    <link>https://GaaraZhu.github.io/tags/iam-role-credentials/</link>
+    <description>Recent content in IAM Role Credentials on Gary&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
+    <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
+    <lastBuildDate>Sun, 19 Dec 2021 10:21:44 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/iam-role-credentials/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Aws one punch</title>
+      <link>https://GaaraZhu.github.io/aws-one-punch/</link>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/aws-one-punch/</guid>
+      <description>Background 
+There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.</description>
+    </item>
+    
+  </channel>
+</rss>

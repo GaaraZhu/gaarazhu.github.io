@@ -7,11 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Fri, 02 Apr 2021 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 02 Apr 2022 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Atlassian Bamboo</title>
       <link>https://GaaraZhu.github.io/tags/atlassian-bamboo/</link>
-      <pubDate>Fri, 02 Apr 2021 11:09:48 +1300</pubDate>
+      <pubDate>Sat, 02 Apr 2022 11:09:48 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/atlassian-bamboo/</guid>
       <description></description>
@@ -20,7 +20,7 @@
     <item>
       <title>ChatOps</title>
       <link>https://GaaraZhu.github.io/tags/chatops/</link>
-      <pubDate>Fri, 02 Apr 2021 11:09:48 +1300</pubDate>
+      <pubDate>Sat, 02 Apr 2022 11:09:48 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/chatops/</guid>
       <description></description>
@@ -29,9 +29,36 @@
     <item>
       <title>Microsoft Teams</title>
       <link>https://GaaraZhu.github.io/tags/microsoft-teams/</link>
-      <pubDate>Fri, 02 Apr 2021 11:09:48 +1300</pubDate>
+      <pubDate>Sat, 02 Apr 2022 11:09:48 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/microsoft-teams/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>AWS</title>
+      <link>https://GaaraZhu.github.io/tags/aws/</link>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/aws/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Golang</title>
+      <link>https://GaaraZhu.github.io/tags/golang/</link>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IAM Role Credentials</title>
+      <link>https://GaaraZhu.github.io/tags/iam-role-credentials/</link>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/iam-role-credentials/</guid>
       <description></description>
     </item>
     
