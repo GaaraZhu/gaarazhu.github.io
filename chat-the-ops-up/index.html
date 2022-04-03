@@ -263,7 +263,7 @@ This is the story of how we improved our <a href="https://en.wikipedia.org/wiki/
  </p>
 <h2 id="background">Background</h2>
 <p><br>
-We are shifting from monolith architecture to microservices for one of our systems. The goal is to break down the module dependencies, to make the system maintainable and scalable. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy whereas there used to be only one.<br>
+We are shifting from <a href="https://en.wikipedia.org/wiki/Monolithic_application">monolith architecture</a> to <a href="https://en.wikipedia.org/wiki/Microservices">microservices</a> for one of our systems. The goal is to break down the module dependencies, to make the system maintainable and scalable. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy whereas there used to be only one.<br>
  </p>
 <h2 id="sdlc">SDLC</h2>
 <p><br>
@@ -327,8 +327,8 @@ To make our life easier, I created <a href="https://github.com/GaaraZhu/bamboo-o
 <ul>
 <li>Webhook security
 <ul>
-<li>Outgoing webhook can only interact with external web service, with the message text. No access to other APIs, like message history, channel information etc.</li>
-<li>Incoming webhook can only receive JSON data with required schema for display, and has no access to other APIs, same with the outgoing webhook.</li>
+<li><a href="https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-outgoing-webhook?tabs=urljsonpayload%2Cdotnet">Outgoing webhook</a> can only interact with external web service, with the message text. No access to other APIs, like message history, channel information etc.</li>
+<li><a href="https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook">Incoming webhook</a> can only receive JSON data with required schema for display, and has no access to other APIs, same with the outgoing webhook.</li>
 </ul>
 </li>
 <li><a href="https://en.wikipedia.org/wiki/HMAC">HMAC</a> between Teams and Bamboo-on-Teams</li>
