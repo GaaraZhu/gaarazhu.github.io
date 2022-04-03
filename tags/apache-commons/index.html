@@ -79,6 +79,8 @@
                 
                   <a href="/aviator-validator">基于Aviator的注解驱动验证框架</a>
                 
+                  <a href="/Sqoop">基于Sqoop和Hadoop的数据质量分析报告</a>
+                
                   <a href="/analysis-user-behaviour">用MapReduce来进行用户行为分</a>
                 
               </div>
@@ -215,8 +217,6 @@
     &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;6&nbsp;minutes
   
   
-    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;751&nbsp;words
-  
   
     
       &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;GaryZhu
@@ -232,7 +232,7 @@
         背景  在实际开发中经常遇到属性克隆的问题，比如在表现层提交的Request DTO，可能需要在控制层被映射成多个Java Bean，再传递到逻辑层来进行相应的业务处理，那么如何才能简单而又快速的完成属性克隆呢？
 对于仅仅包含简单属性的Java Bean来说，Apache Commons里的BeanUtils 是个不错的选择，不过前提是对应属性必须具备相同的属性名。但是对于复杂属性来说， 如果两个属性的类型不同，或者类型参数不同，使用BeanUtils的时候都要格外小心。
 举个例子： InvoiceDTO和InvoiceBean里面都有两个属性amount和charges，类型定义如下：
-InvoiceDTO [ amount -&gt; AmountDTO, charges -&gt; List] InvoiceBean [ amount -&gt;AmountBean, charges -&gt; List]
+InvoiceDTO [ amount -&gt; AmountDTO, charges -&gt; List&lt;ChargeDTO&gt;] InvoiceBean [ amount -&gt;AmountBean, charges -&gt; List&lt;ChargeBean&gt;] 这种情况下Apache BeanUtils无法正确克隆amount和charges，那我们应该怎么办呢？
         <a href="https://GaaraZhu.github.io/deep-clone/" class="post-read-more">[Read More]</a>
         
     </div>

@@ -36,6 +36,15 @@
     </item>
     
     <item>
+      <title>Hadoop</title>
+      <link>https://GaaraZhu.github.io/tags/hadoop/</link>
+      <pubDate>Sun, 23 Dec 2012 01:33:45 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/hadoop/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>MapReduce</title>
       <link>https://GaaraZhu.github.io/tags/mapreduce/</link>
       <pubDate>Sun, 23 Dec 2012 01:33:45 +1300</pubDate>
@@ -54,6 +63,15 @@
     </item>
     
     <item>
+      <title>Sqoop</title>
+      <link>https://GaaraZhu.github.io/tags/sqoop/</link>
+      <pubDate>Thu, 15 Nov 2012 23:14:41 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/sqoop/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Apache Commons</title>
       <link>https://GaaraZhu.github.io/tags/apache-commons/</link>
       <pubDate>Fri, 28 Sep 2012 08:33:51 +1300</pubDate>
@@ -68,15 +86,6 @@
       <pubDate>Fri, 28 Sep 2012 08:33:51 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/deep-clone/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Big data</title>
-      <link>https://GaaraZhu.github.io/tags/big-data/</link>
-      <pubDate>Sun, 16 Sep 2012 01:26:10 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/big-data/</guid>
       <description></description>
     </item>
     

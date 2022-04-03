@@ -17,7 +17,7 @@
       <description>背景  在实际开发中经常遇到属性克隆的问题，比如在表现层提交的Request DTO，可能需要在控制层被映射成多个Java Bean，再传递到逻辑层来进行相应的业务处理，那么如何才能简单而又快速的完成属性克隆呢？
 对于仅仅包含简单属性的Java Bean来说，Apache Commons里的BeanUtils 是个不错的选择，不过前提是对应属性必须具备相同的属性名。但是对于复杂属性来说， 如果两个属性的类型不同，或者类型参数不同，使用BeanUtils的时候都要格外小心。
 举个例子： InvoiceDTO和InvoiceBean里面都有两个属性amount和charges，类型定义如下：
-InvoiceDTO [ amount -&amp;gt; AmountDTO, charges -&amp;gt; List] InvoiceBean [ amount -&amp;gt;AmountBean, charges -&amp;gt; List]</description>
+InvoiceDTO [ amount -&amp;gt; AmountDTO, charges -&amp;gt; List&amp;lt;ChargeDTO&amp;gt;] InvoiceBean [ amount -&amp;gt;AmountBean, charges -&amp;gt; List&amp;lt;ChargeBean&amp;gt;] 这种情况下Apache BeanUtils无法正确克隆amount和charges，那我们应该怎么办呢？</description>
     </item>
     
   </channel>
