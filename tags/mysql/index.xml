@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mysql on Gary&#39;s Blog</title>
+    <link>https://GaaraZhu.github.io/tags/mysql/</link>
+    <description>Recent content in Mysql on Gary&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
+    <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
+    <lastBuildDate>Sat, 05 Jan 2013 21:08:12 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mysql读写分离：Spring&#43;JPA应用层实现 vs Amoeba中间件实现</title>
+      <link>https://GaaraZhu.github.io/read-write-split/</link>
+      <pubDate>Sat, 05 Jan 2013 21:08:12 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/read-write-split/</guid>
+      <description>背景 
+前段时间看了篇文章，讲Youku网数据库架构的演变，如何从最开始的读写分离，再到垂直分区，最后到水平分片，一步一步慢慢成熟的。看完之后很有冲动抽出一个模型来把这几种技术都实现一下。说干就干，首先是读写分离。
+ 实现方案 
+我使用的数据库是Mysql，主从数据复制用的是半同步机制(mysql版本必须 5.5以上)，具体配置，可以参照这篇文章： http://blog.csdn.net/changerlove/article/details/6167255， 要注意Windows环境下，mysql配置文件为my.ini, linux下才是my.cnf。
+然后主从复制有两类做法，一类就是在应用层去动态切换数据源，最简单的做法就是根据事务类型来做Route，另外一类就是利用所谓的“中间件”，在应用层和数据源之间通过分析SQL来Route，目前可选的“中间件有Mysql自带的Mysql Proxy还有阿里开发的Amoeba，后者据说比Mysql Proxy更稳定，使用也更简单，所以“中间件”做法里我选了第二种来尝试，待会儿会分析Amoeba的优劣，这儿先讲第一种做法，在应用层实现读写分离。
+ Spring+JPA应用层实现读写分离  实现 
+在例子中有两台Mysql Server，一台Master 负责写，一台Slave负责读，对应的JPA 配置文件如下：
+&amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?</description>
+    </item>
+    
+  </channel>
+</rss>

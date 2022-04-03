@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Mysql读写分离：Spring&#43;JPA应用层实现 vs Amoeba中间件实现 - Gary&#39;s Blog</title>
+  <meta name="description" content="背景 
+前段时间看了篇文章，讲Youku网数据库架构的演变，如何从最开始的读写分离，再到垂直分区，最后到水平分片，一步一步慢慢成熟的。看完之后很有冲动抽出一个模型来把这几种技术都实现一下。说干就干，首先是读写分离。
+ 实现方案 
+我使用的数据库是Mysql，主从数据复制用的是半同步机制(mysql版本必须 5.5以上)，具体配置，可以参照这篇文章： http://blog.csdn.net/changerlove/article/details/6167255， 要注意Windows环境下，mysql配置文件为my.ini, linux下才是my.cnf。
+然后主从复制有两类做法，一类就是在应用层去动态切换数据源，最简单的做法就是根据事务类型来做Route，另外一类就是利用所谓的“中间件”，在应用层和数据源之间通过分析SQL来Route，目前可选的“中间件有Mysql自带的Mysql Proxy还有阿里开发的Amoeba，后者据说比Mysql Proxy更稳定，使用也更简单，所以“中间件”做法里我选了第二种来尝试，待会儿会分析Amoeba的优劣，这儿先讲第一种做法，在应用层实现读写分离。
+ Spring&#43;JPA应用层实现读写分离  实现 
+在例子中有两台Mysql Server，一台Master 负责写，一台Slave负责读，对应的JPA 配置文件如下：
+&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?">
+  <meta name="author" content="GaryZhu"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Gary\u0027s Blog",
+    
+    "url": "https:\/\/GaaraZhu.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/GaaraZhu.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/GaaraZhu.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/GaaraZhu.github.io\/read-write-split\/",
+          "name": "Mysql读写分离： spring jpa应用层实现 vs amoeba中间件实现"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "GaryZhu"
+  },
+  "headline": "Mysql读写分离：Spring\u002bJPA应用层实现 vs Amoeba中间件实现",
+  "description" : "背景 \n前段时间看了篇文章，讲Youku网数据库架构的演变，如何从最开始的读写分离，再到垂直分区，最后到水平分片，一步一步慢慢成熟的。看完之后很有冲动抽出一个模型来把这几种技术都实现一下。说干就干，首先是读写分离。\n 实现方案 \n我使用的数据库是Mysql，主从数据复制用的是半同步机制(mysql版本必须 5.5以上)，具体配置，可以参照这篇文章： http:\/\/blog.csdn.net\/changerlove\/article\/details\/6167255， 要注意Windows环境下，mysql配置文件为my.ini, linux下才是my.cnf。\n然后主从复制有两类做法，一类就是在应用层去动态切换数据源，最简单的做法就是根据事务类型来做Route，另外一类就是利用所谓的“中间件”，在应用层和数据源之间通过分析SQL来Route，目前可选的“中间件有Mysql自带的Mysql Proxy还有阿里开发的Amoeba，后者据说比Mysql Proxy更稳定，使用也更简单，所以“中间件”做法里我选了第二种来尝试，待会儿会分析Amoeba的优劣，这儿先讲第一种做法，在应用层实现读写分离。\n Spring\u002bJPA应用层实现读写分离  实现 \n在例子中有两台Mysql Server，一台Master 负责写，一台Slave负责读，对应的JPA 配置文件如下：\n\u0026lt;?xml version=\u0026#34;1.0\u0026#34; encoding=\u0026#34;UTF-8\u0026#34;?",
+  "inLanguage" : "en",
+  "wordCount":  774 ,
+  "datePublished" : "2013-01-05T21:08:12",
+  "dateModified" : "2013-01-05T21:08:12",
+  "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Read-write splitting, Architecture, Mysql, Java" ],
+  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/read-write-split\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/GaaraZhu.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Mysql读写分离：Spring&#43;JPA应用层实现 vs Amoeba中间件实现" />
+<meta property="og:description" content="背景 
+前段时间看了篇文章，讲Youku网数据库架构的演变，如何从最开始的读写分离，再到垂直分区，最后到水平分片，一步一步慢慢成熟的。看完之后很有冲动抽出一个模型来把这几种技术都实现一下。说干就干，首先是读写分离。
+ 实现方案 
+我使用的数据库是Mysql，主从数据复制用的是半同步机制(mysql版本必须 5.5以上)，具体配置，可以参照这篇文章： http://blog.csdn.net/changerlove/article/details/6167255， 要注意Windows环境下，mysql配置文件为my.ini, linux下才是my.cnf。
+然后主从复制有两类做法，一类就是在应用层去动态切换数据源，最简单的做法就是根据事务类型来做Route，另外一类就是利用所谓的“中间件”，在应用层和数据源之间通过分析SQL来Route，目前可选的“中间件有Mysql自带的Mysql Proxy还有阿里开发的Amoeba，后者据说比Mysql Proxy更稳定，使用也更简单，所以“中间件”做法里我选了第二种来尝试，待会儿会分析Amoeba的优劣，这儿先讲第一种做法，在应用层实现读写分离。
+ Spring&#43;JPA应用层实现读写分离  实现 
+在例子中有两台Mysql Server，一台Master 负责写，一台Slave负责读，对应的JPA 配置文件如下：
+&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?">
+<meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://GaaraZhu.github.io/read-write-split/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Gary&#39;s Blog" />
+
+  <meta name="twitter:title" content="Mysql读写分离：Spring&#43;JPA应用层实现 vs Amoeba中间件实现" />
+  <meta name="twitter:description" content="背景 
+前段时间看了篇文章，讲Youku网数据库架构的演变，如何从最开始的读写分离，再到垂直分区，最后到水平分片，一步一步慢慢成熟的。看完之后很有冲动抽出一个模型来把这几种技术都实现一下。说干就干，首先是读写分离。
+ 实现方案 
+我使用的数据库是Mysql，主从数据复制用的是半同步机制(mysql版本必须 5.5以上)，具体配置，可以参照这篇文章： …">
+  <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.96.0" />
+  <link rel="alternate" href="https://GaaraZhu.github.io/index.xml" type="application/rss+xml" title="Gary&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://GaaraZhu.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://GaaraZhu.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://GaaraZhu.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://GaaraZhu.github.io">Gary&#39;s Blog</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">Blog</a>
+              <div class="navlinks-children">
+                
+                  <a href="/chat-the-ops-up">Chat the Ops up</a>
+                
+                  <a href="/deep-clone">Java深度克隆</a>
+                
+                  <a href="/map-reduce-tunning">MapReduce tuning</a>
+                
+                  <a href="/aviator-validator">基于Aviator的注解驱动验证框架</a>
+                
+                  <a href="/Sqoop">基于Sqoop和Hadoop的数据质量分析报告</a>
+                
+                  <a href="/analysis-user-behaviour">用MapReduce来进行用户行为分</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Gary&#39;s Blog" href="https://GaaraZhu.github.io">
+            <img class="avatar-img" src="https://GaaraZhu.github.io/img/avatar-icon.png" alt="Gary&#39;s Blog" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="page-heading">
+              
+                <h1>Mysql读写分离：Spring&#43;JPA应用层实现 vs Amoeba中间件实现</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="背景">背景</h2>
+<p><br>
+前段时间看了篇文章，讲Youku网数据库架构的演变，如何从最开始的读写分离，再到垂直分区，最后到水平分片，一步一步慢慢成熟的。看完之后很有冲动抽出一个模型来把这几种技术都实现一下。说干就干，首先是读写分离。</p>
+<p> </p>
+<h2 id="实现方案">实现方案</h2>
+<p><br>
+我使用的数据库是Mysql，主从数据复制用的是半同步机制(mysql版本必须 5.5以上)，具体配置，可以参照这篇文章： <a href="http://blog.csdn.net/changerlove/article/details/6167255">http://blog.csdn.net/changerlove/article/details/6167255</a>， 要注意Windows环境下，mysql配置文件为my.ini, linux下才是my.cnf。</p>
+<p>然后主从复制有两类做法，一类就是在应用层去动态切换数据源，最简单的做法就是根据事务类型来做Route，另外一类就是利用所谓的“中间件”，在应用层和数据源之间通过分析SQL来Route，目前可选的“中间件有Mysql自带的Mysql Proxy还有阿里开发的Amoeba，后者据说比Mysql Proxy更稳定，使用也更简单，所以“中间件”做法里我选了第二种来尝试，待会儿会分析Amoeba的优劣，这儿先讲第一种做法，在应用层实现读写分离。</p>
+<p> </p>
+<h3 id="springjpa应用层实现读写分离">Spring+JPA应用层实现读写分离</h3>
+<p> </p>
+<h4 id="实现">实现</h4>
+<p><br>
+在例子中有两台Mysql Server，一台Master 负责写，一台Slave负责读，对应的JPA 配置文件如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-XML" data-lang="XML"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;persistence</span> <span class="na">version=</span><span class="s">&#34;2.0&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="na">xmlns=</span><span class="s">&#34;http://java.sun.com/xml/ns/persistence&#34;</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="c">&lt;!-- used to test R/W Splitting in MYSQL, can be routed by transaction 
+</span></span></span><span class="line"><span class="cl"><span class="c">		type(read only or not) --&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;persistence-unit</span> <span class="na">name=</span><span class="s">&#34;MASTER_000&#34;</span> <span class="na">transaction-type=</span><span class="s">&#34;RESOURCE_LOCAL&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&lt;provider&gt;</span>org.eclipse.persistence.jpa.PersistenceProvider<span class="nt">&lt;/provider&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&lt;exclude-unlisted-classes&gt;</span>false<span class="nt">&lt;/exclude-unlisted-classes&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&lt;properties&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.driver&#34;</span> <span class="na">value=</span><span class="s">&#34;com.mysql.jdbc.Driver&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.url&#34;</span> <span class="na">value=</span><span class="s">&#34;jdbc:mysql://localhost:3306/rws_db&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.user&#34;</span> <span class="na">value=</span><span class="s">&#34;root&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.password&#34;</span> <span class="na">value=</span><span class="s">&#34;&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.read-connections.min&#34;</span><span class="na">value=</span><span class="s">&#34;1&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.write-connections.min&#34;</span><span class="na">value=</span><span class="s">&#34;1&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.batch-writing&#34;</span> <span class="na">value=</span><span class="s">&#34;JDBC&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.level&#34;</span> <span class="na">value=</span><span class="s">&#34;FINE&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.thread&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.session&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.exceptions&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.timestamp&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&lt;/properties&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;/persistence-unit&gt;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;persistence-unit</span> <span class="na">name=</span><span class="s">&#34;SLAVE_000&#34;</span> <span class="na">transaction-type=</span><span class="s">&#34;RESOURCE_LOCAL&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&lt;provider&gt;</span>org.eclipse.persistence.jpa.PersistenceProvider<span class="nt">&lt;/provider&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&lt;exclude-unlisted-classes&gt;</span>false<span class="nt">&lt;/exclude-unlisted-classes&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&lt;properties&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.driver&#34;</span> <span class="na">value=</span><span class="s">&#34;com.mysql.jdbc.Driver&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.url&#34;</span> <span class="na">value=</span><span class="s">&#34;jdbc:mysql://146.222.51.163:3306/rws_db&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.user&#34;</span> <span class="na">value=</span><span class="s">&#34;zhuga3&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.password&#34;</span> <span class="na">value=</span><span class="s">&#34;Gmail123&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.read-connections.min&#34;</span><span class="na">value=</span><span class="s">&#34;1&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.write-connections.min&#34;</span><span class="na">value=</span><span class="s">&#34;1&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.batch-writing&#34;</span> <span class="na">value=</span><span class="s">&#34;JDBC&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.level&#34;</span> <span class="na">value=</span><span class="s">&#34;FINE&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.thread&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.session&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.exceptions&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.timestamp&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="nt">&lt;/properties&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;/persistence-unit&gt;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/persistence&gt;</span>
+</span></span></code></pre></div><p>然后系统的事务控制，这个是关键，因为在事务初始化的时候要根据事务属性(R/W)来初始化对应的EntityManager，并开启事务，简单起见，例子里使用JPA的Entity Transaction，而不是JTA。</p>
+<p>实现第一步，我们得自定义transactionManager来控制事务的开关，回滚以及资源的初始化等等，直接看代码吧：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Java" data-lang="Java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">util.transaction</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.persistence.EntityManager</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.persistence.EntityTransaction</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.transaction.TransactionDefinition</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.transaction.TransactionException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.transaction.support.AbstractPlatformTransactionManager</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.transaction.support.DefaultTransactionStatus</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RWSTransactionManager</span> <span class="kd">extends</span> <span class="n">AbstractPlatformTransactionManager</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="o">-</span><span class="n">1369860968344021154L</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">protected</span> <span class="n">Object</span> <span class="nf">doGetTransaction</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">TransactionException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">RWSJPATransactionObject</span> <span class="n">rwsTransaction</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RWSJPATransactionObject</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">EntityManager</span> <span class="n">entityManager</span> <span class="o">=</span> <span class="n">EntityManagerHolder</span><span class="o">.</span><span class="na">getInstance</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">				<span class="o">.</span><span class="na">initializeResource</span><span class="o">(</span><span class="n">definition</span><span class="o">.</span><span class="na">isReadOnly</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">		<span class="n">EntityTransaction</span> <span class="n">transaction</span> <span class="o">=</span> <span class="n">entityManager</span><span class="o">.</span><span class="na">getTransaction</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">rwsTransaction</span><span class="o">.</span><span class="na">setTransaction</span><span class="o">(</span><span class="n">transaction</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">rwsTransaction</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doBegin</span><span class="o">(</span><span class="n">Object</span> <span class="n">txObject</span><span class="o">,</span> <span class="n">TransactionDefinition</span> <span class="n">definition</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">			<span class="kd">throws</span> <span class="n">TransactionException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">RWSJPATransactionObject</span> <span class="n">rwsTransaction</span> <span class="o">=</span> <span class="o">(</span><span class="n">RWSJPATransactionObject</span><span class="o">)</span> <span class="n">txObject</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">		
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(!</span><span class="n">definition</span><span class="o">.</span><span class="na">isReadOnly</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">rwsTransaction</span><span class="o">.</span><span class="na">getTransaction</span><span class="o">().</span><span class="na">begin</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doCommit</span><span class="o">(</span><span class="n">DefaultTransactionStatus</span> <span class="n">transactionStatus</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">			<span class="kd">throws</span> <span class="n">TransactionException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(</span><span class="n">transactionStatus</span><span class="o">.</span><span class="na">isReadOnly</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="n">RWSJPATransactionObject</span> <span class="n">rwsTransaction</span> <span class="o">=</span> <span class="o">(</span><span class="n">RWSJPATransactionObject</span><span class="o">)</span> <span class="n">transactionStatus</span>
+</span></span><span class="line"><span class="cl">				<span class="o">.</span><span class="na">getTransaction</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">rwsTransaction</span><span class="o">.</span><span class="na">getTransaction</span><span class="o">().</span><span class="na">commit</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doRollback</span><span class="o">(</span><span class="n">DefaultTransactionStatus</span> <span class="n">transactionStatus</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">			<span class="kd">throws</span> <span class="n">TransactionException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(</span><span class="n">transactionStatus</span><span class="o">.</span><span class="na">isReadOnly</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="n">RWSJPATransactionObject</span> <span class="n">rwsTransaction</span> <span class="o">=</span> <span class="o">(</span><span class="n">RWSJPATransactionObject</span><span class="o">)</span> <span class="n">transactionStatus</span>
+</span></span><span class="line"><span class="cl">				<span class="o">.</span><span class="na">getTransaction</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">rwsTransaction</span><span class="o">.</span><span class="na">getTransaction</span><span class="o">().</span><span class="na">rollback</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="kd">class</span> <span class="nc">RWSJPATransactionObject</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kd">private</span> <span class="n">EntityTransaction</span> <span class="n">transaction</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">		<span class="kd">public</span> <span class="n">EntityTransaction</span> <span class="nf">getTransaction</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="n">transaction</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">		<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setTransaction</span><span class="o">(</span><span class="n">EntityTransaction</span> <span class="n">transaction</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">this</span><span class="o">.</span><span class="na">transaction</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">		<span class="kd">public</span> <span class="nf">RWSJPATransactionObject</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="kd">super</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>对应的 EntityManagerHolder 代码如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Java" data-lang="Java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">util.transaction</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Random</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.persistence.EntityManager</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.persistence.EntityManagerFactory</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.persistence.Persistence</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.commons.lang.StringUtils</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EntityManagerHolder</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="n">String</span> <span class="n">PERSISTENCE_UNIT_HEADER_MASTER</span> <span class="o">=</span> <span class="s">&#34;MASTER_&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="n">String</span> <span class="n">PERSISTENCE_UNIT_HEADER_SLAVE</span> <span class="o">=</span> <span class="s">&#34;SLAVE_&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="kd">final</span> <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">EntityManager</span><span class="o">&gt;</span> <span class="n">THREAD_LOCAL</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">EntityManager</span><span class="o">&gt;();</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">EntityManagerFactory</span><span class="o">&gt;</span> <span class="n">RESOURCE</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">EntityManagerFactory</span><span class="o">&gt;();</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="kd">static</span> <span class="n">EntityManagerHolder</span> <span class="n">emHolder</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="nf">EntityManagerHolder</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kd">static</span> <span class="n">EntityManagerHolder</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">emHolder</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">emHolder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EntityManagerHolder</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">emHolder</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">EntityManager</span> <span class="nf">initializeResource</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">isReadOnly</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// get random persistence unit, dependents on master and slave
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// quantities
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// configured in persistence.xml
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">String</span> <span class="n">puSuffix</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(</span><span class="n">isReadOnly</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">puSuffix</span> <span class="o">=</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">leftPad</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">1</span><span class="o">)),</span>
+</span></span><span class="line"><span class="cl">					<span class="n">3</span><span class="o">,</span> <span class="s">&#34;0&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">puSuffix</span> <span class="o">=</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">leftPad</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">1</span><span class="o">)),</span>
+</span></span><span class="line"><span class="cl">					<span class="n">3</span><span class="o">,</span> <span class="s">&#34;0&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="n">String</span> <span class="n">persistenceUnit</span> <span class="o">=</span> <span class="o">(</span><span class="n">isReadOnly</span> <span class="o">?</span> <span class="n">PERSISTENCE_UNIT_HEADER_SLAVE</span>
+</span></span><span class="line"><span class="cl">				<span class="o">:</span> <span class="n">PERSISTENCE_UNIT_HEADER_MASTER</span><span class="o">)</span> <span class="o">+</span> <span class="n">puSuffix</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">createEntityManager</span><span class="o">(</span><span class="n">persistenceUnit</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="n">EntityManager</span> <span class="nf">createEntityManager</span><span class="o">(</span><span class="n">String</span> <span class="n">persistenceUnit</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">RESOURCE</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">persistenceUnit</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">EntityManagerFactory</span> <span class="n">entityManagerFactory</span> <span class="o">=</span> <span class="n">Persistence</span>
+</span></span><span class="line"><span class="cl">					<span class="o">.</span><span class="na">createEntityManagerFactory</span><span class="o">(</span><span class="n">persistenceUnit</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">			<span class="n">RESOURCE</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">persistenceUnit</span><span class="o">,</span> <span class="n">entityManagerFactory</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">		<span class="n">EntityManager</span> <span class="n">entityManager</span> <span class="o">=</span> <span class="n">THREAD_LOCAL</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">entityManager</span> <span class="o">||</span> <span class="o">!</span><span class="n">entityManager</span><span class="o">.</span><span class="na">isOpen</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">entityManager</span> <span class="o">=</span> <span class="n">RESOURCE</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">persistenceUnit</span><span class="o">).</span><span class="na">createEntityManager</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">			<span class="n">THREAD_LOCAL</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">entityManager</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">entityManager</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="n">EntityManager</span> <span class="nf">getEntityManager</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">EntityManager</span> <span class="n">entityManager</span> <span class="o">=</span> <span class="n">THREAD_LOCAL</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">entityManager</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">entityManager</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">closeEntityManager</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">EntityManager</span> <span class="n">entityManager</span> <span class="o">=</span> <span class="n">THREAD_LOCAL</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">THREAD_LOCAL</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">!=</span> <span class="n">entityManager</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">			<span class="n">entityManager</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>可以看到，在getTransaction方法里我们简单new了一个自定义的Object，其实就是一个EntityTransaction holder，关键是在begin（..）方法里，首先会根据事务属性到EntityManagerHolder中进行资源初始化（主要是EMFactory和EM）,在initializeResource 方法里面，简单的写了种路由算法，就是Java随机数，生成对应PersistenceUnit Name的后缀，最后根据这个name去生成对应的EMFactory和EM，并且set到Threadlocal的变量中去，之后在Dao层可以直接通过getEntityManager 方法来获取EntityManager.初始化结束之后，对应的事务直接使用EM里面的EntityTransaction来begin，commit和rollback。</p>
+<p>事务管理器写好了，我们先看一下相关的Spring配置：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-XML" data-lang="XML"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&#34;http://www.springframework.org/schema/beans&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="na">xmlns:context=</span><span class="s">&#34;http://www.springframework.org/schema/context&#34;</span> 
+</span></span><span class="line"><span class="cl">	<span class="na">xmlns:tx=</span><span class="s">&#34;http://www.springframework.org/schema/tx&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://www.springframework.org/schema/beans
+</span></span></span><span class="line"><span class="cl"><span class="s">	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+</span></span></span><span class="line"><span class="cl"><span class="s">	http://www.springframework.org/schema/context 
+</span></span></span><span class="line"><span class="cl"><span class="s">	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+</span></span></span><span class="line"><span class="cl"><span class="s">	http://www.springframework.org/schema/tx
+</span></span></span><span class="line"><span class="cl"><span class="s">	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;context:annotation-config</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;context:component-scan</span> <span class="na">base-package=</span><span class="s">&#34;*&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;transactionManager&#34;</span> <span class="na">class=</span><span class="s">&#34;util.transaction.RWSTransactionManager&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;tx:annotation-driven</span> <span class="na">transaction-manager=</span><span class="s">&#34;transactionManager&#34;</span><span class="nt">/&gt;</span>	
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/beans&gt;</span>
+</span></span></code></pre></div><p>最后需要在service上加上事务注解, 指明事务属性：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Java" data-lang="Java"><span class="line"><span class="cl">	<span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">	<span class="nd">@Transactional</span><span class="o">(</span><span class="n">readOnly</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="n">T</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">getDao</span><span class="o">().</span><span class="na">push</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">	<span class="nd">@Transactional</span><span class="o">(</span><span class="n">readOnly</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">findByExample</span><span class="o">(</span><span class="n">T</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">getDao</span><span class="o">().</span><span class="na">findByExample</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span></code></pre></div><p>测试类：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Java" data-lang="Java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">test</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">service.EmployeeService</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">test.mainTest.BaseMainTest</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">domain.Employee</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestRWS</span> <span class="kd">extends</span> <span class="n">BaseMainTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">EmployeeService</span> <span class="n">employeeService</span> <span class="o">=</span> <span class="o">(</span><span class="n">EmployeeService</span><span class="o">)</span> <span class="n">ctx</span>
+</span></span><span class="line"><span class="cl">				<span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&#34;employeeService&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">Employee</span> <span class="n">employee</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Employee</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">employee</span><span class="o">.</span><span class="na">setFirstName</span><span class="o">(</span><span class="s">&#34;Yinkan&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">employee</span><span class="o">.</span><span class="na">setLastName</span><span class="o">(</span><span class="s">&#34;Zhu&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="n">employeeService</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">employee</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//		employeeService.findByExample(employee);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p> </p>
+<h4 id="测试">测试</h4>
+<p> 
+当调用EmployeeService里面的Add方法时（事务属性为写事务），从Log里可以看到成功连接到Master Server，并且插入成功，从库里也同步过去了。
+<img src="/images/read-write-split/write.png" alt="write"></p>
+<p>当调用EmployeeService里面的FindByExample方法的时候（事务属性为读事务），从Log里可以看到是从Slave Server读取数据：
+<img src="/images/read-write-split/read.png" alt="read"></p>
+<p>到这里第一种方法，在应用层来实现读写分离已经结束了，可以看到，通过事务属性来进行数据源切换这种做法比较简单，但是从软件设计的角度来看，事务控制里面耦合了数据源切换的逻辑，下面一种做法，使用Amoeba直接在SQL level做Route，代码的耦合度大大降低，但是也带来了其他问题。</p>
+<p> </p>
+<h3 id="amoeba中间件实现读写分离">Amoeba中间件实现读写分离</h3>
+<p> </p>
+<h4 id="实现-1">实现</h4>
+<p> 
+Amoeba的原理如下图所示，就是一层代理，对APP来说可见的只有一个DataSource，具体的Masters和Slaves可以在Amoeba里配置。</p>
+<p><img src="/images/read-write-split/amoeba.png" alt="amoeba">
+对应应用层JPA的配置如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-XML" data-lang="XML"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;persistence</span> <span class="na">version=</span><span class="s">&#34;2.0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="na">xmlns=</span><span class="s">&#34;http://java.sun.com/xml/ns/persistence&#34;</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;persistence-unit</span> <span class="na">name=</span><span class="s">&#34;proxyPU&#34;</span> <span class="na">transaction-type=</span><span class="s">&#34;RESOURCE_LOCAL&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">     <span class="nt">&lt;provider&gt;</span>org.eclipse.persistence.jpa.PersistenceProvider<span class="nt">&lt;/provider&gt;</span>
+</span></span><span class="line"><span class="cl">     <span class="nt">&lt;exclude-unlisted-classes&gt;</span>false<span class="nt">&lt;/exclude-unlisted-classes&gt;</span>
+</span></span><span class="line"><span class="cl">     <span class="nt">&lt;properties&gt;</span>
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.driver&#34;</span> <span class="na">value=</span><span class="s">&#34;com.mysql.jdbc.Driver&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.url&#34;</span> <span class="na">value=</span><span class="s">&#34;jdbc:mysql://localhost:8066/rws_db&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.user&#34;</span> <span class="na">value=</span><span class="s">&#34;amoebaUser&#34;</span> <span class="nt">/&gt;</span>         
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;javax.persistence.jdbc.password&#34;</span> <span class="na">value=</span><span class="s">&#34;123&#34;</span> <span class="nt">/&gt;</span> 
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.read-connections.min&#34;</span><span class="na">value=</span><span class="s">&#34;1&#34;</span> <span class="nt">/&gt;</span> 
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.write-connections.min&#34;</span><span class="na">value=</span><span class="s">&#34;1&#34;</span> <span class="nt">/&gt;</span>  
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.jdbc.batch-writing&#34;</span> <span class="na">value=</span><span class="s">&#34;JDBC&#34;</span> <span class="nt">/&gt;</span>     
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.level&#34;</span> <span class="na">value=</span><span class="s">&#34;FINE&#34;</span> <span class="nt">/&gt;</span>        
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.thread&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>       
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.session&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>        
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.exceptions&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>     
+</span></span><span class="line"><span class="cl">         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;eclipselink.logging.timestamp&#34;</span> <span class="na">value=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>   
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/properties&gt;</span>    
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/persistence-unit&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/persistence&gt;</span>
+</span></span></code></pre></div><p>该PersistenceUnit里面用到的Mysql相关信息，配置在Amoeba的amobe.xml文件里，是一个对外的proxy：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-XML" data-lang="XML"><span class="line"><span class="cl">	<span class="c">&lt;!-- service class must implements com.meidusa.amoeba.service.Service --&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;service</span> <span class="na">name=</span><span class="s">&#34;Amoeba for Mysql&#34;</span> <span class="na">class=</span><span class="s">&#34;com.meidusa.amoeba.net.ServerableConnectionManager&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!-- port --&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;port&#34;</span><span class="nt">&gt;</span>8066<span class="nt">&lt;/property&gt;</span>			
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!-- bind ipAddress --&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!-- 
+</span></span></span><span class="line"><span class="cl"><span class="c">        &lt;property name=&#34;ipAddress&#34;&gt;127.0.0.1&lt;/property&gt;
+</span></span></span><span class="line"><span class="cl"><span class="c">            --&gt;</span>		
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;manager&#34;</span><span class="nt">&gt;</span>${clientConnectioneManager}<span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;connectionFactory&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&#34;com.meidusa.amoeba.mysql.net.MysqlClientConnectionFactory&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;sendBufferSize&#34;</span><span class="nt">&gt;</span>128<span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;receiveBufferSize&#34;</span><span class="nt">&gt;</span>64<span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/bean&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;authenticator&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&#34;com.meidusa.amoeba.mysql.server.MysqlClientAuthenticator&#34;</span><span class="nt">&gt;</span>	
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;user&#34;</span><span class="nt">&gt;</span>amoebaUser<span class="nt">&lt;/property&gt;</span>		
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;password&#34;</span><span class="nt">&gt;</span>123<span class="nt">&lt;/property&gt;</span>	
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;filter&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&#34;com.meidusa.amoeba.server.IPAccessController&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;ipFile&#34;</span><span class="nt">&gt;</span>${amoeba.home}/conf/access_list.conf<span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/bean&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/bean&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/service&gt;</span>
+</span></span></code></pre></div><p>然后是事务，事务的话可以直接使用Spring自带的JpaTransactionManager来管理，Entitymanager可以在Service层用annotation来注入，具体代码我就不贴了。</p>
+<p> </p>
+<h4 id="测试-1">测试</h4>
+<p> 
+一切准备好之后先启动Amoeba，我们来跑一下test， 首先是读，发现log如下：
+<img src="/images/read-write-split/amoeba-log.png" alt="amoeba-log"></p>
+<p>可以看到Database version： 。。mysql-amoeba-proxy。。 说明连接正确，在看结果读数据也的正常的。</p>
+<p>接下来就是测试写数据： 跑了一下，报错了：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Internal Exception: java.sql.SQLException: ResultSet is from UPDATE. No Data.
+</span></span><span class="line"><span class="cl">Error Code: 0
+</span></span><span class="line"><span class="cl">Call: SELECT LAST_INSERT_ID()
+</span></span></code></pre></div><p>Check一下生成的SQL，发现insert之后跑了句SELECT LAST_INSERT_ID()， 因为我程序里Entity的主键是Mysql的自增主键，每次插入都会生成这句话用来返回当前ID，而这个ID是跟着Connection走的，也就是说如果该connection里面没有更新，就拿不到值，可是我们的insert和这句select难道不在一个Connection里面？对的，忘了我们用的是“SQL路由器”吗？insert语句开启主库connection，select则走的是从库的connection，所以查询当然是空了，而eclipselink查出resultSet之后直接.next()了，也没判断是否有值，于是就出现这个error code了，当然对于eclipselink，这种check只能说是nice to have的，正常情况下是不会出现这种情况的，connection在获取数据源的时候就已经有了，这里因为我们拿到的其实是个代理。</p>
+<p> </p>
+<h2 id="总结">总结</h2>
+<p><br>
+考虑到Amoeba的实现原理，即&quot;SQL路由&quot;，即使Mysql支持Oracle一样的主键生成策略，在这种情况下似乎也不能正常工作。所以得由应用层来生成主键，这又是Effort。。。</p>
+<p>另外从Amoeba的文档里看到，他的另一个缺点是目前不支持事务，这个我的理解是跨connection的事务做不到原子性，特别是当规则配置多主情况下，事务无效。</p>
+<p>这么看来Amoeba的使用场景确实有限，首先domain层最好不要使用JPA之类的ORM框架，纯JDBC开发更可靠；然后在数据库架构上，一主多从尽量原子化事务。</p>
+<p>综合对比一下，应用层实现读写分离比较靠谱。</p>
+<p>项目源码： <a href="https://github.com/GaaraZhu/RWSDemo">https://github.com/GaaraZhu/RWSDemo</a><br>
+ <br>
+ </p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://GaaraZhu.github.io/tags/read-write-splitting/">Read-write splitting</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/architecture/">Architecture</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/mysql/">Mysql</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/java/">Java</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2fread-write-split%2f&amp;text=Mysql%e8%af%bb%e5%86%99%e5%88%86%e7%a6%bb%ef%bc%9aSpring%2bJPA%e5%ba%94%e7%94%a8%e5%b1%82%e5%ae%9e%e7%8e%b0%20vs%20Amoeba%e4%b8%ad%e9%97%b4%e4%bb%b6%e5%ae%9e%e7%8e%b0&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2fread-write-split%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2fread-write-split%2f&amp;title=Mysql%e8%af%bb%e5%86%99%e5%88%86%e7%a6%bb%ef%bc%9aSpring%2bJPA%e5%ba%94%e7%94%a8%e5%b1%82%e5%ae%9e%e7%8e%b0%20vs%20Amoeba%e4%b8%ad%e9%97%b4%e4%bb%b6%e5%ae%9e%e7%8e%b0" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2fread-write-split%2f&amp;title=Mysql%e8%af%bb%e5%86%99%e5%88%86%e7%a6%bb%ef%bc%9aSpring%2bJPA%e5%ba%94%e7%94%a8%e5%b1%82%e5%ae%9e%e7%8e%b0%20vs%20Amoeba%e4%b8%ad%e9%97%b4%e4%bb%b6%e5%ae%9e%e7%8e%b0" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2fread-write-split%2f&amp;title=Mysql%e8%af%bb%e5%86%99%e5%88%86%e7%a6%bb%ef%bc%9aSpring%2bJPA%e5%ba%94%e7%94%a8%e5%b1%82%e5%ae%9e%e7%8e%b0%20vs%20Amoeba%e4%b8%ad%e9%97%b4%e4%bb%b6%e5%ae%9e%e7%8e%b0" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2fread-write-split%2f&amp;description=Mysql%e8%af%bb%e5%86%99%e5%88%86%e7%a6%bb%ef%bc%9aSpring%2bJPA%e5%ba%94%e7%94%a8%e5%b1%82%e5%ae%9e%e7%8e%b0%20vs%20Amoeba%e4%b8%ad%e9%97%b4%e4%bb%b6%e5%ae%9e%e7%8e%b0" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+
+          
+        
+      </article>
+
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+      
+    <div class="page-meta">
+  
+  
+  
+</div>
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:sec.gary@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/GaaraZhu" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/gary-zhu-53114169" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://github.com/GaaraZhu">GaryZhu</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://GaaraZhu.github.io">Gary&#39;s Blog</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://GaaraZhu.github.io/js/main.js"></script>
+<script src="https://GaaraZhu.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://GaaraZhu.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+
