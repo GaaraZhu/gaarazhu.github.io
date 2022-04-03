@@ -7,8 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>MapReduce tuning - Gary&#39;s Blog</title>
-  <meta name="description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning.">
+  <title>Tail call optimization in Scala - Gary&#39;s Blog</title>
+  <meta name="description" content="Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -44,8 +44,8 @@
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/GaaraZhu.github.io\/map-reduce-tunning\/",
-          "name": "Map reduce tuning"
+          "@id": "https:\/\/GaaraZhu.github.io\/tail-call-optimization\/",
+          "name": "Tail call optimization in scala"
         }
     }]
 }
@@ -56,15 +56,15 @@
   "author": {
     "name" : "GaryZhu"
   },
-  "headline": "MapReduce tuning",
-  "description" : "Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there\u0026rsquo;s no way for us to do the tuning.",
+  "headline": "Tail call optimization in Scala",
+  "description" : "Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.",
   "inLanguage" : "en",
-  "wordCount":  422 ,
-  "datePublished" : "2012-12-23T01:33:45",
-  "dateModified" : "2012-12-23T01:33:45",
+  "wordCount":  377 ,
+  "datePublished" : "2015-10-02T15:29:15",
+  "dateModified" : "2015-10-02T15:29:15",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
-  "keywords" : [ "MapReduce, Performance tuning, Hadoop" ],
-  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/map-reduce-tunning\/",
+  "keywords" : [ "Performance tuning, Scala, Algorithm" ],
+  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/tail-call-optimization\/",
   "publisher" : {
     "@type": "Organization",
     "name" : "https:\/\/GaaraZhu.github.io",
@@ -78,15 +78,15 @@
 }
 </script>
 
-<meta property="og:title" content="MapReduce tuning" />
-<meta property="og:description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning.">
+<meta property="og:title" content="Tail call optimization in Scala" />
+<meta property="og:description" content="Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://GaaraZhu.github.io/map-reduce-tunning/" />
+<meta property="og:url" content="https://GaaraZhu.github.io/tail-call-optimization/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
-  <meta name="twitter:title" content="MapReduce tuning" />
-  <meta name="twitter:description" content="Backgroup MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning.">
+  <meta name="twitter:title" content="Tail call optimization in Scala" />
+  <meta name="twitter:description" content="Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile …">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -232,7 +232,7 @@
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="page-heading">
               
-                <h1>MapReduce tuning</h1>
+                <h1>Tail call optimization in Scala</h1>
               
               
                 <hr class="small">
@@ -252,47 +252,53 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <h2 id="backgroup">Backgroup</h2>
-<p>MapReduce is not a low latency computing model, minutes at least will go before the result comes out, this does not mean there&rsquo;s no way for us to do the tuning. Combine with the inside of Hadoop, we can come up with the solutions from below aspects.</p>
-<h2 id="input-file-size">Input file size</h2>
-<p>MapReduce excels at processing a few big files instead of lots small files. This is because too many small files will lead to a memory overflow of Namenode as it holds all metadata of input files, unnecessary threads will also be started for resource initializing, and communications between Namenode and Datanode will become more and more inefficient. Then what can we do when confronted with many small files? CombineFileInputFormat will work in this case, what we need to do is simply override the getReader() method to specify a reader to manage with multiple input splits, then use this format instead of the default input format in your job configuration.</p>
-<h2 id="local-computing">Local computing</h2>
-<p>Sometimes, we can do a local &ldquo;reduce&rdquo; after the Map process. It can reduce the output in every Map node, and it will be more efficient for the following Reduce process, which will collect output data from all Map nodes and reduce it. Using Combine function can do this . Take the example in my previous blog, the combine function will be like this:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">public class SearchCriteriaCombiner extends
-</span></span><span class="line"><span class="cl">		Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+        <p>Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.</p>
+<p>One alternative is using a while loop instead of recursion, but while loop usually is not as easy as recursion. So most of the time, we will come up with solutions using recursion, after that will try to convert it into a while loop style algorithm. But actually in some languages like Scala, it does provide the build-in support to compile the &ldquo;special recursion&rdquo; code to a while loop style. The&quot;special recursion&quot; here means that your recursion call should always be in a tail position, that is the caller does nothing other than return the value of the recursive call.</p>
+<p>Let&rsquo;s take the fibonacci number problem for an example. Usually our solution would be like below:</p>
+<p> </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Javascript" data-lang="Javascript"><span class="line"><span class="cl"> <span class="nx">def</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span><span class="o">:</span> <span class="nx">Int</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="nx">x</span> <span class="o">-</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">------</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></div><p> <br>
+ 
+Here since the recursion caller in position 1 does more than just returning the recursive call result, instead there is an add operation inside, which means we need special memory to store these temporary values as well as the call stacks. But if we try to write it in a tail-recursive way, things will be different.</p>
+<p> </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Javascript" data-lang="Javascript"><span class="line"><span class="cl">  <span class="nx">def</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc1</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc2</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span><span class="o">:</span> <span class="nx">Int</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="nx">acc2</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">acc2</span><span class="p">,</span> <span class="nx">acc1</span> <span class="o">+</span> <span class="nx">acc2</span><span class="p">)</span>  <span class="o">--------</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></div><p> <br>
+ 
+Writing your recursion in a tail-call style, sometimes is a basic optimization for your program, helping to avoid the memory cost cased by the call stacks. By the way, in Scala it only works when you do the recursive call directly using the function itself, below two cases will not work:</p>
+<p> </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Javascript" data-lang="Javascript"><span class="line"><span class="cl">  <span class="c1">// case 1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">val</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">fibonacci</span> <span class="nx">_</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">def</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc1</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc2</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span><span class="o">:</span> <span class="nx">Int</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="nx">acc2</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="nx">a</span><span class="p">(</span><span class="nx">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">acc2</span><span class="p">,</span> <span class="nx">acc1</span> <span class="o">+</span> <span class="nx">acc2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"> 
-</span></span><span class="line"><span class="cl">	@Override
-</span></span><span class="line"><span class="cl">	protected void reduce(Text searchCrieria, Iterable&lt;IntWritable&gt; counts,
-</span></span><span class="line"><span class="cl">			Context context) throws IOException, InterruptedException {
-</span></span><span class="line"><span class="cl"> 
-</span></span><span class="line"><span class="cl">		int totalCount = 0;
-</span></span><span class="line"><span class="cl"> 
-</span></span><span class="line"><span class="cl">		for (IntWritable singleCount : counts) {
-</span></span><span class="line"><span class="cl">			totalCount += singleCount.get();
-</span></span><span class="line"><span class="cl">		}
-</span></span><span class="line"><span class="cl">		context.write(searchCrieria, new IntWritable(totalCount));
-</span></span><span class="line"><span class="cl"> 
-</span></span><span class="line"><span class="cl">	}
-</span></span><span class="line"><span class="cl"> 
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></div><p>Also, do not forget to set the combiner in your job configuration.</p>
-<h3 id="io-cost-between-mapper-and-reducer">I/O cost between Mapper and Reducer</h3>
-<p>One bottleneck of MapReduce is the I/O cost between map nodes and reduce node. First Map process will write its output result into file system(disk, not HDFS) and then will transfer to reduce node for Reduce process. If the output of Map process is a big size, we can do a compression before writing and transferring, and this will comes with a performance improvement as well as disk space saving. Attention that, it will also lead to an extra cost for a decompression when reading data.</p>
-<h2 id="conclusion">Conclusion</h2>
-<p>Here lists three main solutions for tuning our MapReduce function, there are also other ways, like tuning task schedule, customize comparator, customize task quantity of Map and Reduce tasks and etc.</p>
-<p>Above all, what we need is to analyze the main cost case by case before taking a tuning solution.<br>
- <br>
+</span></span><span class="line"><span class="cl">  <span class="c1">// case 2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">def</span> <span class="nx">fibonacci2</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc1</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc2</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span><span class="o">:</span> <span class="nx">Int</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="nx">acc2</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="nx">fun</span><span class="p">(</span><span class="nx">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">acc2</span><span class="p">,</span> <span class="nx">acc1</span> <span class="o">+</span> <span class="nx">acc2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">def</span> <span class="nx">fun</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc1</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">acc2</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span><span class="o">:</span> <span class="nx">Int</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fibonacci2</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">acc1</span><span class="p">,</span> <span class="nx">acc2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></div><p> <br>
  </p>
 
 
         
           <div class="blog-tags">
             
-              <a href="https://GaaraZhu.github.io/tags/mapreduce/">MapReduce</a>&nbsp;
-            
               <a href="https://GaaraZhu.github.io/tags/performance-tuning/">Performance tuning</a>&nbsp;
             
-              <a href="https://GaaraZhu.github.io/tags/hadoop/">Hadoop</a>&nbsp;
+              <a href="https://GaaraZhu.github.io/tags/scala/">Scala</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/algorithm/">Algorithm</a>&nbsp;
             
           </div>
         
@@ -307,42 +313,42 @@
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2fmap-reduce-tunning%2f&amp;text=MapReduce%20tuning&amp;via=" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2ftail-call-optimization%2f&amp;text=Tail%20call%20optimization%20in%20Scala&amp;via=" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2fmap-reduce-tunning%2f" target="_blank" title="Share on Facebook">
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2ftail-call-optimization%2f" target="_blank" title="Share on Facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2fmap-reduce-tunning%2f&amp;title=MapReduce%20tuning" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2ftail-call-optimization%2f&amp;title=Tail%20call%20optimization%20in%20Scala" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2fmap-reduce-tunning%2f&amp;title=MapReduce%20tuning" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2ftail-call-optimization%2f&amp;title=Tail%20call%20optimization%20in%20Scala" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2fmap-reduce-tunning%2f&amp;title=MapReduce%20tuning" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2ftail-call-optimization%2f&amp;title=Tail%20call%20optimization%20in%20Scala" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2fmap-reduce-tunning%2f&amp;description=MapReduce%20tuning" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2ftail-call-optimization%2f&amp;description=Tail%20call%20optimization%20in%20Scala" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -364,11 +370,7 @@
                   <ul>
                 
                 
-                    <li><a href="/tail-call-optimization/">Tail call optimization in Scala</a></li>
-                
-                    <li><a href="/sqoop/">基于Sqoop和Hadoop的数据质量分析报告</a></li>
-                
-                    <li><a href="/analysis-user-behaviour/">用MapReduce来进行用户行为分析</a></li>
+                    <li><a href="/map-reduce-tunning/">MapReduce tuning</a></li>
                 
               </ul>
 

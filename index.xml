@@ -19,6 +19,15 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
     </item>
     
     <item>
+      <title>Tail call optimization in Scala</title>
+      <link>https://GaaraZhu.github.io/tail-call-optimization/</link>
+      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tail-call-optimization/</guid>
+      <description>Recursion provides us an clean way to solve some algorithm problems. But one drawback of it is the memory cost caused by recursion call stack, especially for memory sensitive applications like mobile applications.</description>
+    </item>
+    
+    <item>
       <title>Mysql读写分离：Spring&#43;JPA应用层实现 vs Amoeba中间件实现</title>
       <link>https://GaaraZhu.github.io/read-write-split/</link>
       <pubDate>Sat, 05 Jan 2013 21:08:12 +1300</pubDate>

@@ -36,6 +36,33 @@
     </item>
     
     <item>
+      <title>Algorithm</title>
+      <link>https://GaaraZhu.github.io/tags/algorithm/</link>
+      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Performance tuning</title>
+      <link>https://GaaraZhu.github.io/tags/performance-tuning/</link>
+      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/performance-tuning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Scala</title>
+      <link>https://GaaraZhu.github.io/tags/scala/</link>
+      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/scala/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Architecture</title>
       <link>https://GaaraZhu.github.io/tags/architecture/</link>
       <pubDate>Sat, 05 Jan 2013 21:08:12 +1300</pubDate>
@@ -86,15 +113,6 @@
       <pubDate>Sun, 23 Dec 2012 01:33:45 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/mapreduce/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Performance tuning</title>
-      <link>https://GaaraZhu.github.io/tags/performance-tuning/</link>
-      <pubDate>Sun, 23 Dec 2012 01:33:45 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/performance-tuning/</guid>
       <description></description>
     </item>
     

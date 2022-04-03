@@ -20,6 +20,18 @@
     <loc>https://GaaraZhu.github.io/tags/</loc>
     <lastmod>2021-04-02T11:09:48+13:00</lastmod>
   </url><url>
+    <loc>https://GaaraZhu.github.io/tags/algorithm/</loc>
+    <lastmod>2015-10-02T15:29:15+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/performance-tuning/</loc>
+    <lastmod>2015-10-02T15:29:15+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/scala/</loc>
+    <lastmod>2015-10-02T15:29:15+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tail-call-optimization/</loc>
+    <lastmod>2015-10-02T15:29:15+13:00</lastmod>
+  </url><url>
     <loc>https://GaaraZhu.github.io/tags/architecture/</loc>
     <lastmod>2013-01-05T21:08:12+13:00</lastmod>
   </url><url>
@@ -42,9 +54,6 @@
     <lastmod>2012-12-23T01:33:45+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/map-reduce-tunning/</loc>
-    <lastmod>2012-12-23T01:33:45+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/performance-tuning/</loc>
     <lastmod>2012-12-23T01:33:45+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/tags/sqoop/</loc>
