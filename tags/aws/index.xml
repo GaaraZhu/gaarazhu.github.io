@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Sun, 19 Dec 2021 10:21:44 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/aws/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 02 Apr 2022 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/aws/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Chat the Ops up</title>
+      <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
+      <pubDate>Sat, 02 Apr 2022 11:09:48 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/chat-the-ops-up/</guid>
+      <description>TL;DR 
+This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.</description>
+    </item>
+    
     <item>
       <title>AWS one punch</title>
       <link>https://GaaraZhu.github.io/aws-one-punch/</link>
