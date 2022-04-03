@@ -139,7 +139,11 @@
                 
                   <a href="/deep-clone">Java深度克隆</a>
                 
+                  <a href="/map-reduce-tunning">MapReduce tuning</a>
+                
                   <a href="/aviator-validator">基于Aviator的注解驱动验证框架</a>
+                
+                  <a href="/analysis-user-behaviour">用MapReduce来进行用户行为分</a>
                 
               </div>
             </li>
@@ -424,7 +428,9 @@
 <li>不要滥用cache。</li>
 <li>自定义函数的注册可以通过注解+扫描器在系统初始化的时候完成。</li>
 <li>EasyValidation中所有的验证约束都是放在java类上，不支持XSD level的验证约束，所以不支持EMS，因为EMS所需的 jar 一般都是用第三方控件通过XSD去生成，虽然你可以选择生成源码再把约束append上去，但是每次更新schema都会让你丢失原有的约束。</li>
-<li>性能方面测试下来没什么问题，如果实在对反射不放心的话，可以试试别的方法，比如Unsafe类，但是前提是关掉编译器对Restricted API的Errors/Warnings。</li>
+<li>性能方面测试下来没什么问题，如果实在对反射不放心的话，可以试试别的方法，比如Unsafe类，但是前提是关掉编译器对Restricted API的Errors/Warnings。<br>
+ <br>
+ </li>
 </ul>
 
 

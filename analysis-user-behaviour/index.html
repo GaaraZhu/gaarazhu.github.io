@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>用MapReduce来进行用户行为分析 - Gary&#39;s Blog</title>
+  <meta name="description" content="背景 
+在系统设计的时候，为了提高可用性，经常需要对用户行为进行分析，来持续完善系统。 一个典型的场景就是分析用户的查询条件，根据操作习惯和规律来精简用户输入，让查询变得更简单更高效。那么对于这种场景，我们应该如何实现？
+ 解决方案 
+最简单的做法就是在每次查询的时候都把所用到的条件直接save到关系数据库，这种做法确实很简单，但是每次都需要做write操作，尤其对于操作密集型应用，我们不认为这是种很好的practise。或许你会说，可以做个内存队列，把信息缓存起来，然后batch write，这种做法性能确实比前一种更高效，而且对于统计用户使用信息这种场景，就算由于系统宕机导致的部分数据丢失，似乎也不会产生蝴蝶效应，但是我们总是想做得更好，于是，对于系统重启之类的可预知情况，我们可以利用RMI动态提交掉缓存中的数据，但是对于不可预知的情况，又该怎么办呢？或许我们可以找到其他更好的方法。
+比如，直接把信息写到log里，然后安排一个schedual job来定期分析log，提取出信息再save到数据库，但是如果log很大很多，分析起来会不会很慢？查看了IPS PRD上的log，一天的log大概有几百M左右，而liner的数据量是logistic的10倍，log信息也会大出好几倍。而且通常为了trouble shooting，我们会保存一定期限的log，之后便会做house keeping，所以如果想在log被清掉之前做分析的话，仅仅是ARP项目，我们面对的就可能是几十个 N G的log文件，直接用JAVA分析？答案是可以的，用NIO，那还有其他办法吗？MapReduce!
+ MapReduce 
+MapReduce的分布式并行计算，说白了就是利用笨办法来暴力解决问题，对于统计用户查询条件这种场景，我们可以看到log片段如下：
+877994 [[ACTIVE] ExecuteThread: &#39;1&#39; for queue: &#39;weblogic.">
+  <meta name="author" content="GaryZhu"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Gary\u0027s Blog",
+    
+    "url": "https:\/\/GaaraZhu.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/GaaraZhu.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/GaaraZhu.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/GaaraZhu.github.io\/analysis-user-behaviour\/",
+          "name": "用 map reduce来进行用户行为分析"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "GaryZhu"
+  },
+  "headline": "用MapReduce来进行用户行为分析",
+  "description" : "背景 \n在系统设计的时候，为了提高可用性，经常需要对用户行为进行分析，来持续完善系统。 一个典型的场景就是分析用户的查询条件，根据操作习惯和规律来精简用户输入，让查询变得更简单更高效。那么对于这种场景，我们应该如何实现？\n 解决方案 \n最简单的做法就是在每次查询的时候都把所用到的条件直接save到关系数据库，这种做法确实很简单，但是每次都需要做write操作，尤其对于操作密集型应用，我们不认为这是种很好的practise。或许你会说，可以做个内存队列，把信息缓存起来，然后batch write，这种做法性能确实比前一种更高效，而且对于统计用户使用信息这种场景，就算由于系统宕机导致的部分数据丢失，似乎也不会产生蝴蝶效应，但是我们总是想做得更好，于是，对于系统重启之类的可预知情况，我们可以利用RMI动态提交掉缓存中的数据，但是对于不可预知的情况，又该怎么办呢？或许我们可以找到其他更好的方法。\n比如，直接把信息写到log里，然后安排一个schedual job来定期分析log，提取出信息再save到数据库，但是如果log很大很多，分析起来会不会很慢？查看了IPS PRD上的log，一天的log大概有几百M左右，而liner的数据量是logistic的10倍，log信息也会大出好几倍。而且通常为了trouble shooting，我们会保存一定期限的log，之后便会做house keeping，所以如果想在log被清掉之前做分析的话，仅仅是ARP项目，我们面对的就可能是几十个 N G的log文件，直接用JAVA分析？答案是可以的，用NIO，那还有其他办法吗？MapReduce!\n MapReduce \nMapReduce的分布式并行计算，说白了就是利用笨办法来暴力解决问题，对于统计用户查询条件这种场景，我们可以看到log片段如下：\n877994 [[ACTIVE] ExecuteThread: \u0026#39;1\u0026#39; for queue: \u0026#39;weblogic.",
+  "inLanguage" : "en",
+  "wordCount":  217 ,
+  "datePublished" : "2012-09-16T01:26:10",
+  "dateModified" : "2012-09-16T01:26:10",
+  "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "MapReduce, User analysis, Big data" ],
+  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/analysis-user-behaviour\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/GaaraZhu.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="用MapReduce来进行用户行为分析" />
+<meta property="og:description" content="背景 
+在系统设计的时候，为了提高可用性，经常需要对用户行为进行分析，来持续完善系统。 一个典型的场景就是分析用户的查询条件，根据操作习惯和规律来精简用户输入，让查询变得更简单更高效。那么对于这种场景，我们应该如何实现？
+ 解决方案 
+最简单的做法就是在每次查询的时候都把所用到的条件直接save到关系数据库，这种做法确实很简单，但是每次都需要做write操作，尤其对于操作密集型应用，我们不认为这是种很好的practise。或许你会说，可以做个内存队列，把信息缓存起来，然后batch write，这种做法性能确实比前一种更高效，而且对于统计用户使用信息这种场景，就算由于系统宕机导致的部分数据丢失，似乎也不会产生蝴蝶效应，但是我们总是想做得更好，于是，对于系统重启之类的可预知情况，我们可以利用RMI动态提交掉缓存中的数据，但是对于不可预知的情况，又该怎么办呢？或许我们可以找到其他更好的方法。
+比如，直接把信息写到log里，然后安排一个schedual job来定期分析log，提取出信息再save到数据库，但是如果log很大很多，分析起来会不会很慢？查看了IPS PRD上的log，一天的log大概有几百M左右，而liner的数据量是logistic的10倍，log信息也会大出好几倍。而且通常为了trouble shooting，我们会保存一定期限的log，之后便会做house keeping，所以如果想在log被清掉之前做分析的话，仅仅是ARP项目，我们面对的就可能是几十个 N G的log文件，直接用JAVA分析？答案是可以的，用NIO，那还有其他办法吗？MapReduce!
+ MapReduce 
+MapReduce的分布式并行计算，说白了就是利用笨办法来暴力解决问题，对于统计用户查询条件这种场景，我们可以看到log片段如下：
+877994 [[ACTIVE] ExecuteThread: &#39;1&#39; for queue: &#39;weblogic.">
+<meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://GaaraZhu.github.io/analysis-user-behaviour/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Gary&#39;s Blog" />
+
+  <meta name="twitter:title" content="用MapReduce来进行用户行为分析" />
+  <meta name="twitter:description" content="背景 
+在系统设计的时候，为了提高可用性，经常需要对用户行为进行分析，来持续完善系统。 一个典型的场景就是分析用户的查询条件，根据操作习惯和规律来精简用户输入，让查询变得更简单更高效。那么对于这种场景，我们应该如何实现？
+ 解决方案 
+最简单的做法就是在每次查询的时候都把所用到的条件直接save到关系数据库，这种做法确实很简单，但是每次都需要做write操作，尤其对于操作密集型应用，我们不认为这是 …">
+  <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.96.0" />
+  <link rel="alternate" href="https://GaaraZhu.github.io/index.xml" type="application/rss+xml" title="Gary&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://GaaraZhu.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://GaaraZhu.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://GaaraZhu.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://GaaraZhu.github.io">Gary&#39;s Blog</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">Blog</a>
+              <div class="navlinks-children">
+                
+                  <a href="/chat-the-ops-up">Chat the Ops up</a>
+                
+                  <a href="/deep-clone">Java深度克隆</a>
+                
+                  <a href="/map-reduce-tunning">MapReduce tuning</a>
+                
+                  <a href="/aviator-validator">基于Aviator的注解驱动验证框架</a>
+                
+                  <a href="/analysis-user-behaviour">用MapReduce来进行用户行为分</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Gary&#39;s Blog" href="https://GaaraZhu.github.io">
+            <img class="avatar-img" src="https://GaaraZhu.github.io/img/avatar-icon.png" alt="Gary&#39;s Blog" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="page-heading">
+              
+                <h1>用MapReduce来进行用户行为分析</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="背景">背景</h2>
+<p><br>
+在系统设计的时候，为了提高可用性，经常需要对用户行为进行分析，来持续完善系统。
+一个典型的场景就是分析用户的查询条件，根据操作习惯和规律来精简用户输入，让查询变得更简单更高效。那么对于这种场景，我们应该如何实现？</p>
+<p> </p>
+<h2 id="解决方案">解决方案</h2>
+<p><br>
+最简单的做法就是在每次查询的时候都把所用到的条件直接save到关系数据库，这种做法确实很简单，但是每次都需要做write操作，尤其对于操作密集型应用，我们不认为这是种很好的practise。或许你会说，可以做个内存队列，把信息缓存起来，然后batch write，这种做法性能确实比前一种更高效，而且对于统计用户使用信息这种场景，就算由于系统宕机导致的部分数据丢失，似乎也不会产生蝴蝶效应，但是我们总是想做得更好，于是，对于系统重启之类的可预知情况，我们可以利用RMI动态提交掉缓存中的数据，但是对于不可预知的情况，又该怎么办呢？或许我们可以找到其他更好的方法。</p>
+<p>比如，直接把信息写到log里，然后安排一个schedual job来定期分析log，提取出信息再save到数据库，但是如果log很大很多，分析起来会不会很慢？查看了IPS PRD上的log，一天的log大概有几百M左右，而liner的数据量是logistic的10倍，log信息也会大出好几倍。而且通常为了trouble shooting，我们会保存一定期限的log，之后便会做house keeping，所以如果想在log被清掉之前做分析的话，仅仅是ARP项目，我们面对的就可能是几十个 N G的log文件，直接用JAVA分析？答案是可以的，用NIO，那还有其他办法吗？MapReduce!</p>
+<p> </p>
+<h2 id="mapreduce">MapReduce</h2>
+<p><br>
+MapReduce的分布式并行计算，说白了就是利用笨办法来暴力解决问题，对于统计用户查询条件这种场景，我们可以看到log片段如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">877994 [[ACTIVE] ExecuteThread: &#39;1&#39; for queue: &#39;weblogic.kernel.Default (self-tuning)&#39;] DEBUG com.easys.common.interceptor.HMILogDecorator  14 Sep 2012 11:01:23,023 - ARP_SEARCH_INVOICE-CTRLOFFICE-COLOFFICE-INVTYPE-BLNO
+</span></span><span class="line"><span class="cl">877994 [[ACTIVE] ExecuteThread: &#39;1&#39; for queue: &#39;weblogic.kernel.Default (self-tuning)&#39;] DEBUG com.easys.common.interceptor.HMILogDecorator 14 Sep 2012 11:01:23,023 - ARP_SEARCH_INVOICE-CTRLOFFICE-COLOFFICE-INVNO-BLNO877994 [[ACTIVE] ExecuteThread: &#39;1&#39; for queue: &#39;weblogic.kernel.Default (self-tuning)&#39;] DEBUG com.easys.common.interceptor.HMILogDecorator 14 Sep 2012 11:01:23,023 - ARP_SEARCH_PAYMENT-CTRLOFFICE-COLOFFICE-PMTNO
+</span></span></code></pre></div><p>可以看到，我们关心的只是最后的一串字符“ARP_SEARCH_INVOICE-CTRLOFFICE-COLOFFICE-INVTYPE-BLNO“， 表示了功能名+所用条件，于是在MapReduce里面我们先定位到这段字符(实际log是不分行的，可以直接split)，然后将其解析成 ([功能名, 条件] -&gt; 1)  的key-value 对，之后交给Reduce函数做统计.</p>
+<h3 id="map阶段">Map阶段：</h3>
+<p><br>
+<img src="/images/analysis-user-behaviour/map.png" alt="workflow"></p>
+<h3 id="reduce阶段">Reduce阶段：</h3>
+<p><br>
+<img src="/images/analysis-user-behaviour/reduce.png" alt="workflow"></p>
+<p>Reduce之后的结果我们可以直接导到关系数据库里，后续可以用SQL做分析出Report。
+代码实现其实就是一个加强版的WordCount.</p>
+<p><em>Map类</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.easys.hmi.collectors</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.hadoop.io.IntWritable</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.hadoop.io.LongWritable</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.hadoop.io.Text</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.hadoop.mapreduce.Mapper</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SearchCriteriaMapper</span> <span class="kd">extends</span>
+</span></span><span class="line"><span class="cl">		<span class="n">Mapper</span><span class="o">&lt;</span><span class="n">LongWritable</span><span class="o">,</span> <span class="n">Text</span><span class="o">,</span> <span class="n">Text</span><span class="o">,</span> <span class="n">IntWritable</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">IntWritable</span> <span class="n">one</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntWritable</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">map</span><span class="o">(</span><span class="n">LongWritable</span> <span class="n">key</span><span class="o">,</span> <span class="n">Text</span> <span class="n">value</span><span class="o">,</span> <span class="n">Context</span> <span class="n">context</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">			<span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">String</span> <span class="n">lineValue</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="n">String</span> <span class="n">dataValue</span> <span class="o">=</span> <span class="n">lineValue</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">,</span> <span class="n">3</span><span class="o">)[</span><span class="n">2</span><span class="o">].</span><span class="na">trim</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">String</span> <span class="n">functionName</span> <span class="o">=</span> <span class="n">dataValue</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">,</span> <span class="n">2</span><span class="o">)[</span><span class="n">0</span><span class="o">].</span><span class="na">trim</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">String</span> <span class="n">criteriasValue</span><span class="o">=</span> <span class="n">dataValue</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">,</span> <span class="n">2</span><span class="o">)[</span><span class="n">1</span><span class="o">].</span><span class="na">trim</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="n">String</span><span class="o">[]</span> <span class="n">criterias</span> <span class="o">=</span> <span class="n">criteriasValue</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">criteria</span> <span class="o">:</span> <span class="n">criterias</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">			<span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">functionName</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">criteria</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">			<span class="n">context</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="k">new</span> <span class="n">Text</span><span class="o">(</span><span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">()),</span> <span class="n">one</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p> 
+<em>Reduce类</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JAVA" data-lang="JAVA"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.easys.hmi.collectors</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.hadoop.io.IntWritable</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.hadoop.io.Text</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.hadoop.mapreduce.Reducer</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SearchCriteriaReducer</span> <span class="kd">extends</span>
+</span></span><span class="line"><span class="cl">		<span class="n">Reducer</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">    <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="n">IntWritable</span> <span class="n">totalCount</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntWritable</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">reduce</span><span class="o">(</span><span class="n">Text</span> <span class="n">key</span><span class="o">,</span> <span class="n">Iterable</span>
+</span></span><span class="line"><span class="cl">   
+</span></span><span class="line"><span class="cl">     <span class="n">values</span><span class="o">,</span> <span class="n">Context</span> <span class="n">context</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">			<span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kt">int</span> <span class="n">total</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="o">(</span><span class="n">IntWritable</span> <span class="n">singleValue</span> <span class="o">:</span> <span class="n">values</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">total</span> <span class="o">+=</span> <span class="n">singleValue</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="o">}</span>
+</span></span><span class="line"><span class="cl">		<span class="n">totalCount</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">total</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">context</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">totalCount</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p> </p>
+<h2 id="总结">总结</h2>
+<p> </p>
+<ol>
+<li>
+<p>用户行为分析这种对数据实时性要求不高的功能，可以利用非结构化的方式来存储源数据，然后定期处理，生成结构化数据，存储到关系数据库，做后续分析。</p>
+</li>
+<li>
+<p>MapReduce的使用与否取决于几个因素： 文件大小，文件数量，处理逻辑复杂度等等，对于简单的小文件处理，Java IO/NIO足够了，比如：上述的计算，在处理20个 50M的log文件的时候，伪分布式模式下使用Hadoop一共耗时90秒，而使用java IO，仅仅需要30秒就可以了。<br>
+ <br>
+ </p>
+</li>
+</ol>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://GaaraZhu.github.io/tags/mapreduce/">MapReduce</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/user-analysis/">User analysis</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/big-data/">Big data</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2fanalysis-user-behaviour%2f&amp;text=%e7%94%a8MapReduce%e6%9d%a5%e8%bf%9b%e8%a1%8c%e7%94%a8%e6%88%b7%e8%a1%8c%e4%b8%ba%e5%88%86%e6%9e%90&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2fanalysis-user-behaviour%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2fanalysis-user-behaviour%2f&amp;title=%e7%94%a8MapReduce%e6%9d%a5%e8%bf%9b%e8%a1%8c%e7%94%a8%e6%88%b7%e8%a1%8c%e4%b8%ba%e5%88%86%e6%9e%90" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2fanalysis-user-behaviour%2f&amp;title=%e7%94%a8MapReduce%e6%9d%a5%e8%bf%9b%e8%a1%8c%e7%94%a8%e6%88%b7%e8%a1%8c%e4%b8%ba%e5%88%86%e6%9e%90" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2fanalysis-user-behaviour%2f&amp;title=%e7%94%a8MapReduce%e6%9d%a5%e8%bf%9b%e8%a1%8c%e7%94%a8%e6%88%b7%e8%a1%8c%e4%b8%ba%e5%88%86%e6%9e%90" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2fanalysis-user-behaviour%2f&amp;description=%e7%94%a8MapReduce%e6%9d%a5%e8%bf%9b%e8%a1%8c%e7%94%a8%e6%88%b7%e8%a1%8c%e4%b8%ba%e5%88%86%e6%9e%90" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">See also</h4>
+                  <ul>
+                
+                
+                    <li><a href="/map-reduce-tunning/">MapReduce tuning</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+      
+    <div class="page-meta">
+  
+  
+  
+</div>
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:sec.gary@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/GaaraZhu" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/gary-zhu-53114169" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://github.com/GaaraZhu">GaryZhu</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://GaaraZhu.github.io">Gary&#39;s Blog</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://GaaraZhu.github.io/js/main.js"></script>
+<script src="https://GaaraZhu.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://GaaraZhu.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

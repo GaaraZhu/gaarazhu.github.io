@@ -133,7 +133,11 @@ InvoiceDTO [ amount -&gt; AmountDTO, charges -&gt; List] InvoiceBean [ amount -&
                 
                   <a href="/deep-clone">Java深度克隆</a>
                 
+                  <a href="/map-reduce-tunning">MapReduce tuning</a>
+                
                   <a href="/aviator-validator">基于Aviator的注解驱动验证框架</a>
+                
+                  <a href="/analysis-user-behaviour">用MapReduce来进行用户行为分</a>
                 
               </div>
             </li>
@@ -548,7 +552,9 @@ InvoiceBean [ amount -&gt;AmountBean,  charges -&gt; List<!-- raw HTML omitted -
 </span></span></code></pre></div><p> </p>
 <h2 id="总结">总结</h2>
 <p><br>
-至此，大功告成，测试一下，能快速完成例子中的克隆，有多快？和第一种方法对比一下：同时转换1W次的时候，使用扩展后的 ARPBeanUtils 需要200ms，而通过Jason，即使是使用效率最高的Jackson，转换1W次也需要6s，高下立判啊</p>
+至此，大功告成，测试一下，能快速完成例子中的克隆，有多快？和第一种方法对比一下：同时转换1W次的时候，使用扩展后的 ARPBeanUtils 需要200ms，而通过Jason，即使是使用效率最高的Jackson，转换1W次也需要6s，高下立判啊<br>
+ <br>
+ </p>
 
 
         

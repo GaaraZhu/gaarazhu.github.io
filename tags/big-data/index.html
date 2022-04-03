@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>ChatOps - Gary&#39;s Blog</title>
+  <title>Big data - Gary&#39;s Blog</title>
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -29,13 +29,13 @@
 }
 </script>
 
-<meta property="og:title" content="ChatOps" />
+<meta property="og:title" content="Big data" />
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://GaaraZhu.github.io/tags/chatops/" />
+<meta property="og:url" content="https://GaaraZhu.github.io/tags/big-data/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
-  <meta name="twitter:title" content="ChatOps" />
+  <meta name="twitter:title" content="Big data" />
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -175,7 +175,7 @@
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="tags-heading">
               
-                <h1>ChatOps</h1>
+                <h1>Big data</h1>
               
               
                 <hr class="small">
@@ -198,8 +198,8 @@
         <div class="posts-list">
           
             <article class="post-preview">
-    <a href="https://GaaraZhu.github.io/chat-the-ops-up/">
-        <h2 class="post-title">Chat the Ops up</h2>
+    <a href="https://GaaraZhu.github.io/analysis-user-behaviour/">
+        <h2 class="post-title">用MapReduce来进行用户行为分析</h2>
         
         
         
@@ -209,13 +209,13 @@
         <span class="post-meta">
   
   
-  <i class="fas fa-calendar"></i>&nbsp;Posted on April 2, 2021
+  <i class="fas fa-calendar"></i>&nbsp;Posted on September 16, 2012
   
   
-    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;5&nbsp;minutes
   
   
-    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;521&nbsp;words
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;217&nbsp;words
   
   
     
@@ -229,22 +229,26 @@
     </p>
     <div class="post-entry">
         
-        TL;DR 
-This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.
-        <a href="https://GaaraZhu.github.io/chat-the-ops-up/" class="post-read-more">[Read More]</a>
+        背景 
+在系统设计的时候，为了提高可用性，经常需要对用户行为进行分析，来持续完善系统。 一个典型的场景就是分析用户的查询条件，根据操作习惯和规律来精简用户输入，让查询变得更简单更高效。那么对于这种场景，我们应该如何实现？
+ 解决方案 
+最简单的做法就是在每次查询的时候都把所用到的条件直接save到关系数据库，这种做法确实很简单，但是每次都需要做write操作，尤其对于操作密集型应用，我们不认为这是种很好的practise。或许你会说，可以做个内存队列，把信息缓存起来，然后batch write，这种做法性能确实比前一种更高效，而且对于统计用户使用信息这种场景，就算由于系统宕机导致的部分数据丢失，似乎也不会产生蝴蝶效应，但是我们总是想做得更好，于是，对于系统重启之类的可预知情况，我们可以利用RMI动态提交掉缓存中的数据，但是对于不可预知的情况，又该怎么办呢？或许我们可以找到其他更好的方法。
+比如，直接把信息写到log里，然后安排一个schedual job来定期分析log，提取出信息再save到数据库，但是如果log很大很多，分析起来会不会很慢？查看了IPS PRD上的log，一天的log大概有几百M左右，而liner的数据量是logistic的10倍，log信息也会大出好几倍。而且通常为了trouble shooting，我们会保存一定期限的log，之后便会做house keeping，所以如果想在log被清掉之前做分析的话，仅仅是ARP项目，我们面对的就可能是几十个 N G的log文件，直接用JAVA分析？答案是可以的，用NIO，那还有其他办法吗？MapReduce!
+ MapReduce 
+MapReduce的分布式并行计算，说白了就是利用笨办法来暴力解决问题，对于统计用户查询条件这种场景，我们可以看到log片段如下：
+877994 [[ACTIVE] ExecuteThread: &#39;1&#39; for queue: &#39;weblogic.
+        <a href="https://GaaraZhu.github.io/analysis-user-behaviour/" class="post-read-more">[Read More]</a>
         
     </div>
 
     
     <div class="blog-tags">
         
-        <a href="https://GaaraZhu.github.io/tags/ci/cd/">CI/CD</a>&nbsp;
+        <a href="https://GaaraZhu.github.io/tags/mapreduce/">MapReduce</a>&nbsp;
         
-        <a href="https://GaaraZhu.github.io/tags/chatops/">ChatOps</a>&nbsp;
+        <a href="https://GaaraZhu.github.io/tags/user-analysis/">User analysis</a>&nbsp;
         
-        <a href="https://GaaraZhu.github.io/tags/atlassian-bamboo/">Atlassian Bamboo</a>&nbsp;
-        
-        <a href="https://GaaraZhu.github.io/tags/microsoft-teams/">Microsoft Teams</a>&nbsp;
+        <a href="https://GaaraZhu.github.io/tags/big-data/">Big data</a>&nbsp;
         
     </div>
     
@@ -290,7 +294,7 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
               </li>
           
           <li>
-            <a href="/tags/chatops/index.xml" title="RSS">
+            <a href="/tags/big-data/index.xml" title="RSS">
               <span class="fa-stack fa-lg">
                 <i class="fas fa-circle fa-stack-2x"></i>
                 <i class="fas fa-rss fa-stack-1x fa-inverse"></i>

@@ -126,7 +126,11 @@
                 
                   <a href="/deep-clone">Java深度克隆</a>
                 
+                  <a href="/map-reduce-tunning">MapReduce tuning</a>
+                
                   <a href="/aviator-validator">基于Aviator的注解驱动验证框架</a>
+                
+                  <a href="/analysis-user-behaviour">用MapReduce来进行用户行为分</a>
                 
               </div>
             </li>
@@ -270,7 +274,9 @@
 <p>One bottleneck of MapReduce is the I/O cost between map nodes and reduce node. First Map process will write its output result into file system(disk, not HDFS) and then will transfer to reduce node for Reduce process. If the output of Map process is a big size, we can do a compression before writing and transferring, and this will comes with a performance improvement as well as disk space saving. Attention that, it will also lead to an extra cost for a decompression when reading data.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Here lists three main solutions for tuning our MapReduce function, there are also other ways, like tuning task schedule, customize comparator, customize task quantity of Map and Reduce tasks and etc.</p>
-<p>Above all, what we need is to analyze the main cost case by case before taking a tuning solution.</p>
+<p>Above all, what we need is to analyze the main cost case by case before taking a tuning solution.<br>
+ <br>
+ </p>
 
 
         
@@ -342,6 +348,17 @@
 
         
           
+            
+          
+
+          
+                  <h4 class="see-also">See also</h4>
+                  <ul>
+                
+                
+                    <li><a href="/analysis-user-behaviour/">用MapReduce来进行用户行为分析</a></li>
+                
+              </ul>
 
           
         
