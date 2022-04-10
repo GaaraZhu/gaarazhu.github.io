@@ -7,9 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>AWS one punch - Gary&#39;s Blog</title>
-  <meta name="description" content="Background 
-There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.">
+  <title>Fine-grained authorization with Amazon Cognito user pool and API Gateway - Gary&#39;s Blog</title>
+  <meta name="description" content="Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -45,8 +44,8 @@ There was a time when I was working on a feature which required changes to more 
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/GaaraZhu.github.io\/aws-one-punch\/",
-          "name": "Aws one punch"
+          "@id": "https:\/\/GaaraZhu.github.io\/fine-grained-access-control-with-cognito\/",
+          "name": "Fine grained authorization with amazon cognito user pool and API gateway"
         }
     }]
 }
@@ -57,15 +56,15 @@ There was a time when I was working on a feature which required changes to more 
   "author": {
     "name" : "GaryZhu"
   },
-  "headline": "AWS one punch",
-  "description" : "Background \nThere was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.",
+  "headline": "Fine-grained authorization with Amazon Cognito user pool and API Gateway",
+  "description" : "Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.",
   "inLanguage" : "en",
-  "wordCount":  385 ,
-  "datePublished" : "2021-12-19T10:21:44",
-  "dateModified" : "2021-12-19T10:21:44",
+  "wordCount":  524 ,
+  "datePublished" : "2022-04-02T11:09:48",
+  "dateModified" : "2022-04-02T11:09:48",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
-  "keywords" : [ "AWS, IAM Role Credentials, Golang" ],
-  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/aws-one-punch\/",
+  "keywords" : [ "Microservices, Authentication, Serverless, AWS, Amazon Cognito, API Gateway" ],
+  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/fine-grained-access-control-with-cognito\/",
   "publisher" : {
     "@type": "Organization",
     "name" : "https:\/\/GaaraZhu.github.io",
@@ -79,17 +78,15 @@ There was a time when I was working on a feature which required changes to more 
 }
 </script>
 
-<meta property="og:title" content="AWS one punch" />
-<meta property="og:description" content="Background 
-There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.">
+<meta property="og:title" content="Fine-grained authorization with Amazon Cognito user pool and API Gateway" />
+<meta property="og:description" content="Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://GaaraZhu.github.io/aws-one-punch/" />
+<meta property="og:url" content="https://GaaraZhu.github.io/fine-grained-access-control-with-cognito/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
-  <meta name="twitter:title" content="AWS one punch" />
-  <meta name="twitter:description" content="Background 
-There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying …">
+  <meta name="twitter:title" content="Fine-grained authorization with Amazon Cognito user pool and API …" />
+  <meta name="twitter:description" content="Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and …">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -237,7 +234,7 @@ There was a time when I was working on a feature which required changes to more 
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="page-heading">
               
-                <h1>AWS one punch</h1>
+                <h1>Fine-grained authorization with Amazon Cognito user pool and API Gateway</h1>
               
               
                 <hr class="small">
@@ -257,84 +254,74 @@ There was a time when I was working on a feature which required changes to more 
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <h2 id="background">Background</h2>
+        <p>Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.</p>
+<p>This post shows how we implemented a fine-grained system-to-system authorization for microservices application using <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html">Amazon Cognito user pool</a> and <a href="https://docs.aws.amazon.com/apigateway/">API Gateway</a>.</p>
+<p> </p>
+<h2 id="solution">solution</h2>
 <p><br>
-There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying <a href="https://aws.amazon.com/cloudformation/">Cloudformation</a> changes from local. To simplify the work, I had one command prompt opened for each service so that I can build, package and deploy it whenever I changed something.</p>
+<a href="https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html">Amazon Cognito</a> is a powerful service for application authentication, authorization, and user management. The idea here is to use its user directory service <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html">User Pools</a> to authenticate calls between microservices as API Gateway is natively integrated with it to validate identities of consumer.</p>
+<p>architecture diagram:
+<img src="/images/fine-grained-access-control-with-cognito/auth_flow.png" alt="auth_flow"></p>
 <p> </p>
-<h2 id="pain-points">Pain points</h2>
+<h2 id="key-components">key components</h2>
+<p>There are three key components here:</p>
+<ul>
+<li><strong>Resource server</strong>: Each service has a dedicated resource server with pre-defined scopes for its resources(API method, Lambda etc)</li>
+<li><strong>App client</strong>: Each service has a dedicated app client with limited scopes it needs to access external resources</li>
+<li><strong>Cognito authorizer</strong>: Each API resource has an Cognito authorizer configured for authenciation and authorization</li>
+</ul>
+<p> </p>
+<h3 id="resource-server">Resource server</h3>
 <p><br>
-As recommended by AWS, we should use <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/howtogetcredentials.html">IAM roles credentials</a> instead of long-term access keys in this case. But the pain point is that we will have to grant the access in each command prompt, or to update the local credentials file every time when the temporary credentials are expired.</p>
+<a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html">Resource server</a> is what we can use to manage the scopes that are required for accessing our REST resources. For example, we have scope <code>customer.read</code> from resouce server <code>customers-v1-resource-server</code> for resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>, indicating that to access the resource a JWT token with this scope is required in the request.</p>
 <p> </p>
-<h2 id="solution">Solution</h2>
+<h3 id="app-client">App client</h3>
 <p><br>
-So I started this project <a href="https://github.com/GaaraZhu/aws-one-punch">AWS-one-punch</a> which pulls all AWS accounts and IAM roles using the SSO bearer token stored in cookie to generate new credentials to be updated in the local credentials file, thus with just one command, we can grant all command prompts the access.</p>
+<a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html">App client</a> is where we define the auth flow, and where we specify the allowed scopes for the current service to access external resources. for example, we have app client <code>accounts-v1-app-client</code> with allowed scope <code>customers-v1-resource-server/customer.read</code>(a resource server and scope combination from the target service), indicating that <code>accounts-v1</code> service can only access resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>.</p>
 <p> </p>
-<h2 id="installation">Installation</h2>
-<p> </p>
-<ol>
-<li>Install via Homebrew<br>
- </li>
-</ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">brew install gaarazhu/aws-one-punch/aws-one-punch
-</span></span></code></pre></div><p> <br>
- 
-2. set the AWS user portal in <code>~/.bash_profile</code> or equivalent and reload it with <code>source ~/.bash_profile</code><br>
- </p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">export AWS_CONSOLE_DOMAIN=&#34;garyz.awsapps.com&#34;
-</span></span></code></pre></div><p> <br>
- 
-3. check the installation<br>
- 
-<img src="/images/aws-one-punch/install-check.png" alt="install-check"></p>
-<p> </p>
-<h2 id="usage">Usage</h2>
-<p> </p>
-<ol>
-<li>list accounts<br>
- </li>
-</ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-accounts
-</span></span><span class="line"><span class="cl">2021/11/10 22:04:14 No AWS SSO token found, please finish the SSO in the user portal first: https://gzhu.awsapps.com/start/#/ first
-</span></span></code></pre></div><p> <br>
- 
-2. open the url, finish SSO and repeat step one(PS. keep listing the accounts unitl it works as the token will only be written to cookie when all resources have been loaded after the SSO)<br>
- </p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-accounts
-</span></span><span class="line"><span class="cl">AccountId: ins-sd4312, accountName: 20890663 (MRP IaaS Prod)
-</span></span><span class="line"><span class="cl">AccountId: ins-2ssfds, accountName: 79300001 (Sandbox 1)
-</span></span><span class="line"><span class="cl">AccountId: ins-3sadfa, accountName: 69127290 (MRP IaaS Non-Prod)
-</span></span><span class="line"><span class="cl">AccountId: ins-siki23, accountName: 58868209 (Data Analytics)
-</span></span><span class="line"><span class="cl">AccountId: ins-14oasn, accountName: 66060440 (Shared Services)
-</span></span></code></pre></div><p> <br>
- 
-3. list IAM roles<br>
- </p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-roles --account-id ins-3sadfa
-</span></span><span class="line"><span class="cl">RoleName: DigitalDeveloperNonprodAccess
-</span></span></code></pre></div><p> <br>
- 
-4. one punch for access<br>
- </p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch access --account-name 69127290 --role-name DigitalDeveloperNonprodAccess
-</span></span><span class="line"><span class="cl">AWS access granted with account 69127290 and IAM role DigitalDeveloperNonprodAccess
-</span></span></code></pre></div><p> </p>
-<h3 id="conclusion">Conclusion</h3>
+<h3 id="cognito-authorizer">Cognito authorizer</h3>
 <p><br>
-<a href="https://github.com/GaaraZhu/aws-one-punch">aws-one-punch</a> automates the manual process to generate IAM role credentials and to grant command prompt AWS access with the credentials regardless of how many prompts there are. Hope this can help if you have the same problem.</p>
-<p>For furthur simplification, we can create an alias for above one punch command, or we can have it managed somehow, for example with
-<a href="https://github.com/knqyf263/pet">pet</a>.<br>
- <br>
+An API Gateway authorizer whose type is <strong>COGNITO_USER_POOLS</strong>. When receiving an API call, the authorizer will authenticate the request by checking whether AN access token is supplied and valid, after that it will authorize API calls based on the custom scopes of specified access-protected resources. For example, requests with access token having <code>customers-v1-resource-server/customer.read</code> scope will pass the authentication and be authorized to access resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>.</p>
+<p> </p>
+<h2 id="challenges">challenges</h2>
+<ul>
+<li>Deployment dependency
+<br>
+This pattern introduced a service dependency which requires target resource service and scopes to be created/deployed first prior to the consumer service. For example, service <code>customer.read</code> can not be deployed unless the replied scope has been created.</li>
+</ul>
+<blockquote>
+<p>Solution: Deploy microservices in batches to avoid failures caused by the dependency issue.</p>
+</blockquote>
+<ul>
+<li>Secure app client credentials
+<br>
+As the service-to-service interaction starts with a user pool sign-in with the app client credentials where a JWT token will be returned from Cognito to the initiator for external resource access. We are storing the credentials as secure parameters in Amazon SSM which are manually created for each microservice after the deployment. With the increasing number of µservices, we need a tool to do this securely and automatically for us.</li>
+</ul>
+<blockquote>
+<p>Solution: <a href="https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm">https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm</a></p>
+</blockquote>
+<p> </p>
+<h2 id="conclusion">Conclusion</h2>
+<p><br>
+With this fine-grained access control mechanism, we now can guarantee that only authenticated services will be allowed to access the resource, and only resources with specified scopes can be accessed by the service.</p>
+<p> <br>
  </p>
 
 
         
           <div class="blog-tags">
             
+              <a href="https://GaaraZhu.github.io/tags/microservices/">Microservices</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/authentication/">Authentication</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/serverless/">Serverless</a>&nbsp;
+            
               <a href="https://GaaraZhu.github.io/tags/aws/">AWS</a>&nbsp;
             
-              <a href="https://GaaraZhu.github.io/tags/iam-role-credentials/">IAM Role Credentials</a>&nbsp;
+              <a href="https://GaaraZhu.github.io/tags/amazon-cognito/">Amazon Cognito</a>&nbsp;
             
-              <a href="https://GaaraZhu.github.io/tags/golang/">Golang</a>&nbsp;
+              <a href="https://GaaraZhu.github.io/tags/api-gateway/">API Gateway</a>&nbsp;
             
           </div>
         
@@ -349,42 +336,42 @@ So I started this project <a href="https://github.com/GaaraZhu/aws-one-punch">AW
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;text=AWS%20one%20punch&amp;via=" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-access-control-with-cognito%2f&amp;text=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway&amp;via=" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f" target="_blank" title="Share on Facebook">
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-access-control-with-cognito%2f" target="_blank" title="Share on Facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;title=AWS%20one%20punch" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-access-control-with-cognito%2f&amp;title=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;title=AWS%20one%20punch" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-access-control-with-cognito%2f&amp;title=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;title=AWS%20one%20punch" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-access-control-with-cognito%2f&amp;title=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2faws-one-punch%2f&amp;description=AWS%20one%20punch" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-access-control-with-cognito%2f&amp;description=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -408,7 +395,7 @@ So I started this project <a href="https://github.com/GaaraZhu/aws-one-punch">AW
                 
                     <li><a href="/chat-the-ops-up/">Chat the Ops up</a></li>
                 
-                    <li><a href="/fine-grained-access-control-with-cognito/">Fine-grained authorization with Amazon Cognito user pool and API Gateway</a></li>
+                    <li><a href="/aws-one-punch/">AWS one punch</a></li>
                 
               </ul>
 
