@@ -259,13 +259,13 @@
         <p>Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.</p>
 <p>This post shows how we implemented a fine-grained system-to-system authorization for microservices application using <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html">Amazon Cognito user pool</a> and <a href="https://docs.aws.amazon.com/apigateway/">API Gateway</a>.</p>
 <p> </p>
-<h2 id="solution">solution</h2>
+<h2 id="solution">Solution</h2>
 <p><br>
 <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html">Amazon Cognito</a> is a powerful service for application authentication, authorization, and user management. The idea here is to use its user directory service <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html">User Pools</a> to authenticate calls between microservices as API Gateway is natively integrated with it to validate identities of consumer.</p>
 <p>architecture diagram:
 <img src="/images/fine-grained-authorization/auth_flow.png" alt="auth_flow"></p>
 <p> </p>
-<h2 id="key-components">key components</h2>
+<h2 id="key-components">Key components</h2>
 <p>There are three key components here:</p>
 <ul>
 <li><strong>Resource server</strong>: Each service has a dedicated resource server with pre-defined scopes for its resources(API method, Lambda etc)</li>
@@ -285,7 +285,7 @@
 <p><br>
 An API Gateway authorizer whose type is <strong>COGNITO_USER_POOLS</strong>. When receiving an API call, the authorizer will authenticate the request by checking whether AN access token is supplied and valid, after that it will authorize API calls based on the custom scopes of specified access-protected resources. For example, requests with access token having <code>customers-v1-resource-server/customer.read</code> scope will pass the authentication and be authorized to access resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>.</p>
 <p> </p>
-<h2 id="challenges">challenges</h2>
+<h2 id="challenges">Challenges</h2>
 <ul>
 <li>Deployment dependency
 <br>
