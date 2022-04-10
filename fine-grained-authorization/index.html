@@ -59,7 +59,7 @@
   "headline": "Fine-grained authorization with Amazon Cognito user pool and API Gateway",
   "description" : "Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.",
   "inLanguage" : "en",
-  "wordCount":  585 ,
+  "wordCount":  570 ,
   "datePublished" : "2022-04-10T17:09:20",
   "dateModified" : "2022-04-10T17:09:20",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -308,46 +308,42 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">UpdateReplacePolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Delete</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">DeletionPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Delete</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">Properties</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">AllowedOAuthFlows</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="l">client_credentials</span><span class="w"> </span><span class="c"># get the access token from the token endpoint using a combination of client and client_secret</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">AllowedOAuthScopes</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="s1">&#39;customers-v1-resource-server/customer.read&#39;</span><span class="w"> </span><span class="c"># allowed custom scopes</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">AllowedOAuthFlowsUserPoolClient</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">ClientName</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;accounts-v1-app-client&#39;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">ExplicitAuthFlows</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">AllowedOAuthFlows</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="s1">&#39;client_credentials&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">AllowedOAuthScopes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="s1">&#39;customers-v1-resource-server/customer.read&#39;</span><span class="w"> </span><span class="c"># allowed custom scopes</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">AllowedOAuthFlowsUserPoolClient</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ClientName</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;accounts-v1-app-client&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ExplicitAuthFlows</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="l">ALLOW_REFRESH_TOKEN_AUTH</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">GenerateSecret</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">UserPoolId</span><span class="p">:</span><span class="w"> </span><span class="l">1ds23esfa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">GenerateSecret</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">UserPoolId</span><span class="p">:</span><span class="w"> </span><span class="l">1ds23esfa</span><span class="w">
 </span></span></span></code></pre></div><p> </p>
 <h3 id="api-gw-cognito-user-pool-authorizer">API GW Cognito user pool authorizer</h3>
 <p><br>
 When receiving an API call request, this authorizer will authenticate the request by checking whether an access token is supplied and valid, after that it will authorize the call based on the custom scopes of specified access-protected resources. For example, request with access token having <code>customers-v1-resource-server/customer.read</code> scope will pass the authentication and will be authorized to access resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="w">    </span><span class="nt">CognitoUserPoolAuthorizer</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;AWS::ApiGateway::Authorizer&#39;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">Properties</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">AuthorizerResultTtlInSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">300</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">IdentitySource</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;method.request.header.Authorization&#39;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">Name</span><span class="p">:</span><span class="w"> </span><span class="l">cognitoUserPoolAuthorizer</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">RestApiId</span><span class="p">:</span><span class="w"> </span>!<span class="l">Ref ApiGatewayRestApi</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l">COGNITO_USER_POOLS</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ProviderARNs</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">          </span>- <span class="l">arn:aws:cognito-idp:4234234234:324423523525:userpool/1ds23esfa</span><span class="w">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">CognitoUserPoolAuthorizer</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;AWS::ApiGateway::Authorizer&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">Properties</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">AuthorizerResultTtlInSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">300</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">IdentitySource</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;method.request.header.Authorization&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">Name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;cognito-user-pool-authorizer&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">RestApiId</span><span class="p">:</span><span class="w"> </span>!<span class="l">Ref ApiGatewayRestApi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l">COGNITO_USER_POOLS</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ProviderARNs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="s1">&#39;arn:aws:cognito-idp:4234234234:324423523525:userpool/1ds23esfa&#39;</span><span class="w">
 </span></span></span></code></pre></div><p> </p>
 <h2 id="challenges">Challenges</h2>
 <ol>
 <li>Deployment dependency</li>
 </ol>
 <p>This pattern introduced a service dependency which requires target resource service and scopes to be created/deployed first prior to the consumer service. For example, service <code>customer.read</code> can not be deployed unless the replied scope has been created.</p>
-<blockquote>
-<p>Solution: Deploy microservices in batches to avoid failures caused by the dependency issue.</p>
-</blockquote>
+<p><strong>Solution:</strong> Deploy microservices in batches to avoid failures caused by the dependency issue.</p>
 <ol start="2">
 <li>Secure app client credentials</li>
 </ol>
 <p>As the service-to-service interaction starts with a user pool sign-in with the app client credentials where a JWT token will be returned from Cognito to the initiator for external resource access. We are storing the credentials as secure parameters in Amazon SSM which are manually created for each microservice after the deployment. With the increasing number of µservices, we need a tool to do this securely and automatically for us.</p>
-<blockquote>
-<p>Solution: <a href="https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm">https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm</a></p>
-</blockquote>
+<p><strong>Solution:</strong> <a href="https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm">https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm</a></p>
 <p> </p>
 <h2 id="conclusion">Conclusion</h2>
 <p><br>
