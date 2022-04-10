@@ -7,9 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Chat the Ops up - Gary&#39;s Blog</title>
-  <meta name="description" content="TL;DR 
-This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.">
+  <title>Fine-grained authorization with Amazon Cognito user pool and API Gateway - Gary&#39;s Blog</title>
+  <meta name="description" content="Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -45,8 +44,8 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/GaaraZhu.github.io\/chat-the-ops-up\/",
-          "name": "Chat the ops up"
+          "@id": "https:\/\/GaaraZhu.github.io\/fine-grained-authorization\/",
+          "name": "Fine grained authorization with amazon cognito user pool and API gateway"
         }
     }]
 }
@@ -57,15 +56,15 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
   "author": {
     "name" : "GaryZhu"
   },
-  "headline": "Chat the Ops up",
-  "description" : "TL;DR \nThis is the story of how we improved our CI\/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.",
+  "headline": "Fine-grained authorization with Amazon Cognito user pool and API Gateway",
+  "description" : "Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.",
   "inLanguage" : "en",
-  "wordCount":  526 ,
-  "datePublished" : "2022-04-02T11:09:48",
-  "dateModified" : "2022-04-02T11:09:48",
+  "wordCount":  524 ,
+  "datePublished" : "2022-04-10T17:09:20",
+  "dateModified" : "2022-04-10T17:09:20",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
-  "keywords" : [ "Microservices, CI\/CD, ChatOps, Atlassian Bamboo, Microsoft Teams, AWS" ],
-  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/chat-the-ops-up\/",
+  "keywords" : [ "Microservices, Authorization, Serverless, AWS, Amazon Cognito, API Gateway" ],
+  "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/fine-grained-authorization\/",
   "publisher" : {
     "@type": "Organization",
     "name" : "https:\/\/GaaraZhu.github.io",
@@ -79,17 +78,15 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
 }
 </script>
 
-<meta property="og:title" content="Chat the Ops up" />
-<meta property="og:description" content="TL;DR 
-This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.">
+<meta property="og:title" content="Fine-grained authorization with Amazon Cognito user pool and API Gateway" />
+<meta property="og:description" content="Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://GaaraZhu.github.io/chat-the-ops-up/" />
+<meta property="og:url" content="https://GaaraZhu.github.io/fine-grained-authorization/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
-  <meta name="twitter:title" content="Chat the Ops up" />
-  <meta name="twitter:description" content="TL;DR 
-This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.">
+  <meta name="twitter:title" content="Fine-grained authorization with Amazon Cognito user pool and API …" />
+  <meta name="twitter:description" content="Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and …">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -239,7 +236,7 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="page-heading">
               
-                <h1>Chat the Ops up</h1>
+                <h1>Fine-grained authorization with Amazon Cognito user pool and API Gateway</h1>
               
               
                 <hr class="small">
@@ -259,92 +256,57 @@ This is the story of how we improved our CI/CD methodology by using Bamboo-on-Te
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <h2 id="tldr">TL;DR</h2>
-<p><br>
-This is the story of how we improved our <a href="https://en.wikipedia.org/wiki/CI/CD">CI/CD</a> methodology by using <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a>, a serverless <a href="https://www.atlassian.com/blog/software-teams/what-is-chatops-adoption-guide">ChatOps</a> tool for interacting with Atlassian Bamboo from Microsoft Teams.<br>
- </p>
-<h2 id="background">Background</h2>
-<p><br>
-We are shifting from <a href="https://en.wikipedia.org/wiki/Monolithic_application">monolith architecture</a> to <a href="https://en.wikipedia.org/wiki/Microservices">microservices</a> for one of our systems. The goal is to break down the module dependencies, to make the system maintainable and scalable. One challenge we had was the increasing operational complexity as we now have around 50 microservices to build and to deploy whereas there used to be only one.<br>
- </p>
-<h2 id="sdlc">SDLC</h2>
-<p><br>
-A quick review of how we are developing, testing and delivering multiple features in parallel.</p>
-<ol>
-<li>Developers use feature branches to work on individual feature changes.</li>
-<li>Building and deploying from the feature branch for dev testing, and create a pull request to merge the feature branch to the target release branch.</li>
-<li>Merging the feature branch, building and deploying from the release branch for QA testing.</li>
-<li>Deploying changes to UAT for final regression testing.</li>
-<li>Production release.</li>
-</ol>
-<p><img src="/images/chat-the-ops-up/cicd-workflow.png" alt="workflow"></p>
+        <p>Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.</p>
+<p>This post shows how we implemented a fine-grained system-to-system authorization for microservices application using <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html">Amazon Cognito user pool</a> and <a href="https://docs.aws.amazon.com/apigateway/">API Gateway</a>.</p>
 <p> </p>
-<h2 id="pain-points">Pain points</h2>
+<h2 id="solution">solution</h2>
+<p><br>
+<a href="https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html">Amazon Cognito</a> is a powerful service for application authentication, authorization, and user management. The idea here is to use its user directory service <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html">User Pools</a> to authenticate calls between microservices as API Gateway is natively integrated with it to validate identities of consumer.</p>
+<p>architecture diagram:
+<img src="/images/fine-grained-authorization/auth_flow.png" alt="auth_flow"></p>
 <p> </p>
-<h3 id="manual-intervention">Manual intervention</h3>
-<p><br>
-Imagine that you are working on a feature which requires changes in <strong>10</strong> microservices. In Bamboo you will have to:</p>
+<h2 id="key-components">key components</h2>
+<p>There are three key components here:</p>
 <ul>
-<li>create <code>20</code> branch plans
-<ul>
-<li>10 branch plans for the feature branch</li>
-<li>10 branch plans for the release branch</li>
-</ul>
-</li>
-<li>build <code>20</code> times
-<ul>
-<li>10 builds for the feature branch plan</li>
-<li>10 builds for the release branch plan</li>
-</ul>
-</li>
-<li>deploy <code>40</code> times
-<ul>
-<li>10 deployments to Dev environment</li>
-<li>10 deployments to QA environment</li>
-<li>10 deployments to UAT environment</li>
-<li>10 deployments to Production environment</li>
-</ul>
-</li>
-</ul>
-<p>If bugs are found during the testing, more build and deployment job executions will be required.<br>
- </p>
-<h3 id="status-notification">Status notification</h3>
-<p><br>
-The deployment job can only be executed after the build job is finished. Although Bamboo has a good support of notifications to prevent us from checking the job status manually by refreshing the pages, it still requires manual configuration for each Bamboo job (Build and Deploy).<br>
- </p>
-<h2 id="solution">Solution</h2>
-<p><br>
-To make our life easier, I created <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a> with below main features to make Microsoft Teams the centralised place for Bamboo operations.</p>
-<ul>
-<li>Bamboo interaction - interact with Bamboo in Microsoft Teams with wide range of <a href="https://github.com/GaaraZhu/bamboo-on-teams#available-commands">commands</a>.</li>
-<li>Result notification - receive notification in Microsoft Teams for Bamboo jobs.</li>
-<li>Hanging detection - detect hanging Bamboo jobs and alert in Microsoft Teams.</li>
+<li><strong>Resource server</strong>: Each service has a dedicated resource server with pre-defined scopes for its resources(API method, Lambda etc)</li>
+<li><strong>App client</strong>: Each service has a dedicated app client with limited scopes it needs to access external resources</li>
+<li><strong>Cognito authorizer</strong>: Each API resource has an Cognito authorizer configured for authenciation and authorization</li>
 </ul>
 <p> </p>
-<h2 id="demo">Demo</h2>
-<p> 
-<a href="https://youtu.be/JR8zbS7uKuA"><img src="https://img.youtube.com/vi/JR8zbS7uKuA/0.jpg" alt="Demo"></a></p>
+<h3 id="resource-server">Resource server</h3>
+<p><br>
+<a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html">Resource server</a> is what we can use to manage the scopes that are required for accessing our REST resources. For example, we have scope <code>customer.read</code> from resouce server <code>customers-v1-resource-server</code> for resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>, indicating that to access the resource a JWT token with this scope is required in the request.</p>
 <p> </p>
-<h2 id="security-controls">Security controls</h2>
+<h3 id="app-client">App client</h3>
+<p><br>
+<a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html">App client</a> is where we define the auth flow, and where we specify the allowed scopes for the current service to access external resources. for example, we have app client <code>accounts-v1-app-client</code> with allowed scope <code>customers-v1-resource-server/customer.read</code>(a resource server and scope combination from the target service), indicating that <code>accounts-v1</code> service can only access resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>.</p>
 <p> </p>
+<h3 id="cognito-authorizer">Cognito authorizer</h3>
+<p><br>
+An API Gateway authorizer whose type is <strong>COGNITO_USER_POOLS</strong>. When receiving an API call, the authorizer will authenticate the request by checking whether AN access token is supplied and valid, after that it will authorize API calls based on the custom scopes of specified access-protected resources. For example, requests with access token having <code>customers-v1-resource-server/customer.read</code> scope will pass the authentication and be authorized to access resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>.</p>
+<p> </p>
+<h2 id="challenges">challenges</h2>
 <ul>
-<li>Webhook security
+<li>Deployment dependency
+<br>
+This pattern introduced a service dependency which requires target resource service and scopes to be created/deployed first prior to the consumer service. For example, service <code>customer.read</code> can not be deployed unless the replied scope has been created.</li>
+</ul>
+<blockquote>
+<p>Solution: Deploy microservices in batches to avoid failures caused by the dependency issue.</p>
+</blockquote>
 <ul>
-<li><a href="https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-outgoing-webhook?tabs=urljsonpayload%2Cdotnet">Outgoing webhook</a> can only interact with external web service, with the message text. No access to other APIs, like message history, channel information etc.</li>
-<li><a href="https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook">Incoming webhook</a> can only receive JSON data with required schema for display, and has no access to other APIs, same with the outgoing webhook.</li>
+<li>Secure app client credentials
+<br>
+As the service-to-service interaction starts with a user pool sign-in with the app client credentials where a JWT token will be returned from Cognito to the initiator for external resource access. We are storing the credentials as secure parameters in Amazon SSM which are manually created for each microservice after the deployment. With the increasing number of µservices, we need a tool to do this securely and automatically for us.</li>
 </ul>
-</li>
-<li><a href="https://en.wikipedia.org/wiki/HMAC">HMAC</a> between Teams and Bamboo-on-Teams</li>
-<li>Dedicated Bamboo API token used for Bamboo-on-Teams</li>
-<li>Bamboo resource permission verification (view, execute etc)</li>
-<li>Production environment elimination (configurable)<br>
- </li>
-</ul>
+<blockquote>
+<p>Solution: <a href="https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm">https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm</a></p>
+</blockquote>
+<p> </p>
 <h2 id="conclusion">Conclusion</h2>
 <p><br>
-In the journey of CI/CD, we are all learning and trying to improve the overall process, to make it more efficient and more collaborative. This is a tool that solved our problems and made our life easier. If you have similar problems with what we had, please consider this tool.</p>
-<p><a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a> is built on top of Typescript, Serverless and AWS tech stacks which you can find the details in the project page. Issues and PRs are welcome and encouraged: <code>Bamboo-on-Teams</code> is MIT licensed.<br>
- <br>
+With this fine-grained access control mechanism, we now can guarantee that only authenticated services will be allowed to access the resource, and only resources with specified scopes can be accessed by the service.</p>
+<p> <br>
  </p>
 
 
@@ -353,15 +315,15 @@ In the journey of CI/CD, we are all learning and trying to improve the overall p
             
               <a href="https://GaaraZhu.github.io/tags/microservices/">Microservices</a>&nbsp;
             
-              <a href="https://GaaraZhu.github.io/tags/ci/cd/">CI/CD</a>&nbsp;
+              <a href="https://GaaraZhu.github.io/tags/authorization/">Authorization</a>&nbsp;
             
-              <a href="https://GaaraZhu.github.io/tags/chatops/">ChatOps</a>&nbsp;
-            
-              <a href="https://GaaraZhu.github.io/tags/atlassian-bamboo/">Atlassian Bamboo</a>&nbsp;
-            
-              <a href="https://GaaraZhu.github.io/tags/microsoft-teams/">Microsoft Teams</a>&nbsp;
+              <a href="https://GaaraZhu.github.io/tags/serverless/">Serverless</a>&nbsp;
             
               <a href="https://GaaraZhu.github.io/tags/aws/">AWS</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/amazon-cognito/">Amazon Cognito</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/api-gateway/">API Gateway</a>&nbsp;
             
           </div>
         
@@ -376,42 +338,42 @@ In the journey of CI/CD, we are all learning and trying to improve the overall p
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2fchat-the-ops-up%2f&amp;text=Chat%20the%20Ops%20up&amp;via=" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-authorization%2f&amp;text=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway&amp;via=" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2fchat-the-ops-up%2f" target="_blank" title="Share on Facebook">
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-authorization%2f" target="_blank" title="Share on Facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2fchat-the-ops-up%2f&amp;title=Chat%20the%20Ops%20up" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-authorization%2f&amp;title=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2fchat-the-ops-up%2f&amp;title=Chat%20the%20Ops%20up" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-authorization%2f&amp;title=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2fchat-the-ops-up%2f&amp;title=Chat%20the%20Ops%20up" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-authorization%2f&amp;title=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2fchat-the-ops-up%2f&amp;description=Chat%20the%20Ops%20up" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2ffine-grained-authorization%2f&amp;description=Fine-grained%20authorization%20with%20Amazon%20Cognito%20user%20pool%20and%20API%20Gateway" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -433,7 +395,7 @@ In the journey of CI/CD, we are all learning and trying to improve the overall p
                   <ul>
                 
                 
-                    <li><a href="/fine-grained-authorization/">Fine-grained authorization with Amazon Cognito user pool and API Gateway</a></li>
+                    <li><a href="/chat-the-ops-up/">Chat the Ops up</a></li>
                 
                     <li><a href="/aws-one-punch/">AWS one punch</a></li>
                 

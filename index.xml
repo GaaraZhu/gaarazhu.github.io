@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Sat, 02 Apr 2022 11:09:48 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Apr 2022 17:09:20 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Fine-grained authorization with Amazon Cognito user pool and API Gateway</title>
+      <link>https://GaaraZhu.github.io/fine-grained-authorization/</link>
+      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/fine-grained-authorization/</guid>
+      <description>Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.</description>
+    </item>
+    
     <item>
       <title>Chat the Ops up</title>
       <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
@@ -16,15 +25,6 @@
       <guid>https://GaaraZhu.github.io/chat-the-ops-up/</guid>
       <description>TL;DR 
 This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.</description>
-    </item>
-    
-    <item>
-      <title>Fine-grained authorization with Amazon Cognito user pool and API Gateway</title>
-      <link>https://GaaraZhu.github.io/fine-grained-access-control-with-cognito/</link>
-      <pubDate>Sat, 02 Apr 2022 11:09:48 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/fine-grained-access-control-with-cognito/</guid>
-      <description>Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.</description>
     </item>
     
     <item>

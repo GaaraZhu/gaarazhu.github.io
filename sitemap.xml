@@ -3,18 +3,33 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://GaaraZhu.github.io/tags/amazon-cognito/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/tags/api-gateway/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
   </url><url>
-    <loc>https://GaaraZhu.github.io/tags/atlassian-bamboo/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/authentication/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
+    <loc>https://GaaraZhu.github.io/tags/authorization/</loc>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/tags/aws/</loc>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/fine-grained-authorization/</loc>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/</loc>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/microservices/</loc>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/serverless/</loc>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/</loc>
+    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/atlassian-bamboo/</loc>
     <lastmod>2022-04-02T11:09:48+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/chat-the-ops-up/</loc>
@@ -23,22 +38,7 @@
     <loc>https://GaaraZhu.github.io/tags/chatops/</loc>
     <lastmod>2022-04-02T11:09:48+13:00</lastmod>
   </url><url>
-    <loc>https://GaaraZhu.github.io/fine-grained-access-control-with-cognito/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/microservices/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
-  </url><url>
     <loc>https://GaaraZhu.github.io/tags/microsoft-teams/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/serverless/</loc>
-    <lastmod>2022-04-02T11:09:48+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/</loc>
     <lastmod>2022-04-02T11:09:48+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/aws-one-punch/</loc>
