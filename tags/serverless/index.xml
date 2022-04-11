@@ -17,5 +17,15 @@
       <description>Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.</description>
     </item>
     
+    <item>
+      <title>Chat the Ops up</title>
+      <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/chat-the-ops-up/</guid>
+      <description>TL;DR 
+This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.</description>
+    </item>
+    
   </channel>
 </rss>
