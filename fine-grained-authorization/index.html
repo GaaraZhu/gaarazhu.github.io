@@ -59,7 +59,7 @@
   "headline": "Fine-grained authorization with Amazon Cognito user pool and API Gateway",
   "description" : "Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.",
   "inLanguage" : "en",
-  "wordCount":  570 ,
+  "wordCount":  578 ,
   "datePublished" : "2022-04-10T17:09:20",
   "dateModified" : "2022-04-10T17:09:20",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -321,7 +321,7 @@
 </span></span></span></code></pre></div><p> </p>
 <h3 id="api-gw-cognito-user-pool-authorizer">API GW Cognito user pool authorizer</h3>
 <p><br>
-When receiving an API call request, this authorizer will authenticate the request by checking whether an access token is supplied and valid, after that it will authorize the call based on the custom scopes of specified access-protected resources. For example, request with access token having <code>customers-v1-resource-server/customer.read</code> scope will pass the authentication and will be authorized to access resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>.</p>
+When receiving an API call request, the authorizer will authenticate the request by checking whether an access token is supplied and whether it&rsquo;s valid, after that it will authorize the call based on the specified custom scopes for the access-protected resources. For example, a request with access token having <code>customers-v1-resource-server/customer.read</code> scope will pass the authentication and will be authorized to access resource <code>/v1/customers/{customerId}</code> in service <code>customers-v1</code>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">CognitoUserPoolAuthorizer</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;AWS::ApiGateway::Authorizer&#39;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">Properties</span><span class="p">:</span><span class="w">
@@ -337,12 +337,12 @@ When receiving an API call request, this authorizer will authenticate the reques
 <ol>
 <li>Deployment dependency</li>
 </ol>
-<p>This pattern introduced a service dependency which requires target resource service and scopes to be created/deployed first prior to the consumer service. For example, service <code>customer.read</code> can not be deployed unless the replied scope has been created.</p>
+<p>This pattern introduces a service dependency which requires target service resources and scopes to be created/updated first prior to the consumer service. For example, service <code>accounts-v1</code> can not be deployed unless the replied scope has been created by deploying service <code>customers-v1</code>.</p>
 <p><strong>Solution:</strong> Deploy microservices in batches to avoid failures caused by the dependency issue.</p>
 <ol start="2">
 <li>Secure app client credentials</li>
 </ol>
-<p>As the service-to-service interaction starts with a user pool sign-in with the app client credentials where a JWT token will be returned from Cognito to the initiator for external resource access. We are storing the credentials as secure parameters in Amazon SSM which are manually created for each microservice after the deployment. With the increasing number of µservices, we need a tool to do this securely and automatically for us.</p>
+<p>The service-to-service interaction starts with a user pool sign-in with the app client credentials and a JWT token will be returned from Cognito to the initiator for external resource access. We are are now manually creating secure parameters in Amazon SSM to store the client credentials for each microservice after the deployment. With the increasing number of µservices, we need a tool to do this securely and automatically for us.</p>
 <p><strong>Solution:</strong> <a href="https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm">https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm</a></p>
 <p> </p>
 <h2 id="conclusion">Conclusion</h2>
