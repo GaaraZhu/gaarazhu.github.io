@@ -59,7 +59,7 @@
   "headline": "Release control process for ChatOps driven CI\/CD methodologies",
   "description" : "Previously we discussed how to improve our CI\/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.",
   "inLanguage" : "en",
-  "wordCount":  331 ,
+  "wordCount":  340 ,
   "datePublished" : "2022-04-18T15:29:41",
   "dateModified" : "2022-04-18T15:29:41",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -266,7 +266,7 @@ of it is to release a set of services in sequential batches. But the challenge i
 Bamboo-on-Teams is a powerful tool integrates the messaging platform Microsoft Teams and the CI/CD platform Atlassian Bamboo. It provides a set of predefined <a href="https://github.com/GaaraZhu/bamboo-on-teams#available-commands">commands</a> to be used through chatting messages in Teams channel which will be translated to corresponding Bamboo operations in Bamboo-on-Teams to be executed.</p>
 <p>Since it already interacts with Bamboo, we can ultilise Bamboo to manage the releases instead of introducing a new datastore. The idea is to have a Bamboo plan to approve or deny the releases to certain environments through the customized build run.</p>
 <p><strong>Sequence diagram</strong>
-<img src="/images/release-control-process-for-chatops-cicd/release-control-process.png" alt="approval_flow"></p>
+<img src="/images/release-control-process-for-chatops-cicd/release-control-process.svg" alt="approval_flow"></p>
 <p> </p>
 <h2 id="steps">steps</h2>
 <h3 id="a-pre-release">a. pre-release</h3>
@@ -291,8 +291,8 @@ Bamboo-on-Teams is a powerful tool integrates the messaging platform Microsoft T
 A simple build plan needs to be created without any SCM repositories.</p>
 <ul>
 <li><strong>Variables</strong><br>
-Two varaibles need to be added for this plan
-<img src="/images/release-control-process-for-chatops-cicd/plan-variables.jpg" alt="plan_variables"></li>
+Two varaibles need to be added for this plan: <code>environment</code> default to <strong>uat</strong> and <code>approved</code> default to <strong>false</strong>.
+<img src="/images/release-control-process-for-chatops-cicd/plan-variables.png" alt="plan_variables"></li>
 </ul>
 <p> </p>
 <ul>
