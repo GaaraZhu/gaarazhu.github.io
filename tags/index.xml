@@ -7,7 +7,70 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Sun, 10 Apr 2022 17:09:20 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 18 Apr 2022 15:29:41 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Atlassian Bamboo</title>
+      <link>https://GaaraZhu.github.io/tags/atlassian-bamboo/</link>
+      <pubDate>Mon, 18 Apr 2022 15:29:41 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/atlassian-bamboo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>AWS</title>
+      <link>https://GaaraZhu.github.io/tags/aws/</link>
+      <pubDate>Mon, 18 Apr 2022 15:29:41 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/aws/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ChatOps</title>
+      <link>https://GaaraZhu.github.io/tags/chatops/</link>
+      <pubDate>Mon, 18 Apr 2022 15:29:41 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/chatops/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Microservices</title>
+      <link>https://GaaraZhu.github.io/tags/microservices/</link>
+      <pubDate>Mon, 18 Apr 2022 15:29:41 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/microservices/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Microsoft Teams</title>
+      <link>https://GaaraZhu.github.io/tags/microsoft-teams/</link>
+      <pubDate>Mon, 18 Apr 2022 15:29:41 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/microsoft-teams/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Serverless</title>
+      <link>https://GaaraZhu.github.io/tags/serverless/</link>
+      <pubDate>Mon, 18 Apr 2022 15:29:41 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/serverless/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Typescript</title>
+      <link>https://GaaraZhu.github.io/tags/typescript/</link>
+      <pubDate>Mon, 18 Apr 2022 15:29:41 +1300</pubDate>
+      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/typescript/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Amazon Cognito</title>
       <link>https://GaaraZhu.github.io/tags/amazon-cognito/</link>
@@ -27,74 +90,11 @@
     </item>
     
     <item>
-      <title>Atlassian Bamboo</title>
-      <link>https://GaaraZhu.github.io/tags/atlassian-bamboo/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/atlassian-bamboo/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Authorization</title>
       <link>https://GaaraZhu.github.io/tags/authorization/</link>
       <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/authorization/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>AWS</title>
-      <link>https://GaaraZhu.github.io/tags/aws/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/aws/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>ChatOps</title>
-      <link>https://GaaraZhu.github.io/tags/chatops/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/chatops/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Microservices</title>
-      <link>https://GaaraZhu.github.io/tags/microservices/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/microservices/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Microsoft Teams</title>
-      <link>https://GaaraZhu.github.io/tags/microsoft-teams/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/microsoft-teams/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Serverless</title>
-      <link>https://GaaraZhu.github.io/tags/serverless/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/serverless/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Typescript</title>
-      <link>https://GaaraZhu.github.io/tags/typescript/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/typescript/</guid>
       <description></description>
     </item>
     
