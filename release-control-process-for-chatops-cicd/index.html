@@ -59,7 +59,7 @@
   "headline": "Release control process for ChatOps driven CI\/CD methodologies",
   "description" : "Previously we discussed how to improve our CI\/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.",
   "inLanguage" : "en",
-  "wordCount":  340 ,
+  "wordCount":  350 ,
   "datePublished" : "2022-04-18T15:29:41",
   "dateModified" : "2022-04-18T15:29:41",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -259,12 +259,12 @@
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
         <p>Previously we discussed how to improve our CI/CD process through the ChatOps tool <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a>. One <a href="https://github.com/GaaraZhu/bamboo-on-teams#release">command</a>
-of it is to release a set of services in sequential batches. But the challenge is how to control the releases to critical environments like UAT and Production. This post shows how we implemented a release control process for ChatOps driven CI/CD methodologies.</p>
+of it is to release a set of services in sequential batches. But the challenges are how to control the releases especially for critical environments like UAT and Production, and how to control access to the process itself. This post shows how we implemented a release control process for ChatOps driven CI/CD methodologies.</p>
 <p> </p>
 <h2 id="solution">Solution</h2>
 <p><br>
 Bamboo-on-Teams is a powerful tool integrates the messaging platform Microsoft Teams and the CI/CD platform Atlassian Bamboo. It provides a set of predefined <a href="https://github.com/GaaraZhu/bamboo-on-teams#available-commands">commands</a> to be used through chatting messages in Teams channel which will be translated to corresponding Bamboo operations in Bamboo-on-Teams to be executed.</p>
-<p>Since it already interacts with Bamboo, we can ultilise Bamboo to manage the releases instead of introducing a new datastore. The idea is to have a Bamboo plan to approve or deny the releases to certain environments through the customized build run.</p>
+<p>Since it already interacts with Bamboo, we can ultilise this to manage the releases instead of introducing a new datastore. The idea is to have a Bamboo plan to approve or deny the releases to certain environments through the customized build run.</p>
 <p><strong>Sequence diagram</strong>
 <img src="/images/release-control-process-for-chatops-cicd/release-control-process.svg" alt="approval_flow"></p>
 <p> </p>
@@ -308,7 +308,7 @@ The <code>Build</code> plan permission should only be granted to release manager
 <p> </p>
 <h2 id="bamboo-on-teams-configurations">Bamboo-on-Teams Configurations</h2>
 <p><br>
-To enable the release approval checking, add below snippet to the application configuration parameter in SSM to let Bamboo-on-Teams know the plan key as well as the target environments:</p>
+To enable the release approval checking, add below snippet to the <a href="https://github.com/GaaraZhu/bamboo-on-teams#setup">application configuration</a> parameter in SSM to let Bamboo-on-Teams know the plan key as well as the target environments</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JSON" data-lang="JSON"><span class="line"><span class="cl"><span class="s2">&#34;releaseApproval&#34;</span><span class="err">:</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nt">&#34;bambooPlanId&#34;</span><span class="p">:</span> <span class="s2">&#34;API-RCV&#34;</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">    <span class="nt">&#34;requiredForEnvs&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;uat&#34;</span><span class="p">,</span> <span class="s2">&#34;prod&#34;</span><span class="p">]</span>
