@@ -59,7 +59,7 @@
   "headline": "Release approval process for ChatOps driven CI\/CD methodologies",
   "description" : "Previously we discussed how to improve our CI\/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.",
   "inLanguage" : "en",
-  "wordCount":  290 ,
+  "wordCount":  293 ,
   "datePublished" : "2022-04-18T15:29:41",
   "dateModified" : "2022-04-18T15:29:41",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -268,18 +268,18 @@ Bamboo-on-Teams is a powerful tool integrates the messaging platform Microsoft T
 <h2 id="steps">steps</h2>
 <ol>
 <li>
-<p>Release manager approves the release</p>
+<p>Pre-release: release manager approves the release</p>
 <p>1.1. click on the &ldquo;Run customized&hellip;&rdquo; option in plan page
 <img src="/images/release-approval-process-for-chatops-cicd/customized-run.png" alt="customized-run"></p>
 <p>1.2. override variables to approve/deny the release to an environment
 <img src="/images/release-approval-process-for-chatops-cicd/override-variables.png" alt="override-variables"></p>
 </li>
 <li>
-<p>DevOps start the release in Teams through Bamboo-on-Teams:
+<p>Release: devOps start the release in Teams through Bamboo-on-Teams:
 <code>@Bamboo release -s A,B;C,D;E -e prod</code></p>
 </li>
 <li>
-<p>Release manager denies any other releases after the release(same with step 1, just set the <code>approved</code> variable to &ldquo;false&rdquo;)</p>
+<p>Post-release: release manager denies any other releases after the release(same with step 1, just set the <code>approved</code> variable to &ldquo;false&rdquo;)</p>
 </li>
 </ol>
 <p> </p>
