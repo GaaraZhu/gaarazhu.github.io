@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Release approval process for ChatOps driven CI/CD methodologies - Gary&#39;s Blog</title>
+  <title>Release control process for ChatOps driven CI/CD methodologies - Gary&#39;s Blog</title>
   <meta name="description" content="Previously we discussed how to improve our CI/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
@@ -45,7 +45,7 @@
         "position": 3,
         "item": {
           "@id": "https:\/\/GaaraZhu.github.io\/release-approval-process-for-chatops-cicd\/",
-          "name": "Release approval process for chat ops driven ci cd methodologies"
+          "name": "Release control process for chat ops driven ci cd methodologies"
         }
     }]
 }
@@ -56,14 +56,14 @@
   "author": {
     "name" : "GaryZhu"
   },
-  "headline": "Release approval process for ChatOps driven CI\/CD methodologies",
+  "headline": "Release control process for ChatOps driven CI\/CD methodologies",
   "description" : "Previously we discussed how to improve our CI\/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.",
   "inLanguage" : "en",
-  "wordCount":  293 ,
+  "wordCount":  331 ,
   "datePublished" : "2022-04-18T15:29:41",
   "dateModified" : "2022-04-18T15:29:41",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
-  "keywords" : [ "Microservices, CI\/CD, ChatOps, Atlassian Bamboo, Microsoft Teams, AWS, Typescript, Serverless" ],
+  "keywords" : [ "Microservices, CI\/CD, Release management, ChatOps, Atlassian Bamboo, Microsoft Teams, AWS, Typescript, Serverless" ],
   "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/release-approval-process-for-chatops-cicd\/",
   "publisher" : {
     "@type": "Organization",
@@ -78,14 +78,14 @@
 }
 </script>
 
-<meta property="og:title" content="Release approval process for ChatOps driven CI/CD methodologies" />
+<meta property="og:title" content="Release control process for ChatOps driven CI/CD methodologies" />
 <meta property="og:description" content="Previously we discussed how to improve our CI/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
 <meta property="og:url" content="https://GaaraZhu.github.io/release-approval-process-for-chatops-cicd/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
-  <meta name="twitter:title" content="Release approval process for ChatOps driven CI/CD methodologies" />
+  <meta name="twitter:title" content="Release control process for ChatOps driven CI/CD methodologies" />
   <meta name="twitter:description" content="Previously we discussed how to improve our CI/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
@@ -236,7 +236,7 @@
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="page-heading">
               
-                <h1>Release approval process for ChatOps driven CI/CD methodologies</h1>
+                <h1>Release control process for ChatOps driven CI/CD methodologies</h1>
               
               
                 <hr class="small">
@@ -257,7 +257,7 @@
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
         <p>Previously we discussed how to improve our CI/CD process through the ChatOps tool <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a>. One <a href="https://github.com/GaaraZhu/bamboo-on-teams#release">command</a>
-of it is to release a set of services in sequential batches. But the challenge is how to control the releases to critical environments like UAT and Production. This post shows how we implemented a release approval process for ChatOps driven CI/CD methodologies.</p>
+of it is to release a set of services in sequential batches. But the challenge is how to control the releases to critical environments like UAT and Production. This post shows how we implemented a release control process for ChatOps driven CI/CD methodologies.</p>
 <p> </p>
 <h2 id="solution">Solution</h2>
 <p><br>
@@ -265,26 +265,28 @@ Bamboo-on-Teams is a powerful tool integrates the messaging platform Microsoft T
 <p>Since it already interacts with Bamboo, we can ultilise Bamboo to manage the releases instead of introducing a new datastore. The idea is to have a Bamboo plan to approve or deny the releases to certain environments through the customized build run.</p>
 <p><strong>Sequence diagram</strong>
 <img src="/images/release-approval-process-for-chatops-cicd/release-approval-process.png" alt="approval_flow"></p>
+<p> </p>
 <h2 id="steps">steps</h2>
+<h3 id="a-pre-release">a. pre-release</h3>
+<p>Release manager approves the release:</p>
 <ol>
 <li>
-<p>Pre-release: release manager approves the release</p>
-<p>1.1. click on the &ldquo;Run customized&hellip;&rdquo; option in plan page
+<p>click on the &ldquo;Run customized&hellip;&rdquo; option in plan page
 <img src="/images/release-approval-process-for-chatops-cicd/customized-run.png" alt="customized-run"></p>
-<p>1.2. override variables to approve/deny the release to an environment
+</li>
+<li>
+<p>override variables to approve/deny the release to an environment
 <img src="/images/release-approval-process-for-chatops-cicd/override-variables.png" alt="override-variables"></p>
 </li>
-<li>
-<p>Release: devOps start the release in Teams through Bamboo-on-Teams:
-<code>@Bamboo release -s A,B;C,D;E -e prod</code></p>
-</li>
-<li>
-<p>Post-release: release manager denies any other releases after the release(same with step 1, just set the <code>approved</code> variable to &ldquo;false&rdquo;)</p>
-</li>
 </ol>
+<h3 id="b-release">b. release</h3>
+<p>DevOps start the release in Teams through Bamboo-on-Teams <a href="https://github.com/GaaraZhu/bamboo-on-teams#release">release</a> command.</p>
+<h3 id="c-post-release">c. post-release</h3>
+<p>Release manager denies any other releases (same with step 1, just set the <code>approved</code> variable to <code>false</code>).</p>
 <p> </p>
 <h2 id="bamboo-configurations">Bamboo Configurations</h2>
-<p>A simple build plan needs to be created without any SCM repositories.</p>
+<p><br>
+A simple build plan needs to be created without any SCM repositories.</p>
 <ul>
 <li><strong>Variables</strong><br>
 Two varaibles need to be added for this plan
@@ -302,9 +304,17 @@ For a success execution, Bamboo requires a mininum of one task configured for th
 The <code>Build</code> plan permission should only be granted to release manager user or group.</li>
 </ul>
 <p> </p>
+<h2 id="bamboo-on-teams-configurations">Bamboo-on-Teams Configurations</h2>
+<p><br>
+To enable the release approval checking, add below snippet to the application configuration parameter in SSM to let Bamboo-on-Teams know the plan key as well as the target environments:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JSON" data-lang="JSON"><span class="line"><span class="cl"><span class="s2">&#34;releaseApproval&#34;</span><span class="err">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;bambooPlanId&#34;</span><span class="p">:</span> <span class="s2">&#34;API-RCV&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;requiredForEnvs&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;uat&#34;</span><span class="p">,</span> <span class="s2">&#34;prod&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p> </p>
 <h2 id="conclusion">Conclusion</h2>
 <p><br>
-With customized build run support in Bamboo, we implemented this approval process which secures our release actions through Bamboo-on-Teams.</p>
+With customized build run support in Bamboo, we implemented this control process which secures our releases to UAT and Prod environments through Bamboo-on-Teams.</p>
 <p> <br>
  </p>
 
@@ -315,6 +325,8 @@ With customized build run support in Bamboo, we implemented this approval proces
               <a href="https://GaaraZhu.github.io/tags/microservices/">Microservices</a>&nbsp;
             
               <a href="https://GaaraZhu.github.io/tags/ci/cd/">CI/CD</a>&nbsp;
+            
+              <a href="https://GaaraZhu.github.io/tags/release-management/">Release management</a>&nbsp;
             
               <a href="https://GaaraZhu.github.io/tags/chatops/">ChatOps</a>&nbsp;
             
@@ -341,7 +353,7 @@ With customized build run support in Bamboo, we implemented this approval proces
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;text=Release%20approval%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies&amp;via=" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;text=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies&amp;via=" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
@@ -355,28 +367,28 @@ With customized build run support in Bamboo, we implemented this approval proces
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;title=Release%20approval%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;title=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;title=Release%20approval%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;title=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;title=Release%20approval%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;title=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;description=Release%20approval%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-approval-process-for-chatops-cicd%2f&amp;description=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>

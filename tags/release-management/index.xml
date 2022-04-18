@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Typescript on Gary&#39;s Blog</title>
-    <link>https://GaaraZhu.github.io/tags/typescript/</link>
-    <description>Recent content in Typescript on Gary&#39;s Blog</description>
+    <title>Release management on Gary&#39;s Blog</title>
+    <link>https://GaaraZhu.github.io/tags/release-management/</link>
+    <description>Recent content in Release management on Gary&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Mon, 18 Apr 2022 15:29:41 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/typescript/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 18 Apr 2022 15:29:41 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/release-management/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Release control process for ChatOps driven CI/CD methodologies</title>
       <link>https://GaaraZhu.github.io/release-approval-process-for-chatops-cicd/</link>
@@ -15,16 +15,6 @@
       <author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/release-approval-process-for-chatops-cicd/</guid>
       <description>Previously we discussed how to improve our CI/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.</description>
-    </item>
-    
-    <item>
-      <title>Chat the Ops up</title>
-      <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
-      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/chat-the-ops-up/</guid>
-      <description>TL;DR 
-This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.</description>
     </item>
     
   </channel>
