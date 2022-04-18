@@ -10,10 +10,10 @@
     <lastBuildDate>Mon, 18 Apr 2022 15:29:41 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/atlassian-bamboo/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Release control process for ChatOps driven CI/CD methodologies</title>
-      <link>https://GaaraZhu.github.io/release-approval-process-for-chatops-cicd/</link>
+      <link>https://GaaraZhu.github.io/release-control-process-for-chatops-cicd/</link>
       <pubDate>Mon, 18 Apr 2022 15:29:41 +1300</pubDate>
       <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/release-approval-process-for-chatops-cicd/</guid>
+      <guid>https://GaaraZhu.github.io/release-control-process-for-chatops-cicd/</guid>
       <description>Previously we discussed how to improve our CI/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.</description>
     </item>
     
