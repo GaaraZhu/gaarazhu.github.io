@@ -7,8 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Release control process for ChatOps driven CI/CD methodologies - Gary&#39;s Blog</title>
-  <meta name="description" content="Previously we discussed how to improve our CI/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.">
+  <title>Secure release control for ChatOps driven CI/CD methodologies - Gary&#39;s Blog</title>
+  <meta name="description" content="Previously we discussed how to improve our CI/CD process by using the ChatOps tool Bamboo-on-Teams. One useful command there is release which can be used to deploy a set of services in sequential batches.">
   <meta name="author" content="GaryZhu"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -45,7 +45,7 @@
         "position": 3,
         "item": {
           "@id": "https:\/\/GaaraZhu.github.io\/release-control-process-for-chatops-cicd\/",
-          "name": "Release control process for chat ops driven ci cd methodologies"
+          "name": "Secure release control for chat ops driven ci cd methodologies"
         }
     }]
 }
@@ -56,10 +56,10 @@
   "author": {
     "name" : "GaryZhu"
   },
-  "headline": "Release control process for ChatOps driven CI\/CD methodologies",
-  "description" : "Previously we discussed how to improve our CI\/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.",
+  "headline": "Secure release control for ChatOps driven CI\/CD methodologies",
+  "description" : "Previously we discussed how to improve our CI\/CD process by using the ChatOps tool Bamboo-on-Teams. One useful command there is release which can be used to deploy a set of services in sequential batches.",
   "inLanguage" : "en",
-  "wordCount":  342 ,
+  "wordCount":  348 ,
   "datePublished" : "2022-04-18T15:29:41",
   "dateModified" : "2022-04-18T15:29:41",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -78,15 +78,15 @@
 }
 </script>
 
-<meta property="og:title" content="Release control process for ChatOps driven CI/CD methodologies" />
-<meta property="og:description" content="Previously we discussed how to improve our CI/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.">
+<meta property="og:title" content="Secure release control for ChatOps driven CI/CD methodologies" />
+<meta property="og:description" content="Previously we discussed how to improve our CI/CD process by using the ChatOps tool Bamboo-on-Teams. One useful command there is release which can be used to deploy a set of services in sequential batches.">
 <meta property="og:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
 <meta property="og:url" content="https://GaaraZhu.github.io/release-control-process-for-chatops-cicd/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gary&#39;s Blog" />
 
-  <meta name="twitter:title" content="Release control process for ChatOps driven CI/CD methodologies" />
-  <meta name="twitter:description" content="Previously we discussed how to improve our CI/CD process through the ChatOps tool Bamboo-on-Teams. One command of it is to release a set of services in sequential batches.">
+  <meta name="twitter:title" content="Secure release control for ChatOps driven CI/CD methodologies" />
+  <meta name="twitter:description" content="Previously we discussed how to improve our CI/CD process by using the ChatOps tool Bamboo-on-Teams. One useful command there is release which can be used to deploy a set of services in sequential …">
   <meta name="twitter:image" content="https://GaaraZhu.github.io/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary" />
   <link href='https://GaaraZhu.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -134,7 +134,7 @@
                 
                   <a href="/read-write-split">Mysql读写分离：Spring&#43;JPA应用层实现 vs Amoeba中间件实现</a>
                 
-                  <a href="/release-control-process-for-chatops-cicd">Release control process for ChatOps driven CI/CD methodologies</a>
+                  <a href="/release-control-process-for-chatops-cicd">Secure release control for ChatOps driven CI/CD methodologies</a>
                 
                   <a href="/tail-call-optimization">Tail call optimization in Scala</a>
                 
@@ -238,7 +238,7 @@
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="page-heading">
               
-                <h1>Release control process for ChatOps driven CI/CD methodologies</h1>
+                <h1>Secure release control for ChatOps driven CI/CD methodologies</h1>
               
               
                 <hr class="small">
@@ -258,8 +258,8 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>Previously we discussed how to improve our CI/CD process through the ChatOps tool <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a>. One <a href="https://github.com/GaaraZhu/bamboo-on-teams#release">command</a>
-of it is to release a set of services in sequential batches. But the challenge is how to securely control the releases especially for critical environments like UAT and Production. This post shows how we implemented a release control process for ChatOps driven CI/CD methodologies.</p>
+        <p>Previously we discussed how to improve our CI/CD process by using the ChatOps tool <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a>. One useful command there is <a href="https://github.com/GaaraZhu/bamboo-on-teams#release">release</a>
+which can be used to deploy a set of services in sequential batches. Regarding the release, the challenge is how to securely control it for critical environments like UAT and Production. This post shows how we implemented a release control process for ChatOps driven CI/CD methodologies.</p>
 <p> </p>
 <h2 id="solution">Solution</h2>
 <p><br>
@@ -355,7 +355,7 @@ With customized build run support in Bamboo, we implemented this control process
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;text=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies&amp;via=" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;text=Secure%20release%20control%20for%20ChatOps%20driven%20CI%2fCD%20methodologies&amp;via=" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
@@ -369,28 +369,28 @@ With customized build run support in Bamboo, we implemented this control process
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;title=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;title=Secure%20release%20control%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;title=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;title=Secure%20release%20control%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;title=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;title=Secure%20release%20control%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;description=Release%20control%20process%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fGaaraZhu.github.io%2frelease-control-process-for-chatops-cicd%2f&amp;description=Secure%20release%20control%20for%20ChatOps%20driven%20CI%2fCD%20methodologies" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
