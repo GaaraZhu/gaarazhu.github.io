@@ -59,7 +59,7 @@
   "headline": "Fine-grained authorization with Amazon Cognito user pool and API Gateway",
   "description" : "Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.",
   "inLanguage" : "en",
-  "wordCount":  578 ,
+  "wordCount":  576 ,
   "datePublished" : "2022-04-10T17:09:20",
   "dateModified" : "2022-04-10T17:09:20",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -340,11 +340,11 @@ When receiving an API call request, the authorizer will authenticate the request
 <li>Deployment dependency</li>
 </ol>
 <p>This pattern introduces a service dependency which requires target service resources and scopes to be created/updated first prior to the consumer service. For example, service <code>accounts-v1</code> can not be deployed unless the replied scope has been created by deploying service <code>customers-v1</code>.</p>
-<p><strong>Solution:</strong> Deploy microservices in batches to avoid failures caused by the dependency issue.</p>
+<p><strong>Solution:</strong> use <a href="https://github.com/GaaraZhu/bamboo-on-teams#release">release</a> command in <a href="https://github.com/GaaraZhu/bamboo-on-teams">Bamboo-on-Teams</a> to deploy services in sequential batches</p>
 <ol start="2">
-<li>Secure app client credentials</li>
+<li>App client credentials management</li>
 </ol>
-<p>The service-to-service interaction starts with a user pool sign-in with the app client credentials and a JWT token will be returned from Cognito to the initiator for external resource access. We are are now manually creating secure parameters in Amazon SSM to store the client credentials for each microservice after the deployment. With the increasing number of µservices, we need a tool to do this securely and automatically for us.</p>
+<p>The service-to-service interaction starts with a user pool sign-in with the app client credentials and a JWT token will be returned from Cognito to the initiator for external resource access. We are creating the secure parameters in Amazon SSM manually to store the client credentials for each microservice after the deployment. With the increasing number of µservices, we need a tool to do this securely and automatically for us.</p>
 <p><strong>Solution:</strong> <a href="https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm">https://www.serverless.com/plugins/serverless-app-client-credentials-to-ssm</a></p>
 <p> </p>
 <h2 id="conclusion">Conclusion</h2>
