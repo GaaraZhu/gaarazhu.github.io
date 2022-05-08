@@ -60,7 +60,7 @@ There was a time when I was working on a feature which required changes to more 
   "headline": "AWS one punch",
   "description" : "Background \nThere was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.",
   "inLanguage" : "en",
-  "wordCount":  385 ,
+  "wordCount":  368 ,
   "datePublished" : "2021-12-19T10:21:44",
   "dateModified" : "2021-12-19T10:21:44",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -265,11 +265,11 @@ There was a time when I was working on a feature which required changes to more 
 <p> </p>
 <h2 id="pain-points">Pain points</h2>
 <p><br>
-As recommended by AWS, we should use <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/howtogetcredentials.html">IAM roles credentials</a> instead of long-term access keys in this case. But the pain point is that we will have to grant the access in each command prompt, or to update the local credentials file every time when the temporary credentials are expired.</p>
+<a href="https://aws.amazon.com/single-sign-on/">AWS SSO</a> is used in our company to manage the AWS accounts as well as cloud resources, and we can obtain the <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/howtogetcredentials.html">IAM temporary credentials</a> in the user portal to access cloud resources from command lines. The pain point is the manual work (generate credentials, copy paste and execute in the command prompt, or to update the local credentials file) needs to be done every time when the temporary credentials are expired, and it will become worse when there are multiple command prompts opened like in my case.</p>
 <p> </p>
 <h2 id="solution">Solution</h2>
 <p><br>
-So I started this project <a href="https://github.com/GaaraZhu/aws-one-punch">AWS-one-punch</a> which pulls all AWS accounts and IAM roles using the SSO bearer token stored in cookie to generate new credentials to be updated in the local credentials file, thus with just one command, we can grant all command prompts the access.</p>
+So I started this project <a href="https://github.com/GaaraZhu/aws-one-punch">AWS-one-punch</a> to automate this work. Now with only one command I can grant cloud access for all command prompts opened or will be opened.</p>
 <p> </p>
 <h2 id="installation">Installation</h2>
 <p> </p>
@@ -292,15 +292,9 @@ So I started this project <a href="https://github.com/GaaraZhu/aws-one-punch">AW
 <h2 id="usage">Usage</h2>
 <p> </p>
 <ol>
-<li>list accounts<br>
+<li>List all assigned AWS accounts
  </li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-accounts
-</span></span><span class="line"><span class="cl">2021/11/10 22:04:14 No AWS SSO token found, please finish the SSO in the user portal first: https://gzhu.awsapps.com/start/#/ first
-</span></span></code></pre></div><p> <br>
- 
-2. open the url, finish SSO and repeat step one(PS. keep listing the accounts unitl it works as the token will only be written to cookie when all resources have been loaded after the SSO)<br>
- </p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-accounts
 </span></span><span class="line"><span class="cl">AccountId: ins-sd4312, accountName: 20890663 (MRP IaaS Prod)
 </span></span><span class="line"><span class="cl">AccountId: ins-2ssfds, accountName: 79300001 (Sandbox 1)
@@ -309,20 +303,20 @@ So I started this project <a href="https://github.com/GaaraZhu/aws-one-punch">AW
 </span></span><span class="line"><span class="cl">AccountId: ins-14oasn, accountName: 66060440 (Shared Services)
 </span></span></code></pre></div><p> <br>
  
-3. list IAM roles<br>
+2. List all assigned AWS IAM role in an AWS account
  </p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch list-roles --account-id ins-3sadfa
 </span></span><span class="line"><span class="cl">RoleName: DigitalDeveloperNonprodAccess
 </span></span></code></pre></div><p> <br>
  
-4. one punch for access<br>
+3. Grant all command promopts AWS access with temporary credentails from an IAM role
  </p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ aws-one-punch access --account-name 69127290 --role-name DigitalDeveloperNonprodAccess
 </span></span><span class="line"><span class="cl">AWS access granted with account 69127290 and IAM role DigitalDeveloperNonprodAccess
 </span></span></code></pre></div><p> </p>
 <h3 id="conclusion">Conclusion</h3>
 <p><br>
-<a href="https://github.com/GaaraZhu/aws-one-punch">aws-one-punch</a> automates the manual process to generate IAM role credentials and to grant command prompt AWS access with the credentials regardless of how many prompts there are. Hope this can help if you have the same problem.</p>
+<a href="https://github.com/GaaraZhu/aws-one-punch">aws-one-punch</a> automates the manual process to generate IAM role credentials and to grant command prompts AWS access with the credentials regardless of how many prompts there are. Hope this can help if you have the same problem.</p>
 <p>For furthur simplification, we can create an alias for above one punch command, or we can have it managed somehow, for example with
 <a href="https://github.com/knqyf263/pet">pet</a>.<br>
  <br>
