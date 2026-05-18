@@ -4,18 +4,18 @@
     <title>API Gateway on Gary&#39;s Blog</title>
     <link>https://GaaraZhu.github.io/tags/api-gateway/</link>
     <description>Recent content in API Gateway on Gary&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
+    <language>en</language>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Sun, 10 Apr 2022 17:09:20 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/api-gateway/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Jan 2022 17:09:20 +1300</lastBuildDate>
+    <atom:link href="https://GaaraZhu.github.io/tags/api-gateway/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fine-grained authorization with Amazon Cognito user pool and API Gateway</title>
       <link>https://GaaraZhu.github.io/fine-grained-authorization/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Mon, 10 Jan 2022 17:09:20 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/fine-grained-authorization/</guid>
-      <description>Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.</description>
+      <description>&lt;p&gt;Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>

@@ -4,19 +4,18 @@
     <title>Golang on Gary&#39;s Blog</title>
     <link>https://GaaraZhu.github.io/tags/golang/</link>
     <description>Recent content in Golang on Gary&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
+    <language>en</language>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Sun, 19 Dec 2021 10:21:44 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 19 Dec 2021 10:21:44 +1300</lastBuildDate>
+    <atom:link href="https://GaaraZhu.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AWS one punch</title>
       <link>https://GaaraZhu.github.io/aws-one-punch/</link>
-      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/aws-one-punch/</guid>
-      <description>Background 
-There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.</description>
+      <description>&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;&#xA;&lt;p&gt;&lt;br&gt;&#xA;There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying &lt;a href=&#34;https://aws.amazon.com/cloudformation/&#34;&gt;Cloudformation&lt;/a&gt; changes from local. To simplify the work, I had one command prompt opened for each service so that I can build, package and deploy it whenever I changed something.&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>

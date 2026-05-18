@@ -2,34 +2,55 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://GaaraZhu.github.io/tags/amazon-cognito/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+    <loc>https://GaaraZhu.github.io/tags/ai/</loc>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
   </url><url>
-    <loc>https://GaaraZhu.github.io/tags/api-gateway/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/authorization/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/aws/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/fine-grained-authorization/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+    <loc>https://GaaraZhu.github.io/tags/claude-code/</loc>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
   </url><url>
-    <loc>https://GaaraZhu.github.io/tags/microservices/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+    <loc>https://GaaraZhu.github.io/introducing-gate/</loc>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
   </url><url>
-    <loc>https://GaaraZhu.github.io/tags/serverless/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+    <loc>https://GaaraZhu.github.io/tags/mcp/</loc>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/pii/</loc>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/rust/</loc>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/security/</loc>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/tags/</loc>
-    <lastmod>2022-04-10T17:09:20+13:00</lastmod>
+    <lastmod>2026-05-17T22:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/automation/</loc>
+    <lastmod>2024-09-20T10:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/crgenerator/</loc>
+    <lastmod>2024-09-20T10:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/devops/</loc>
+    <lastmod>2024-09-20T10:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/git/</loc>
+    <lastmod>2024-09-20T10:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/go/</loc>
+    <lastmod>2024-09-20T10:00:00+12:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/jira/</loc>
+    <lastmod>2024-09-20T10:00:00+12:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/tags/atlassian-bamboo/</loc>
+    <lastmod>2022-03-28T11:09:48+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/aws/</loc>
     <lastmod>2022-03-28T11:09:48+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/chat-the-ops-up/</loc>
@@ -38,11 +59,32 @@
     <loc>https://GaaraZhu.github.io/tags/chatops/</loc>
     <lastmod>2022-03-28T11:09:48+13:00</lastmod>
   </url><url>
+    <loc>https://GaaraZhu.github.io/tags/ci/cd/</loc>
+    <lastmod>2022-03-28T11:09:48+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/microservices/</loc>
+    <lastmod>2022-03-28T11:09:48+13:00</lastmod>
+  </url><url>
     <loc>https://GaaraZhu.github.io/tags/microsoft-teams/</loc>
+    <lastmod>2022-03-28T11:09:48+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/serverless/</loc>
     <lastmod>2022-03-28T11:09:48+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/tags/typescript/</loc>
     <lastmod>2022-03-28T11:09:48+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/amazon-cognito/</loc>
+    <lastmod>2022-01-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/api-gateway/</loc>
+    <lastmod>2022-01-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/tags/authorization/</loc>
+    <lastmod>2022-01-10T17:09:20+13:00</lastmod>
+  </url><url>
+    <loc>https://GaaraZhu.github.io/fine-grained-authorization/</loc>
+    <lastmod>2022-01-10T17:09:20+13:00</lastmod>
   </url><url>
     <loc>https://GaaraZhu.github.io/aws-one-punch/</loc>
     <lastmod>2021-12-19T10:21:44+13:00</lastmod>
@@ -65,65 +107,6 @@
     <loc>https://GaaraZhu.github.io/tail-call-optimization/</loc>
     <lastmod>2015-10-02T15:29:15+13:00</lastmod>
   </url><url>
-    <loc>https://GaaraZhu.github.io/tags/architecture/</loc>
-    <lastmod>2013-01-05T21:08:12+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/java/</loc>
-    <lastmod>2013-01-05T21:08:12+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/mysql/</loc>
-    <lastmod>2013-01-05T21:08:12+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/read-write-split/</loc>
-    <lastmod>2013-01-05T21:08:12+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/read-write-splitting/</loc>
-    <lastmod>2013-01-05T21:08:12+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/hadoop/</loc>
-    <lastmod>2012-12-23T01:33:45+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/mapreduce/</loc>
-    <lastmod>2012-12-23T01:33:45+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/map-reduce-tunning/</loc>
-    <lastmod>2012-12-23T01:33:45+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/sqoop/</loc>
-    <lastmod>2012-11-15T23:14:41+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/sqoop/</loc>
-    <lastmod>2012-11-15T23:14:41+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/apache-commons/</loc>
-    <lastmod>2012-09-28T08:33:51+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/deep-clone/</loc>
-    <lastmod>2012-09-28T08:33:51+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/deep-clone/</loc>
-    <lastmod>2012-09-28T08:33:51+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/user-analysis/</loc>
-    <lastmod>2012-09-16T01:26:10+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/analysis-user-behaviour/</loc>
-    <lastmod>2012-09-16T01:26:10+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/aviator/</loc>
-    <lastmod>2012-08-25T09:20:14+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/data-quality/</loc>
-    <lastmod>2012-08-25T09:20:14+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/declarative-validation/</loc>
-    <lastmod>2012-08-25T09:20:14+13:00</lastmod>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/aviator-validator/</loc>
-    <lastmod>2012-08-25T09:20:14+13:00</lastmod>
-  </url><url>
     <loc>https://GaaraZhu.github.io/categories/</loc>
-  </url><url>
-    <loc>https://GaaraZhu.github.io/tags/ci/cd/</loc>
   </url>
 </urlset>

@@ -4,38 +4,32 @@
     <title>AWS on Gary&#39;s Blog</title>
     <link>https://GaaraZhu.github.io/tags/aws/</link>
     <description>Recent content in AWS on Gary&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
+    <language>en</language>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Sun, 10 Apr 2022 17:09:20 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/aws/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Fine-grained authorization with Amazon Cognito user pool and API Gateway</title>
-      <link>https://GaaraZhu.github.io/fine-grained-authorization/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/fine-grained-authorization/</guid>
-      <description>Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.</description>
-    </item>
-    
+    <lastBuildDate>Mon, 28 Mar 2022 11:09:48 +1300</lastBuildDate>
+    <atom:link href="https://GaaraZhu.github.io/tags/aws/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Chat the Ops up</title>
       <link>https://GaaraZhu.github.io/chat-the-ops-up/</link>
-      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/chat-the-ops-up/</guid>
-      <description>TL;DR 
-This is the story of how we improved our CI/CD methodology by using Bamboo-on-Teams, a serverless ChatOps tool for interacting with Atlassian Bamboo from Microsoft Teams.</description>
+      <description>&lt;h2 id=&#34;tldr&#34;&gt;TL;DR&lt;/h2&gt;&#xA;&lt;p&gt;&lt;br&gt;&#xA;This is the story of how we improved our &lt;a href=&#34;https://en.wikipedia.org/wiki/CI/CD&#34;&gt;CI/CD&lt;/a&gt; methodology by using &lt;a href=&#34;https://github.com/GaaraZhu/bamboo-on-teams&#34;&gt;Bamboo-on-Teams&lt;/a&gt;, a serverless &lt;a href=&#34;https://www.atlassian.com/blog/software-teams/what-is-chatops-adoption-guide&#34;&gt;ChatOps&lt;/a&gt; tool for interacting with Atlassian Bamboo from Microsoft Teams.&lt;br&gt;&#xA; &lt;/p&gt;</description>
     </item>
-    
+    <item>
+      <title>Fine-grained authorization with Amazon Cognito user pool and API Gateway</title>
+      <link>https://GaaraZhu.github.io/fine-grained-authorization/</link>
+      <pubDate>Mon, 10 Jan 2022 17:09:20 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/fine-grained-authorization/</guid>
+      <description>&lt;p&gt;Shifting from monolith architecture to microservices are full of challenges where one primary is how to manage security and access control properly. As each microservice is running indenpendly and communicates with each other to perform a specific function, we need to authenticate the incoming request to ensures that it comes from a legitimate service.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>AWS one punch</title>
       <link>https://GaaraZhu.github.io/aws-one-punch/</link>
-      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/aws-one-punch/</guid>
-      <description>Background 
-There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying Cloudformation changes from local.</description>
+      <description>&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;&#xA;&lt;p&gt;&lt;br&gt;&#xA;There was a time when I was working on a feature which required changes to more than ten microservices. In the dev testing stage I got all the services up running in the cloud by applying &lt;a href=&#34;https://aws.amazon.com/cloudformation/&#34;&gt;Cloudformation&lt;/a&gt; changes from local. To simplify the work, I had one command prompt opened for each service so that I can build, package and deploy it whenever I changed something.&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>

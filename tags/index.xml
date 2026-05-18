@@ -4,270 +4,200 @@
     <title>Tags on Gary&#39;s Blog</title>
     <link>https://GaaraZhu.github.io/tags/</link>
     <description>Recent content in Tags on Gary&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
+    <language>en</language>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Sun, 10 Apr 2022 17:09:20 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 17 May 2026 22:00:00 +1200</lastBuildDate>
+    <atom:link href="https://GaaraZhu.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Amazon Cognito</title>
-      <link>https://GaaraZhu.github.io/tags/amazon-cognito/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/amazon-cognito/</guid>
+      <title>AI</title>
+      <link>https://GaaraZhu.github.io/tags/ai/</link>
+      <pubDate>Sun, 17 May 2026 22:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/ai/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>API Gateway</title>
-      <link>https://GaaraZhu.github.io/tags/api-gateway/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/api-gateway/</guid>
+      <title>Claude Code</title>
+      <link>https://GaaraZhu.github.io/tags/claude-code/</link>
+      <pubDate>Sun, 17 May 2026 22:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/claude-code/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>Authorization</title>
-      <link>https://GaaraZhu.github.io/tags/authorization/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/authorization/</guid>
+      <title>MCP</title>
+      <link>https://GaaraZhu.github.io/tags/mcp/</link>
+      <pubDate>Sun, 17 May 2026 22:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/mcp/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>AWS</title>
-      <link>https://GaaraZhu.github.io/tags/aws/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/aws/</guid>
+      <title>PII</title>
+      <link>https://GaaraZhu.github.io/tags/pii/</link>
+      <pubDate>Sun, 17 May 2026 22:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/pii/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>Microservices</title>
-      <link>https://GaaraZhu.github.io/tags/microservices/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/microservices/</guid>
+      <title>Rust</title>
+      <link>https://GaaraZhu.github.io/tags/rust/</link>
+      <pubDate>Sun, 17 May 2026 22:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/rust/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>Serverless</title>
-      <link>https://GaaraZhu.github.io/tags/serverless/</link>
-      <pubDate>Sun, 10 Apr 2022 17:09:20 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/serverless/</guid>
+      <title>Security</title>
+      <link>https://GaaraZhu.github.io/tags/security/</link>
+      <pubDate>Sun, 17 May 2026 22:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/security/</guid>
       <description></description>
     </item>
-    
+    <item>
+      <title>Automation</title>
+      <link>https://GaaraZhu.github.io/tags/automation/</link>
+      <pubDate>Fri, 20 Sep 2024 10:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/automation/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>DevOps</title>
+      <link>https://GaaraZhu.github.io/tags/devops/</link>
+      <pubDate>Fri, 20 Sep 2024 10:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/devops/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Git</title>
+      <link>https://GaaraZhu.github.io/tags/git/</link>
+      <pubDate>Fri, 20 Sep 2024 10:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/git/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Go</title>
+      <link>https://GaaraZhu.github.io/tags/go/</link>
+      <pubDate>Fri, 20 Sep 2024 10:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/go/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>JIRA</title>
+      <link>https://GaaraZhu.github.io/tags/jira/</link>
+      <pubDate>Fri, 20 Sep 2024 10:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/jira/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Atlassian Bamboo</title>
       <link>https://GaaraZhu.github.io/tags/atlassian-bamboo/</link>
-      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/atlassian-bamboo/</guid>
       <description></description>
     </item>
-    
+    <item>
+      <title>AWS</title>
+      <link>https://GaaraZhu.github.io/tags/aws/</link>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/aws/</guid>
+      <description></description>
+    </item>
     <item>
       <title>ChatOps</title>
       <link>https://GaaraZhu.github.io/tags/chatops/</link>
-      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/chatops/</guid>
       <description></description>
     </item>
-    
-    <item>
-      <title>Microsoft Teams</title>
-      <link>https://GaaraZhu.github.io/tags/microsoft-teams/</link>
-      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/microsoft-teams/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Typescript</title>
-      <link>https://GaaraZhu.github.io/tags/typescript/</link>
-      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/typescript/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Golang</title>
-      <link>https://GaaraZhu.github.io/tags/golang/</link>
-      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/golang/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>IAM Role Credentials</title>
-      <link>https://GaaraZhu.github.io/tags/iam-role-credentials/</link>
-      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/iam-role-credentials/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Algorithm</title>
-      <link>https://GaaraZhu.github.io/tags/algorithm/</link>
-      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/algorithm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Performance tuning</title>
-      <link>https://GaaraZhu.github.io/tags/performance-tuning/</link>
-      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/performance-tuning/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Scala</title>
-      <link>https://GaaraZhu.github.io/tags/scala/</link>
-      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/scala/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Architecture</title>
-      <link>https://GaaraZhu.github.io/tags/architecture/</link>
-      <pubDate>Sat, 05 Jan 2013 21:08:12 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/architecture/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Java</title>
-      <link>https://GaaraZhu.github.io/tags/java/</link>
-      <pubDate>Sat, 05 Jan 2013 21:08:12 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/java/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Mysql</title>
-      <link>https://GaaraZhu.github.io/tags/mysql/</link>
-      <pubDate>Sat, 05 Jan 2013 21:08:12 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/mysql/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Read-write splitting</title>
-      <link>https://GaaraZhu.github.io/tags/read-write-splitting/</link>
-      <pubDate>Sat, 05 Jan 2013 21:08:12 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/read-write-splitting/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Hadoop</title>
-      <link>https://GaaraZhu.github.io/tags/hadoop/</link>
-      <pubDate>Sun, 23 Dec 2012 01:33:45 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/hadoop/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>MapReduce</title>
-      <link>https://GaaraZhu.github.io/tags/mapreduce/</link>
-      <pubDate>Sun, 23 Dec 2012 01:33:45 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/mapreduce/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Sqoop</title>
-      <link>https://GaaraZhu.github.io/tags/sqoop/</link>
-      <pubDate>Thu, 15 Nov 2012 23:14:41 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/sqoop/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Apache Commons</title>
-      <link>https://GaaraZhu.github.io/tags/apache-commons/</link>
-      <pubDate>Fri, 28 Sep 2012 08:33:51 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/apache-commons/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Deep clone</title>
-      <link>https://GaaraZhu.github.io/tags/deep-clone/</link>
-      <pubDate>Fri, 28 Sep 2012 08:33:51 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/deep-clone/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>User analysis</title>
-      <link>https://GaaraZhu.github.io/tags/user-analysis/</link>
-      <pubDate>Sun, 16 Sep 2012 01:26:10 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/user-analysis/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Aviator</title>
-      <link>https://GaaraZhu.github.io/tags/aviator/</link>
-      <pubDate>Sat, 25 Aug 2012 09:20:14 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/aviator/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Data quality</title>
-      <link>https://GaaraZhu.github.io/tags/data-quality/</link>
-      <pubDate>Sat, 25 Aug 2012 09:20:14 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/data-quality/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Declarative validation</title>
-      <link>https://GaaraZhu.github.io/tags/declarative-validation/</link>
-      <pubDate>Sat, 25 Aug 2012 09:20:14 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
-      <guid>https://GaaraZhu.github.io/tags/declarative-validation/</guid>
-      <description></description>
-    </item>
-    
     <item>
       <title>CI/CD</title>
       <link>https://GaaraZhu.github.io/tags/ci/cd/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tags/ci/cd/</guid>
       <description></description>
     </item>
-    
+    <item>
+      <title>Microservices</title>
+      <link>https://GaaraZhu.github.io/tags/microservices/</link>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/microservices/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Microsoft Teams</title>
+      <link>https://GaaraZhu.github.io/tags/microsoft-teams/</link>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/microsoft-teams/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Serverless</title>
+      <link>https://GaaraZhu.github.io/tags/serverless/</link>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/serverless/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Typescript</title>
+      <link>https://GaaraZhu.github.io/tags/typescript/</link>
+      <pubDate>Mon, 28 Mar 2022 11:09:48 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/typescript/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Amazon Cognito</title>
+      <link>https://GaaraZhu.github.io/tags/amazon-cognito/</link>
+      <pubDate>Mon, 10 Jan 2022 17:09:20 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/amazon-cognito/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>API Gateway</title>
+      <link>https://GaaraZhu.github.io/tags/api-gateway/</link>
+      <pubDate>Mon, 10 Jan 2022 17:09:20 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/api-gateway/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Authorization</title>
+      <link>https://GaaraZhu.github.io/tags/authorization/</link>
+      <pubDate>Mon, 10 Jan 2022 17:09:20 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/authorization/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Golang</title>
+      <link>https://GaaraZhu.github.io/tags/golang/</link>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/golang/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>IAM Role Credentials</title>
+      <link>https://GaaraZhu.github.io/tags/iam-role-credentials/</link>
+      <pubDate>Sun, 19 Dec 2021 10:21:44 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/iam-role-credentials/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Algorithm</title>
+      <link>https://GaaraZhu.github.io/tags/algorithm/</link>
+      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Performance Tuning</title>
+      <link>https://GaaraZhu.github.io/tags/performance-tuning/</link>
+      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/performance-tuning/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Scala</title>
+      <link>https://GaaraZhu.github.io/tags/scala/</link>
+      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <guid>https://GaaraZhu.github.io/tags/scala/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

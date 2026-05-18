@@ -4,18 +4,18 @@
     <title>Scala on Gary&#39;s Blog</title>
     <link>https://GaaraZhu.github.io/tags/scala/</link>
     <description>Recent content in Scala on Gary&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
+    <language>en</language>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Fri, 02 Oct 2015 15:29:15 +1300</lastBuildDate><atom:link href="https://GaaraZhu.github.io/tags/scala/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 02 Oct 2015 15:29:15 +1300</lastBuildDate>
+    <atom:link href="https://GaaraZhu.github.io/tags/scala/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Tail call optimization in Scala</title>
       <link>https://GaaraZhu.github.io/tail-call-optimization/</link>
-      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate>
-      <author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Fri, 02 Oct 2015 15:29:15 +1300</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/tail-call-optimization/</guid>
-      <description>Recursion provides us an easy way to solve some problems, and makes the code simpler and easier to follow. But one problem of it is the memory cost caused by the recursive call stack, which could be critical for memory sensitive applications like mobile ones.</description>
+      <description>&lt;p&gt;Recursion provides us an easy way to solve some problems, and makes the code simpler and easier to follow. But one problem of it is the memory cost caused by the recursive call stack, which could be critical for memory sensitive applications like mobile ones.&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>
