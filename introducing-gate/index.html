@@ -60,7 +60,7 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
   "headline": "Gate: a deterministic PII boundary between your data and AI agents",
   "description" : "The thing that should have been a 2 a.m. incident You wire a database tool into your coding agent. PostgreSQL, Databricks, an internal HTTP API — whatever. The agent is useful. It joins tables you\u0026rsquo;d forgotten existed, drafts the migration, and writes the report. Productivity goes up.\n",
   "inLanguage" : "en",
-  "wordCount":  2477 ,
+  "wordCount":  2688 ,
   "datePublished" : "2026-05-17T22:00:00",
   "dateModified" : "2026-05-17T22:00:00",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -391,6 +391,11 @@ Because Gate 1 only needs to find column references. Pulling in a full SQL parse
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                 ORDER BY table_name, ordinal_position&#34;</span> | gate scan
 </span></span></code></pre></div><p>The output groups columns by tier (Critical / Elevated / Standard) and emits a risk floor based on prevalence. It exits 1 if any PII is found, so it slots into CI as a schema audit. False positives — <code>city</code> in a <code>products</code> table, <code>bank_account_id</code> used as a foreign key — get handled by an interactive <code>--review</code> mode that adds them to an allowlist with one keystroke each. Allowlisted columns skip <em>name-based</em> redaction only; Gate 2 still inspects their values for regex and Luhn hits.</p>
 <p>This was the missing piece for organisations evaluating whether to deploy an AI agent against an existing database at all. Before, the answer was &ldquo;I dunno, grep the schema and squint.&rdquo; Now it&rsquo;s a single piped command, scriptable in CI.</p>
+<h2 id="knowing-what-got-caught-gate-retro">Knowing what got caught: <code>gate retro</code></h2>
+<p><code>gate scan</code> is the <em>before</em>. <code>gate retro</code> is the <em>after</em>. A deterministic filter has the rare property that you can count exactly what it did — there is no sampling, no model-of-the-month estimating, no confidence interval. Once <code>gate</code> has been running for a sprint or a quarter, <code>retro</code> reads the local JSONL stats log and prints the tally:</p>
+<p><img src="/images/introducing-gate/retro.jpg" alt="gate retro output showing all-time statistics"></p>
+<p>Two reasons this matters. First, it answers the question every security-adjacent team eventually asks of an opt-in filter on the hot path: <em>is the thing actually doing something, or is it a placebo we forget to look at?</em> The numbers come from the same pipeline that did the redaction; they aren&rsquo;t an estimate. Second, it gives you a feedback loop. A <code>Hit rate</code> of 0% on a tool that should be returning PII usually means the data is coming back in a format <code>gate</code> couldn&rsquo;t parse — CSV without a <code>pipe:</code>, an unusual JSON envelope, a column-name convention not yet in config. A surprising sub-category in the breakdown — <code>tax_id</code> showing up in a table you forgot was joined — is a finding worth tracing.</p>
+<p>Stats are local-only: they&rsquo;re written to a JSONL log on disk, never sent anywhere, and <code>stats.enabled: false</code> turns the recording off entirely.</p>
 <h2 id="honesty-about-the-gaps">Honesty about the gaps</h2>
 <p>The full threat model is in the <a href="https://github.com/GaaraZhu/gate/blob/main/THREAT-MODEL.md">repo</a> but the headlines are:</p>
 <ul>
