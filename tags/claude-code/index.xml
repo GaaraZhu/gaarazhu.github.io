@@ -8,12 +8,12 @@
     <language>en</language>
     <managingEditor>sec.gary@gmail.com (GaryZhu)</managingEditor>
     <webMaster>sec.gary@gmail.com (GaryZhu)</webMaster>
-    <lastBuildDate>Sun, 17 May 2026 22:00:00 +1200</lastBuildDate>
+    <lastBuildDate>Wed, 20 May 2026 20:17:00 +1200</lastBuildDate>
     <atom:link href="https://GaaraZhu.github.io/tags/claude-code/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Gate: a deterministic PII boundary between your data and AI agents</title>
       <link>https://GaaraZhu.github.io/introducing-gate/</link>
-      <pubDate>Sun, 17 May 2026 22:00:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
+      <pubDate>Wed, 20 May 2026 20:17:00 +1200</pubDate><author>sec.gary@gmail.com (GaryZhu)</author>
       <guid>https://GaaraZhu.github.io/introducing-gate/</guid>
       <description>&lt;h2 id=&#34;the-thing-that-should-have-been-a-2-am-incident&#34;&gt;The thing that should have been a 2 a.m. incident&lt;/h2&gt;&#xA;&lt;p&gt;You wire a database tool into your coding agent. PostgreSQL, Databricks, an internal HTTP API — whatever. The agent is &lt;em&gt;useful&lt;/em&gt;. It joins tables you&amp;rsquo;d forgotten existed, drafts the migration, and writes the report. Productivity goes up.&lt;/p&gt;</description>
     </item>

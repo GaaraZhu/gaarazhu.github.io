@@ -60,9 +60,9 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
   "headline": "Gate: a deterministic PII boundary between your data and AI agents",
   "description" : "The thing that should have been a 2 a.m. incident You wire a database tool into your coding agent. PostgreSQL, Databricks, an internal HTTP API — whatever. The agent is useful. It joins tables you\u0026rsquo;d forgotten existed, drafts the migration, and writes the report. Productivity goes up.\n",
   "inLanguage" : "en",
-  "wordCount":  2688 ,
-  "datePublished" : "2026-05-17T22:00:00",
-  "dateModified" : "2026-05-17T22:00:00",
+  "wordCount":  2650 ,
+  "datePublished" : "2026-05-20T20:17:00",
+  "dateModified" : "2026-05-20T20:17:00",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
   "keywords" : [ "AI, Security, PII, Rust, MCP, Claude Code" ],
   "mainEntityOfPage" : "https:\/\/GaaraZhu.github.io\/introducing-gate\/",
@@ -264,7 +264,7 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
 </span></span><span style="display:flex;"><span>  &#34;status&#34;: &#34;active&#34;
 </span></span><span style="display:flex;"><span>}, ...]
 </span></span></code></pre></div><p>That&rsquo;s now in the model&rsquo;s context. From there it&rsquo;s in the conversation log, in any summary the agent generates, in the file it just wrote to <code>/tmp</code>, and — if the harness has any kind of memory or &ldquo;share session&rdquo; feature — potentially somewhere on someone else&rsquo;s machine. The agent didn&rsquo;t do anything wrong. Neither did you. The tool returned what you asked for, the model ingested it, life went on.</p>
-<p>This is the default. Every CLI database client, every MCP server, every <code>curl | jq</code> pipeline an agent runs returns the same data a human would see. The model wasn&rsquo;t designed to triage what should and shouldn&rsquo;t be in its window; that decision was outsourced to the human who wrote the prompt. With agents, there is no such human in the loop on a per-query basis.</p>
+<p>This is the default. Every CLI client, MCP server, and <code>curl | jq</code> pipeline returns the same bytes a human would see — and with agents, there&rsquo;s no human in the loop to triage what enters the model&rsquo;s window.</p>
 <p>This post is about a tool that fixes the leak at the layer where it can be fixed deterministically.</p>
 <h2 id="what-gate-is">What <code>gate</code> is</h2>
 <p><a href="https://github.com/GaaraZhu/gate"><code>gate</code></a> is a single Rust binary that sits between an AI agent and the data tools it calls. It intercepts the <em>output</em> of configured commands, scans it for PII, and rewrites the values to typed placeholders before the bytes reach the model:</p>
@@ -279,9 +279,9 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
 <li><strong>Fast on the hot path.</strong> It runs on every Bash command the agent invokes. If it&rsquo;s slow, people turn it off.</li>
 <li><strong>Honest about its limits.</strong> A false-negative is worse than a false-positive — the failure mode is silent data exposure, not a noisy block.</li>
 </ol>
-<p>The whole thing is ~7k lines of Rust, MIT-licensed, builds with <code>cargo build</code>, and ships on Homebrew.</p>
+<p>The whole thing is ~7k lines of Rust with ~6k of tests (491 passing, golden-file coverage on the redactor), MIT-licensed, builds with <code>cargo build</code>, and ships on Homebrew.</p>
 <h2 id="the-two-access-paths">The two access paths</h2>
-<p>Modern agent harnesses give models data through two doors, and the centre of gravity has shifted hard toward one of them. The Model Context Protocol has become the de-facto integration layer for connecting LLMs to backend systems — Postgres, Snowflake, GitHub, Linear, internal APIs, file stores, ticketing — and most of the published material on MCP is about <em>building</em> servers, not about auditing what they return to the model. The model trusts what the server hands back. The server trusts what the database hands back. Nobody is reading the bytes.</p>
+<p>Modern agent harnesses give models data through two doors. The Model Context Protocol has become the de-facto integration layer for Postgres, Snowflake, GitHub, Linear, and internal APIs — and most of the published material on it is about <em>building</em> servers, not about auditing what they return. The model trusts what the server hands back. Nobody is reading the bytes.</p>
 <p><code>gate</code> covers both doors: MCP servers via a stdio proxy, and Bash/CLI tools via a harness hook.</p>
 <h3 id="1-mcp-servers-via-a-stdio-proxy">1. MCP servers (via a stdio proxy)</h3>
 <p><code>gate mcp</code> is a tiny stdio JSON-RPC proxy. You register it as the MCP server in your harness; it spawns the real server underneath and forwards every message verbatim — <em>except</em> <code>tools/call</code> responses, which are passed through the value-scanner before the bytes return to the model.</p>
@@ -292,7 +292,7 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
 </span></span><span style="display:flex;"><span>                       │ Gate 2 scan + redact
 </span></span><span style="display:flex;"><span>                       │
 </span></span><span style="display:flex;"><span>AI &lt;───redacted result─┘
-</span></span></code></pre></div><p>The proxy is transparent. The upstream server runs unchanged, the agent doesn&rsquo;t know it&rsquo;s been wrapped, and you don&rsquo;t have to migrate one server at a time:</p>
+</span></span></code></pre></div><p>The proxy is transparent. Upstream servers run unchanged, and you migrate the whole fleet in one shot:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gate init --wrap-mcp                                    <span style="color:#75715e"># dry-run: lists every server that would be wrapped</span>
 </span></span><span style="display:flex;"><span>gate init --wrap-mcp --yes                              <span style="color:#75715e"># apply</span>
 </span></span><span style="display:flex;"><span>gate init --wrap-mcp --servers postgres,github --yes   <span style="color:#75715e"># opt-in subset</span>
@@ -308,11 +308,11 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
 <li><strong>OpenCode</strong> — a TypeScript plugin&rsquo;s <code>tool.execute.before</code> handler mutates <code>output.args.command</code> in-flight.</li>
 <li><strong>GitHub Copilot CLI</strong> — <code>PreToolUse</code> hook in <code>.github/hooks/PreToolUse.json</code> returns <code>modifiedArgs</code>.</li>
 </ul>
-<p>The agent never sees the rewrite. It doesn&rsquo;t know <code>gate</code> is there. There is no wrapper script on PATH that a human user has to interact with — humans running the same commands in a normal terminal are untouched.</p>
+<p>The agent doesn&rsquo;t know <code>gate</code> is there, and humans running the same commands in a normal terminal are untouched — there&rsquo;s no wrapper script on PATH.</p>
 <h2 id="the-two-gate-detection-pipeline">The two-gate detection pipeline</h2>
-<p>The name <code>gate</code> is plural. There are two filters, applied in sequence, with very different jobs.</p>
+<p>Despite the name, <code>gate</code> is two filters, applied in sequence, with very different jobs.</p>
 <h3 id="gate-1-sql-intent-analysis-best-effort">Gate 1: SQL intent analysis (best-effort)</h3>
-<p>When the intercepted command has a <code>sql_arg</code> configured (e.g. <code>tkpsql --sql</code>, <code>psql -c</code>, <code>databricks --json statement</code>), <code>gate</code> extracts the SQL string and runs it through a hand-written tokenizer. The goal is modest: figure out which <em>columns</em> the query selects, so we can mark them for guaranteed redaction regardless of what comes back in the value.</p>
+<p>When the intercepted command has a <code>sql_arg</code> configured (e.g. <code>tkpsql --sql</code>, <code>psql -c</code>, <code>databricks --json statement</code>), <code>gate</code> extracts the SQL string and runs it through a hand-written tokenizer. The goal is modest: figure out which <em>columns</em> the query selects, so they&rsquo;re marked for guaranteed redaction regardless of what comes back in the value.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> u.first_name, u.email <span style="color:#66d9ef">AS</span> contact, p.phone
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> users u <span style="color:#66d9ef">JOIN</span> profiles p <span style="color:#66d9ef">ON</span> u.id <span style="color:#f92672">=</span> p.user_id
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> u.signup_at <span style="color:#f92672">&gt;</span> NOW() <span style="color:#f92672">-</span> INTERVAL <span style="color:#e6db74">&#39;30 days&#39;</span>
@@ -390,31 +390,31 @@ Because Gate 1 only needs to find column references. Pulling in a full SQL parse
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                 WHERE table_schema = &#39;public&#39;
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                 ORDER BY table_name, ordinal_position&#34;</span> | gate scan
 </span></span></code></pre></div><p>The output groups columns by tier (Critical / Elevated / Standard) and emits a risk floor based on prevalence. It exits 1 if any PII is found, so it slots into CI as a schema audit. False positives — <code>city</code> in a <code>products</code> table, <code>bank_account_id</code> used as a foreign key — get handled by an interactive <code>--review</code> mode that adds them to an allowlist with one keystroke each. Allowlisted columns skip <em>name-based</em> redaction only; Gate 2 still inspects their values for regex and Luhn hits.</p>
-<p>This was the missing piece for organisations evaluating whether to deploy an AI agent against an existing database at all. Before, the answer was &ldquo;I dunno, grep the schema and squint.&rdquo; Now it&rsquo;s a single piped command, scriptable in CI.</p>
+<p>Before, schema PII auditing was &ldquo;grep and squint&rdquo;; now it&rsquo;s a single piped command, scriptable in CI.</p>
 <h2 id="knowing-what-got-caught-gate-retro">Knowing what got caught: <code>gate retro</code></h2>
 <p><code>gate scan</code> is the <em>before</em>. <code>gate retro</code> is the <em>after</em>. A deterministic filter has the rare property that you can count exactly what it did — there is no sampling, no model-of-the-month estimating, no confidence interval. Once <code>gate</code> has been running for a sprint or a quarter, <code>retro</code> reads the local JSONL stats log and prints the tally:</p>
 <p><img src="/images/introducing-gate/retro.jpg" alt="gate retro output showing all-time statistics"></p>
-<p>Two reasons this matters. First, it answers the question every security-adjacent team eventually asks of an opt-in filter on the hot path: <em>is the thing actually doing something, or is it a placebo we forget to look at?</em> The numbers come from the same pipeline that did the redaction; they aren&rsquo;t an estimate. Second, it gives you a feedback loop. A <code>Hit rate</code> of 0% on a tool that should be returning PII usually means the data is coming back in a format <code>gate</code> couldn&rsquo;t parse — CSV without a <code>pipe:</code>, an unusual JSON envelope, a column-name convention not yet in config. A surprising sub-category in the breakdown — <code>tax_id</code> showing up in a table you forgot was joined — is a finding worth tracing.</p>
+<p>It answers the question every security team asks of an opt-in filter on the hot path: <em>is this thing actually doing something, or a placebo we forget about?</em> The numbers come from the same pipeline that did the redaction — no sampling, no estimate. It also surfaces config gaps: a <code>Hit rate</code> of 0% on a tool that should be returning PII usually means the data is coming back in a format <code>gate</code> couldn&rsquo;t parse — CSV without a <code>pipe:</code>, an unusual JSON envelope, a column-name convention not yet in config. A surprising sub-category in the breakdown — <code>tax_id</code> showing up in a table you forgot was joined — is a finding worth tracing.</p>
 <p>Stats are local-only: they&rsquo;re written to a JSONL log on disk, never sent anywhere, and <code>stats.enabled: false</code> turns the recording off entirely.</p>
 <h2 id="honesty-about-the-gaps">Honesty about the gaps</h2>
 <p>The full threat model is in the <a href="https://github.com/GaaraZhu/gate/blob/main/THREAT-MODEL.md">repo</a> but the headlines are:</p>
 <ul>
 <li><strong><code>gate</code> is not a sandbox.</strong> It only filters commands explicitly listed in <code>tools:</code>. Anything else passes through.</li>
-<li><strong>The adversary model is an inadvertent agent, not a malicious one.</strong> A jailbroken agent that deliberately base64-encodes data before exfiltrating it through a non-intercepted tool is out of scope. Combine <code>gate</code> with harness-level tool restrictions if you need that boundary.</li>
+<li><strong>The adversary model is an inadvertent agent, not a malicious one.</strong> <code>sudo gate protect</code> (Unix) chowns the config to root so a hijacked agent can&rsquo;t disable gate via config edits, but a jailbroken agent that deliberately base64-encodes data, requests CSV output, or exfiltrates through a non-intercepted tool is still out of scope. Combine <code>gate</code> with harness-level tool restrictions if you need that boundary.</li>
 <li><strong>Value regex is narrow.</strong> Email, US SSN (dashes required — <code>123456789</code> slips), US phone, payment cards (via Luhn). Everything else — IBAN, passport, NHS number, NZ IRD, AU TFN — is column-name-based. If the column has an unusual name and isn&rsquo;t in your config&rsquo;s <code>column_names</code> list, the value will pass through. Configure for your region.</li>
 <li><strong>MCP <code>resources/read</code> and <code>prompts/get</code> are not redacted.</strong> Only <code>tools/call</code> responses go through the scanner.</li>
 <li><strong>Non-JSON output is not redacted.</strong> If a tool emits CSV or plain text, configure a <code>pipe:</code> to convert it (the example config uses <code>jq -c .</code> for curl and a 3-line Python <code>csv.DictReader</code> for <code>psql --csv</code>).</li>
-<li><strong>Disable mechanisms exist.</strong> <code>GATE_DISABLED=1</code>, <code>enabled: false</code> in config, deleting the config file. Anything with write access to the user&rsquo;s environment can turn the filter off.</li>
+<li><strong>Disable mechanisms exist.</strong> <code>enabled: false</code> in config, deleting the config file, or removing the hook entry from the harness settings. <code>sudo gate protect</code> (Unix) chowns the config to root to block the first two from inside the agent, but the harness settings file is still user-writable.</li>
 </ul>
 <p>If any of these are deal-breakers, the tool is honest about it up front. Better than discovering it in a post-mortem.</p>
 <h2 id="why-a-deterministic-cli-and-not-just-ask-the-model">Why a deterministic CLI and not &ldquo;just ask the model&rdquo;</h2>
-<p>It is technically possible to ask the model to redact its own input before it ingests it. People are building this. We chose not to, for three reasons:</p>
+<p>It is technically possible to ask the model to redact its own input before it ingests it. People are building this. I chose not to, for three reasons:</p>
 <ol>
 <li><strong>Cost.</strong> Every query result would round-trip through a model call. A single agent session might run hundreds of queries.</li>
 <li><strong>Latency.</strong> A hook on every Bash command needs to return in single-digit milliseconds. <code>gate hook</code>&rsquo;s passthrough path is in that ballpark; an LLM call is not.</li>
 <li><strong>Auditability.</strong> &ldquo;Why was this field redacted?&rdquo; needs an answer that survives review. A regex and a tokenizer can be inspected, golden-file tested, and re-run on the same input forever. A model in 2026 will not give the same output on the same input in 2027, and you will not get a stack trace.</li>
 </ol>
-<p>Determinism is the feature. Slow, expensive, drifting filters are not a substitute for it.</p>
+<p>Existing PII tools (Presidio, Nightfall, Skyflow) take the opposite trade — they&rsquo;re mostly built for data-pipeline or SaaS-gateway use, sitting at API boundaries or in batch jobs, not in the agent&rsquo;s tool-execution path with single-digit-ms latency and harness-level hook enforcement. <code>gate</code> is shaped specifically for that boundary.</p>
 <h2 id="what-it-costs-to-try">What it costs to try</h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># macOS / Linux via Homebrew</span>
 </span></span><span style="display:flex;"><span>brew tap GaaraZhu/gate <span style="color:#f92672">&amp;&amp;</span> brew install gate
@@ -424,17 +424,17 @@ Because Gate 1 only needs to find column references. Pulling in a full SQL parse
 </span></span><span style="display:flex;"><span>gate init             <span style="color:#75715e"># registers the PreToolUse hook in ~/.claude/settings.json</span>
 </span></span><span style="display:flex;"><span>gate init --wrap-mcp  <span style="color:#75715e"># dry-run: shows which MCP servers would be wrapped</span>
 </span></span><span style="display:flex;"><span>gate validate         <span style="color:#75715e"># compiles all regex patterns, lints the config</span>
-</span></span></code></pre></div><p>Pipe your schema into <code>gate scan</code> first to see what you&rsquo;re working with. Run <code>gate disable</code> (or <code>unset</code> the env var) to turn it off for a session if you need to debug something. <code>gate uninstall</code> removes everything <code>gate</code> added to your system and asks for confirmation before each step.</p>
+</span></span></code></pre></div><p>Pipe your schema into <code>gate scan</code> first to see what you&rsquo;re working with. Run <code>gate disable</code> to turn it off if you need to debug something, and <code>gate enable</code> to switch it back on. <code>gate uninstall</code> removes everything <code>gate</code> added to your system and asks for confirmation before each step.</p>
 <h2 id="where-this-is-going">Where this is going</h2>
-<p>The current focus areas, roughly in priority order:</p>
+<p>What&rsquo;s next, roughly in priority order:</p>
 <ul>
 <li><strong>More built-in patterns by region.</strong> The value-regex coverage is US-centric; community PRs adding IBAN, passport, NHS, IRD, TFN, Aadhaar, etc., are explicitly welcome.</li>
 <li><strong>MCP <code>resources/read</code> redaction.</strong> Closing the one documented gap in the MCP path.</li>
 <li><strong>More harness integrations.</strong> Claude Code, OpenCode, and Copilot CLI are in. Cursor, Aider, and others are open questions — file an issue if you want one.</li>
-<li><strong>Write-path inspection.</strong> Today <code>gate</code> only sees query results; <code>INSERT</code>/<code>UPDATE</code>/<code>DELETE</code> are not inspected. There&rsquo;s a plausible v0.7 line for blocking writes that target redacted-fielded tables.</li>
+<li><strong>Write-path inspection.</strong> Today <code>gate</code> only sees query results; <code>INSERT</code>/<code>UPDATE</code>/<code>DELETE</code> are not inspected. There&rsquo;s a plausible v0.9 line for blocking writes that target redacted-fielded tables.</li>
 </ul>
-<p>If you&rsquo;ve been holding off on connecting your AI agent to a real database because the consent boundary for &ldquo;what the model sees&rdquo; was a vibes-based decision, this is the layer that turns it into a config file. Try it, scan your schema, and tell us what you find. The repo is <a href="https://github.com/GaaraZhu/gate">github.com/GaaraZhu/gate</a>. The issue tracker is open. The license is MIT.</p>
-<p>We&rsquo;d rather hear &ldquo;gate redacted something it shouldn&rsquo;t have&rdquo; than &ldquo;gate let something through that it shouldn&rsquo;t have.&rdquo; If you find the second one, that&rsquo;s a security bug and there&rsquo;s a <a href="https://github.com/GaaraZhu/gate/blob/main/SECURITY.md">process for it</a>.</p>
+<p>If you&rsquo;ve been holding off on connecting your AI agent to a real database because &ldquo;what the model sees&rdquo; was a vibes-based decision, this is the layer that turns it into a config file. Try it, scan your schema, and share what you find. The repo is <a href="https://github.com/GaaraZhu/gate">github.com/GaaraZhu/gate</a>. The issue tracker is open. The license is MIT.</p>
+<p>I&rsquo;d rather hear &ldquo;gate redacted something it shouldn&rsquo;t have&rdquo; than &ldquo;gate let something through that it shouldn&rsquo;t have.&rdquo; If you find the second one, that&rsquo;s a security bug and there&rsquo;s a <a href="https://github.com/GaaraZhu/gate/blob/main/SECURITY.md">process for it</a>.</p>
 
 
         
