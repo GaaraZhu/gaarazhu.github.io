@@ -60,7 +60,7 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
   "headline": "Gate: a deterministic PII boundary between your data and AI agents",
   "description" : "The thing that should have been a 2 a.m. incident You wire a database tool into your coding agent. PostgreSQL, Databricks, an internal HTTP API — whatever. The agent is useful. It joins tables you\u0026rsquo;d forgotten existed, drafts the migration, and writes the report. Productivity goes up.\n",
   "inLanguage" : "en",
-  "wordCount":  2650 ,
+  "wordCount":  2658 ,
   "datePublished" : "2026-05-20T20:17:00",
   "dateModified" : "2026-05-20T20:17:00",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -306,7 +306,9 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
 <ul>
 <li><strong>Claude Code</strong> — <code>PreToolUse</code> hook in <code>~/.claude/settings.json</code>; Claude Code substitutes the rewritten command via <code>updatedInput</code> before spawning.</li>
 <li><strong>OpenCode</strong> — a TypeScript plugin&rsquo;s <code>tool.execute.before</code> handler mutates <code>output.args.command</code> in-flight.</li>
+<li><strong>Cursor</strong> — <code>PreToolUse</code> hook in <code>.cursor/mcp.json</code>; Cursor substitutes the rewritten command before spawning.</li>
 <li><strong>GitHub Copilot CLI</strong> — <code>PreToolUse</code> hook in <code>.github/hooks/PreToolUse.json</code> returns <code>modifiedArgs</code>.</li>
+<li><strong>Codex CLI</strong> — <code>PreToolUse</code> hook trusted and enabled via the Permissions UI; substitutes the rewritten command before spawning.</li>
 </ul>
 <p>The agent doesn&rsquo;t know <code>gate</code> is there, and humans running the same commands in a normal terminal are untouched — there&rsquo;s no wrapper script on PATH.</p>
 <h2 id="the-two-gate-detection-pipeline">The two-gate detection pipeline</h2>
@@ -401,7 +403,7 @@ Because Gate 1 only needs to find column references. Pulling in a full SQL parse
 <ul>
 <li><strong><code>gate</code> is not a sandbox.</strong> It only filters commands explicitly listed in <code>tools:</code>. Anything else passes through.</li>
 <li><strong>The adversary model is an inadvertent agent, not a malicious one.</strong> <code>sudo gate protect</code> (Unix) chowns the config to root so a hijacked agent can&rsquo;t disable gate via config edits, but a jailbroken agent that deliberately base64-encodes data, requests CSV output, or exfiltrates through a non-intercepted tool is still out of scope. Combine <code>gate</code> with harness-level tool restrictions if you need that boundary.</li>
-<li><strong>Value regex is narrow.</strong> Email, US SSN (dashes required — <code>123456789</code> slips), US phone, payment cards (via Luhn). Everything else — IBAN, passport, NHS number, NZ IRD, AU TFN — is column-name-based. If the column has an unusual name and isn&rsquo;t in your config&rsquo;s <code>column_names</code> list, the value will pass through. Configure for your region.</li>
+<li><strong>Value regex is narrow.</strong> Email, US SSN (dashes required — <code>123456789</code> slips), US phone, payment cards (via Luhn). Everything else — IBAN, passport, NHS number, NZ IRD, AU TFN — is column-name-based. If the column has an unusual name and isn&rsquo;t in your config&rsquo;s <code>column_denylist</code>, the value will pass through. Configure for your region.</li>
 <li><strong>MCP <code>resources/read</code> and <code>prompts/get</code> are not redacted.</strong> Only <code>tools/call</code> responses go through the scanner.</li>
 <li><strong>Non-JSON output is not redacted.</strong> If a tool emits CSV or plain text, configure a <code>pipe:</code> to convert it (the example config uses <code>jq -c .</code> for curl and a 3-line Python <code>csv.DictReader</code> for <code>psql --csv</code>).</li>
 <li><strong>Disable mechanisms exist.</strong> <code>enabled: false</code> in config, deleting the config file, or removing the hook entry from the harness settings. <code>sudo gate protect</code> (Unix) chowns the config to root to block the first two from inside the agent, but the harness settings file is still user-writable.</li>
@@ -430,8 +432,7 @@ Because Gate 1 only needs to find column references. Pulling in a full SQL parse
 <ul>
 <li><strong>More built-in patterns by region.</strong> The value-regex coverage is US-centric; community PRs adding IBAN, passport, NHS, IRD, TFN, Aadhaar, etc., are explicitly welcome.</li>
 <li><strong>MCP <code>resources/read</code> redaction.</strong> Closing the one documented gap in the MCP path.</li>
-<li><strong>More harness integrations.</strong> Claude Code, OpenCode, and Copilot CLI are in. Cursor, Aider, and others are open questions — file an issue if you want one.</li>
-<li><strong>Write-path inspection.</strong> Today <code>gate</code> only sees query results; <code>INSERT</code>/<code>UPDATE</code>/<code>DELETE</code> are not inspected. There&rsquo;s a plausible v0.9 line for blocking writes that target redacted-fielded tables.</li>
+<li><strong>More harness integrations.</strong> Claude Code, OpenCode, Copilot CLI, Cursor, and Codex CLI are in. Aider and others are open questions — file an issue if you want one.</li>
 </ul>
 <p>If you&rsquo;ve been holding off on connecting your AI agent to a real database because &ldquo;what the model sees&rdquo; was a vibes-based decision, this is the layer that turns it into a config file. Try it, scan your schema, and share what you find. The repo is <a href="https://github.com/GaaraZhu/gate">github.com/GaaraZhu/gate</a>. The issue tracker is open. The license is MIT.</p>
 <p>I&rsquo;d rather hear &ldquo;gate redacted something it shouldn&rsquo;t have&rdquo; than &ldquo;gate let something through that it shouldn&rsquo;t have.&rdquo; If you find the second one, that&rsquo;s a security bug and there&rsquo;s a <a href="https://github.com/GaaraZhu/gate/blob/main/SECURITY.md">process for it</a>.</p>
