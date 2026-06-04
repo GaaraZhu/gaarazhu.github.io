@@ -60,7 +60,7 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
   "headline": "Gate: a deterministic PII boundary between your data and AI agents",
   "description" : "The thing that should have been a 2 a.m. incident You wire a database tool into your coding agent. PostgreSQL, Databricks, an internal HTTP API — whatever. The agent is useful. It joins tables you\u0026rsquo;d forgotten existed, drafts the migration, and writes the report. Productivity goes up.\n",
   "inLanguage" : "en",
-  "wordCount":  2658 ,
+  "wordCount":  2543 ,
   "datePublished" : "2026-05-20T20:17:00",
   "dateModified" : "2026-05-20T20:17:00",
   "image" : "https:\/\/GaaraZhu.github.io\/img\/avatar-icon.png",
@@ -279,7 +279,7 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
 <li><strong>Fast on the hot path.</strong> It runs on every Bash command the agent invokes. If it&rsquo;s slow, people turn it off.</li>
 <li><strong>Honest about its limits.</strong> A false-negative is worse than a false-positive — the failure mode is silent data exposure, not a noisy block.</li>
 </ol>
-<p>The whole thing is ~7k lines of Rust with ~6k of tests (491 passing, golden-file coverage on the redactor), MIT-licensed, builds with <code>cargo build</code>, and ships on Homebrew.</p>
+<p>A small Rust tool with under 10ms overhead on the hot path, MIT-licensed, builds with <code>cargo build</code>, and ships on Homebrew.</p>
 <h2 id="the-two-access-paths">The two access paths</h2>
 <p>Modern agent harnesses give models data through two doors. The Model Context Protocol has become the de-facto integration layer for Postgres, Snowflake, GitHub, Linear, and internal APIs — and most of the published material on it is about <em>building</em> servers, not about auditing what they return. The model trusts what the server hands back. Nobody is reading the bytes.</p>
 <p><code>gate</code> covers both doors: MCP servers via a stdio proxy, and Bash/CLI tools via a harness hook.</p>
@@ -309,6 +309,7 @@ You wire a database tool into your coding agent. PostgreSQL, Databricks, an inte
 <li><strong>Cursor</strong> — <code>PreToolUse</code> hook in <code>.cursor/mcp.json</code>; Cursor substitutes the rewritten command before spawning.</li>
 <li><strong>GitHub Copilot CLI</strong> — <code>PreToolUse</code> hook in <code>.github/hooks/PreToolUse.json</code> returns <code>modifiedArgs</code>.</li>
 <li><strong>Codex CLI</strong> — <code>PreToolUse</code> hook trusted and enabled via the Permissions UI; substitutes the rewritten command before spawning.</li>
+<li><strong>Gemini CLI</strong> — <code>PreToolUse</code> hook; Gemini CLI substitutes the rewritten command after <code>gate init --harness gemini</code> and a session restart.</li>
 </ul>
 <p>The agent doesn&rsquo;t know <code>gate</code> is there, and humans running the same commands in a normal terminal are untouched — there&rsquo;s no wrapper script on PATH.</p>
 <h2 id="the-two-gate-detection-pipeline">The two-gate detection pipeline</h2>
@@ -370,45 +371,70 @@ Because Gate 1 only needs to find column references. Pulling in a full SQL parse
 <ol>
 <li><strong>Forced columns from Gate 1</strong> → always redact, regardless of value.</li>
 <li><strong>Column-name heuristics</strong> → tokenise the JSON key (handling <code>snake_case</code>, <code>camelCase</code>, <code>PascalCase</code>, <code>UPPER_CASE</code>) and match against ~50 PII categories. <code>userEmail</code>, <code>user_email</code>, and <code>USER_EMAIL</code> all resolve to the same rule.</li>
-<li><strong>Value patterns</strong> → regex matches for email, US SSN, US phone, plus a Luhn check for payment-card numbers.</li>
+<li><strong>Value patterns</strong> → regex matches for email, US/AU/NZ phone, US SSN, AU ABN, AU Medicare, AU/NZ TFN/IRD (formatted), NZ NHI, NZ bank account numbers, plus a Luhn check for payment cards.</li>
 </ol>
-<p>The column-name match adds a confidence boost to any value match in the same field, so a borderline value (e.g. a 9-digit string in a column called <code>tax_id</code>) tips over the redaction threshold.</p>
+<p>The column-name match adds a confidence boost to any value match in the same field. Gate 2 always redacts on any match — there is no threshold to clear. Low-confidence matches (e.g. a 9-digit string in a column called <code>tax_id</code>) are redacted <em>and</em> flagged with a <code>low-confidence</code> warning in <code>_gate_summary</code>. Review flagged columns via <code>gate retro</code>, then silence a false positive with <code>gate allowlist add &lt;column&gt;</code>.</p>
 <p>The output goes back as the same JSON the tool produced, with values rewritten in-place and a <code>_gate_summary</code> block appended so the agent can reason about what was scrubbed:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;rows&#34;</span>: [{<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#f92672">&#34;email&#34;</span>: <span style="color:#e6db74">&#34;[PII:email]&#34;</span>, <span style="color:#f92672">&#34;ssn&#34;</span>: <span style="color:#e6db74">&#34;[PII:ssn]&#34;</span>}],
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;count&#34;</span>: <span style="color:#ae81ff">1</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;_gate_summary&#34;</span>: {<span style="color:#f92672">&#34;redacted&#34;</span>: <span style="color:#ae81ff">2</span>, <span style="color:#f92672">&#34;types&#34;</span>: [<span style="color:#e6db74">&#34;email&#34;</span>, <span style="color:#e6db74">&#34;ssn&#34;</span>], <span style="color:#f92672">&#34;warnings&#34;</span>: []}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h4 id="correlating-without-seeing">Correlating without seeing</h4>
-<p>A frequent objection: &ldquo;but the agent needs to <em>join</em> on email to dedupe rows.&rdquo; Set <code>hash_values: true</code> and each placeholder gets a deterministic 8-char hex suffix derived from the original value plus an optional salt:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{<span style="color:#f92672">&#34;email&#34;</span>: <span style="color:#e6db74">&#34;[PII:email:7f83b165]&#34;</span>}
-</span></span><span style="display:flex;"><span>{<span style="color:#f92672">&#34;email&#34;</span>: <span style="color:#e6db74">&#34;[PII:email:7f83b165]&#34;</span>}   <span style="color:#75715e">// same person, same suffix
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{<span style="color:#f92672">&#34;email&#34;</span>: <span style="color:#e6db74">&#34;[PII:email:a3e21f9c]&#34;</span>}   <span style="color:#75715e">// different person
-</span></span></span></code></pre></div><p>The agent can group, count, and dedupe across rows without ever touching the raw value. Same property holds across separate queries within the same config.</p>
-<h2 id="knowing-what-youre-walking-into-gate-scan">Knowing what you&rsquo;re walking into: <code>gate scan</code></h2>
-<p>Before you wire <code>gate</code> into a harness, you usually want to know how much PII your schema actually exposes. <code>gate scan</code> reads schema metadata from stdin and prints a risk report weighted by category sensitivity (one SSN column matters more than twenty address columns):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>psql -d mydb -c <span style="color:#e6db74">&#34;SELECT TABLE_NAME, COLUMN_NAME
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                 FROM information_schema.columns
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                 WHERE table_schema = &#39;public&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                 ORDER BY table_name, ordinal_position&#34;</span> | gate scan
-</span></span></code></pre></div><p>The output groups columns by tier (Critical / Elevated / Standard) and emits a risk floor based on prevalence. It exits 1 if any PII is found, so it slots into CI as a schema audit. False positives — <code>city</code> in a <code>products</code> table, <code>bank_account_id</code> used as a foreign key — get handled by an interactive <code>--review</code> mode that adds them to an allowlist with one keystroke each. Allowlisted columns skip <em>name-based</em> redaction only; Gate 2 still inspects their values for regex and Luhn hits.</p>
-<p>Before, schema PII auditing was &ldquo;grep and squint&rdquo;; now it&rsquo;s a single piped command, scriptable in CI.</p>
-<h2 id="knowing-what-got-caught-gate-retro">Knowing what got caught: <code>gate retro</code></h2>
-<p><code>gate scan</code> is the <em>before</em>. <code>gate retro</code> is the <em>after</em>. A deterministic filter has the rare property that you can count exactly what it did — there is no sampling, no model-of-the-month estimating, no confidence interval. Once <code>gate</code> has been running for a sprint or a quarter, <code>retro</code> reads the local JSONL stats log and prints the tally:</p>
-<p><img src="/images/introducing-gate/retro.jpg" alt="gate retro output showing all-time statistics"></p>
-<p>It answers the question every security team asks of an opt-in filter on the hot path: <em>is this thing actually doing something, or a placebo we forget about?</em> The numbers come from the same pipeline that did the redaction — no sampling, no estimate. It also surfaces config gaps: a <code>Hit rate</code> of 0% on a tool that should be returning PII usually means the data is coming back in a format <code>gate</code> couldn&rsquo;t parse — CSV without a <code>pipe:</code>, an unusual JSON envelope, a column-name convention not yet in config. A surprising sub-category in the breakdown — <code>tax_id</code> showing up in a table you forgot was joined — is a finding worth tracing.</p>
-<p>Stats are local-only: they&rsquo;re written to a JSONL log on disk, never sent anywhere, and <code>stats.enabled: false</code> turns the recording off entirely.</p>
-<h2 id="honesty-about-the-gaps">Honesty about the gaps</h2>
+</span></span></code></pre></div><h2 id="honesty-about-the-gaps">Honesty about the gaps</h2>
 <p>The full threat model is in the <a href="https://github.com/GaaraZhu/gate/blob/main/THREAT-MODEL.md">repo</a> but the headlines are:</p>
 <ul>
 <li><strong><code>gate</code> is not a sandbox.</strong> It only filters commands explicitly listed in <code>tools:</code>. Anything else passes through.</li>
-<li><strong>The adversary model is an inadvertent agent, not a malicious one.</strong> <code>sudo gate protect</code> (Unix) chowns the config to root so a hijacked agent can&rsquo;t disable gate via config edits, but a jailbroken agent that deliberately base64-encodes data, requests CSV output, or exfiltrates through a non-intercepted tool is still out of scope. Combine <code>gate</code> with harness-level tool restrictions if you need that boundary.</li>
-<li><strong>Value regex is narrow.</strong> Email, US SSN (dashes required — <code>123456789</code> slips), US phone, payment cards (via Luhn). Everything else — IBAN, passport, NHS number, NZ IRD, AU TFN — is column-name-based. If the column has an unusual name and isn&rsquo;t in your config&rsquo;s <code>column_denylist</code>, the value will pass through. Configure for your region.</li>
+<li><strong>The adversary model is an inadvertent agent, not a malicious one.</strong> <code>sudo gate protect</code> (Unix) chowns the config to root so a hijacked agent can&rsquo;t disable gate via config edits, but a jailbroken agent that deliberately base64-encodes data, requests CSV output, or exfiltrates through a non-intercepted tool is still out of scope. Combine <code>gate</code> with harness-level tool restrictions and a read-only database role if you need that boundary.</li>
+<li><strong>Value regex covers the common cases and AU/NZ.</strong> Email, US SSN (dashes required — <code>123456789</code> slips), payment cards (via Luhn), and phone numbers including AU/NZ mobile and landline in both local format (<code>04XX</code>/<code>02X</code>, <code>0[2378]</code>/<code>0[34679]</code>) and international format (<code>+61</code>/<code>+64</code> prefixes) — international-prefix numbers auto-redact in any column; local-format numbers require a PII-named column. AU/NZ-specific identifiers caught by value: ABN (mod-89 checksum), Medicare card (mod-10), formatted TFN and IRD (mod-11, separators required), NZ NHI, and NZ bank account numbers. Bare TFN/IRD strings without separators are not caught by value alone — column-name matching is the safety net there. IBAN, passport, NHS, Aadhaar, and other non-AU/NZ formats rely on column-name matching only; extend <code>pii.patterns</code> for your region.</li>
 <li><strong>MCP <code>resources/read</code> and <code>prompts/get</code> are not redacted.</strong> Only <code>tools/call</code> responses go through the scanner.</li>
 <li><strong>Non-JSON output is not redacted.</strong> If a tool emits CSV or plain text, configure a <code>pipe:</code> to convert it (the example config uses <code>jq -c .</code> for curl and a 3-line Python <code>csv.DictReader</code> for <code>psql --csv</code>).</li>
 <li><strong>Disable mechanisms exist.</strong> <code>enabled: false</code> in config, deleting the config file, or removing the hook entry from the harness settings. <code>sudo gate protect</code> (Unix) chowns the config to root to block the first two from inside the agent, but the harness settings file is still user-writable.</li>
 </ul>
 <p>If any of these are deal-breakers, the tool is honest about it up front. Better than discovering it in a post-mortem.</p>
+<h2 id="why-not-just-mask-the-data-at-the-source">Why not just mask the data at the source?</h2>
+<p>Database-level masking — static anonymised copies, dynamic data masking (DDM), row security policies — is the right answer when you control the source and have the access to configure it. Gate fills the gap when you don&rsquo;t, and covers the paths masking can&rsquo;t reach.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>gate</th>
+          <th>Database masking</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Requires DB admin access</td>
+          <td>✅ No changes to the database</td>
+          <td>❌ Needs column-level config by a DBA</td>
+      </tr>
+      <tr>
+          <td>Works on vendor / external DBs</td>
+          <td>✅ Wraps any JSON-returning tool</td>
+          <td>❌ Only databases you administer</td>
+      </tr>
+      <tr>
+          <td>Covers MCP and API tools</td>
+          <td>✅ GitHub, Linear, internal APIs — any <code>tools/call</code> response</td>
+          <td>❌ No masking concept at this layer</td>
+      </tr>
+      <tr>
+          <td>Production data freshness</td>
+          <td>✅ Works against live data</td>
+          <td>❌ Static copies drift; DDM may lag</td>
+      </tr>
+      <tr>
+          <td>Agent bypass resistance</td>
+          <td>✅ Direct value exposure blocked in harness hook</td>
+          <td>❌ Aggregate functions and CASE expressions can bypass DDM</td>
+      </tr>
+      <tr>
+          <td>Known gaps</td>
+          <td>✅ Documented</td>
+          <td>❌ DDM gaps are often silent</td>
+      </tr>
+  </tbody>
+</table>
+<p>They&rsquo;re complementary: if you have DDM configured, gate is the safety net for the paths and patterns DDM misses.</p>
 <h2 id="why-a-deterministic-cli-and-not-just-ask-the-model">Why a deterministic CLI and not &ldquo;just ask the model&rdquo;</h2>
 <p>It is technically possible to ask the model to redact its own input before it ingests it. People are building this. I chose not to, for three reasons:</p>
 <ol>
@@ -422,19 +448,21 @@ Because Gate 1 only needs to find column references. Pulling in a full SQL parse
 </span></span><span style="display:flex;"><span>brew tap GaaraZhu/gate <span style="color:#f92672">&amp;&amp;</span> brew install gate
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># or cargo binstall / direct download — see the README</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gate config           <span style="color:#75715e"># creates ~/.config/gate/config.yaml in your editor</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gate scan             <span style="color:#75715e"># pipe your schema in — risk report by PII tier, exits 1 if any found</span>
+</span></span><span style="display:flex;"><span>gate config           <span style="color:#75715e"># creates ~/.config/gate/config.yaml in your editor</span>
 </span></span><span style="display:flex;"><span>gate init             <span style="color:#75715e"># registers the PreToolUse hook in ~/.claude/settings.json</span>
 </span></span><span style="display:flex;"><span>gate init --wrap-mcp  <span style="color:#75715e"># dry-run: shows which MCP servers would be wrapped</span>
 </span></span><span style="display:flex;"><span>gate validate         <span style="color:#75715e"># compiles all regex patterns, lints the config</span>
-</span></span></code></pre></div><p>Pipe your schema into <code>gate scan</code> first to see what you&rsquo;re working with. Run <code>gate disable</code> to turn it off if you need to debug something, and <code>gate enable</code> to switch it back on. <code>gate uninstall</code> removes everything <code>gate</code> added to your system and asks for confirmation before each step.</p>
+</span></span><span style="display:flex;"><span>gate retro            <span style="color:#75715e"># after a few sessions: tally of what was redacted and where</span>
+</span></span></code></pre></div><p>Run <code>gate disable</code> to turn it off if you need to debug something, and <code>gate enable</code> to switch it back on. <code>gate uninstall</code> removes everything <code>gate</code> added to your system and asks for confirmation before each step.</p>
 <h2 id="where-this-is-going">Where this is going</h2>
 <p>What&rsquo;s next, roughly in priority order:</p>
 <ul>
-<li><strong>More built-in patterns by region.</strong> The value-regex coverage is US-centric; community PRs adding IBAN, passport, NHS, IRD, TFN, Aadhaar, etc., are explicitly welcome.</li>
+<li><strong>More built-in patterns by region.</strong> AU/NZ identifiers are now covered natively. Community PRs adding IBAN, passport, NHS, Aadhaar, and other regional formats are welcome.</li>
 <li><strong>MCP <code>resources/read</code> redaction.</strong> Closing the one documented gap in the MCP path.</li>
-<li><strong>More harness integrations.</strong> Claude Code, OpenCode, Copilot CLI, Cursor, and Codex CLI are in. Aider and others are open questions — file an issue if you want one.</li>
+<li><strong>Windows hardening.</strong> The binary builds and runs on Windows, but test coverage is thin — <code>gate protect</code> (config ownership transfer) is Unix-only, and edge cases around path handling and terminal output are less exercised. Contributions welcome.</li>
 </ul>
-<p>If you&rsquo;ve been holding off on connecting your AI agent to a real database because &ldquo;what the model sees&rdquo; was a vibes-based decision, this is the layer that turns it into a config file. Try it, scan your schema, and share what you find. The repo is <a href="https://github.com/GaaraZhu/gate">github.com/GaaraZhu/gate</a>. The issue tracker is open. The license is MIT.</p>
+<p>If you&rsquo;ve been holding off on connecting your AI agent to a real data source — database, internal API, or MCP server — because &ldquo;what the model sees&rdquo; was a vibes-based decision, this is the layer that turns it into a config file. Try it, scan your schema, and share what you find. The repo is <a href="https://github.com/GaaraZhu/gate">github.com/GaaraZhu/gate</a>. The issue tracker is open. The license is MIT.</p>
 <p>I&rsquo;d rather hear &ldquo;gate redacted something it shouldn&rsquo;t have&rdquo; than &ldquo;gate let something through that it shouldn&rsquo;t have.&rdquo; If you find the second one, that&rsquo;s a security bug and there&rsquo;s a <a href="https://github.com/GaaraZhu/gate/blob/main/SECURITY.md">process for it</a>.</p>
 
 
